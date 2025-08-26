@@ -247,7 +247,7 @@ def render_navigation_sidebar():
     # Main navigation
     page = st.sidebar.radio(
         "Select Section:",
-        ["Competitive Analysis", "Strategic Reports", "User Research"],
+        ["Competitive Analysis", "Strategic Reports", "User Research", "Automation Intelligence"],
         key="main_navigation"
     )
 
@@ -397,6 +397,266 @@ def render_user_research_page():
     except FileNotFoundError:
         st.error(
             "User research report not found. Please ensure the report file is available.")
+
+
+def render_automation_intelligence_page():
+    """Render automation intelligence section"""
+    st.markdown("""
+    <div class="insight-box">
+        <h1>🤖 Automation Intelligence</h1>
+        <p>Real-time competitive intelligence monitoring and market opportunity detection</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    # Status overview
+    st.header("System Status")
+    
+    col1, col2, col3, col4 = st.columns(4)
+    
+    with col1:
+        # Check if automation system is running
+        automation_status = "🟢 Active" if os.path.exists('automation_data') else "🔴 Inactive"
+        st.metric("Automation Status", automation_status)
+    
+    with col2:
+        # Count of alerts today
+        today_alerts_count = 0
+        if os.path.exists('automation_data/alerts_history.json'):
+            try:
+                with open('automation_data/alerts_history.json', 'r') as f:
+                    alerts = json.load(f)
+                today = datetime.now().strftime('%Y-%m-%d')
+                today_alerts_count = len([a for a in alerts if a.get('timestamp', '')[:10] == today])
+            except:
+                pass
+        st.metric("Alerts Today", today_alerts_count)
+    
+    with col3:
+        # Opportunities identified
+        opportunities_count = 0
+        if os.path.exists('automation_data/opportunities_history.json'):
+            try:
+                with open('automation_data/opportunities_history.json', 'r') as f:
+                    opportunities = json.load(f)
+                opportunities_count = len(opportunities)
+            except:
+                pass
+        st.metric("Opportunities Identified", opportunities_count)
+    
+    with col4:
+        # Competitors monitored
+        monitored_count = len(competitor_manager.get_available_competitors())
+        st.metric("Competitors Monitored", monitored_count)
+
+    # Recent Alerts Section
+    st.header("🚨 Recent Alerts")
+    
+    if os.path.exists('automation_data/alerts_history.json'):
+        try:
+            with open('automation_data/alerts_history.json', 'r') as f:
+                alerts = json.load(f)
+            
+            if alerts:
+                # Sort by timestamp, most recent first
+                alerts_sorted = sorted(alerts, key=lambda x: x.get('timestamp', ''), reverse=True)
+                recent_alerts = alerts_sorted[:10]  # Show latest 10
+                
+                for alert in recent_alerts:
+                    severity_color = {
+                        'critical': 'red',
+                        'high': 'orange', 
+                        'medium': 'blue',
+                        'low': 'green'
+                    }.get(alert.get('severity', 'medium'), 'blue')
+                    
+                    severity_emoji = {
+                        'critical': '🔴',
+                        'high': '🟡',
+                        'medium': '🔵',
+                        'low': '🟢'
+                    }.get(alert.get('severity', 'medium'), '🔵')
+                    
+                    with st.container():
+                        st.markdown(f"""
+                        <div style="border-left: 4px solid {severity_color}; padding-left: 1rem; margin: 1rem 0; background-color: #f8f9fa; padding: 1rem;">
+                            <h4>{severity_emoji} {alert.get('title', 'Alert')}</h4>
+                            <p><strong>Competitor:</strong> {alert.get('competitor', 'Unknown')}</p>
+                            <p><strong>Type:</strong> {alert.get('alert_type', 'Unknown')}</p>
+                            <p>{alert.get('description', 'No description available')}</p>
+                            <p><strong>Recommended Action:</strong> {alert.get('recommended_action', 'Monitor situation')}</p>
+                            <small>🕒 {alert.get('timestamp', 'Unknown time')}</small>
+                        </div>
+                        """, unsafe_allow_html=True)
+            else:
+                st.info("No alerts generated yet. The automation system may still be collecting initial data.")
+        
+        except Exception as e:
+            st.error(f"Error loading alerts: {e}")
+    else:
+        st.info("Automation system not yet initialized. Run the competitive intelligence automation to start monitoring.")
+
+    # Market Opportunities Section
+    st.header("📈 Market Opportunities")
+    
+    if os.path.exists('automation_data/opportunities_history.json'):
+        try:
+            with open('automation_data/opportunities_history.json', 'r') as f:
+                opportunities = json.load(f)
+            
+            if opportunities:
+                # Filter for high-value opportunities
+                high_value_ops = [op for op in opportunities 
+                                if op.get('urgency') in ['high', 'critical'] or 
+                                   op.get('market_size_indicator') in ['large', 'massive']]
+                
+                if high_value_ops:
+                    st.subheader("High-Value Opportunities")
+                    for opp in high_value_ops[:5]:  # Show top 5
+                        urgency_emoji = {
+                            'critical': '🔥',
+                            'high': '⚡',
+                            'medium': '📋',
+                            'low': '💡'
+                        }.get(opp.get('urgency', 'medium'), '📋')
+                        
+                        market_size_emoji = {
+                            'massive': '🌍',
+                            'large': '🏢',
+                            'medium': '🏪',
+                            'small': '🏠'
+                        }.get(opp.get('market_size_indicator', 'medium'), '🏪')
+                        
+                        with st.expander(f"{urgency_emoji} {market_size_emoji} {opp.get('title', 'Opportunity')}"):
+                            st.markdown(f"**Type:** {opp.get('opportunity_type', 'Unknown')}")
+                            st.markdown(f"**Market Size:** {opp.get('market_size_indicator', 'Medium')}")
+                            st.markdown(f"**Urgency:** {opp.get('urgency', 'Medium')}")
+                            st.markdown(f"**Confidence:** {opp.get('confidence', 0.5):.1%}")
+                            st.markdown(f"**Description:** {opp.get('description', 'No description available')}")
+                            st.markdown(f"**Recommended Response:** {opp.get('recommended_response', 'Monitor and assess')}")
+                            
+                            if opp.get('supporting_evidence'):
+                                st.markdown("**Supporting Evidence:**")
+                                for evidence in opp['supporting_evidence'][:3]:  # Show top 3
+                                    st.markdown(f"- {evidence}")
+                
+                # Show all opportunities in table format
+                st.subheader("All Opportunities")
+                opp_df = pd.DataFrame(opportunities)
+                if not opp_df.empty:
+                    display_df = opp_df[['title', 'opportunity_type', 'market_size_indicator', 'urgency', 'confidence']].copy()
+                    display_df['confidence'] = display_df['confidence'].apply(lambda x: f"{x:.1%}")
+                    st.dataframe(display_df, use_container_width=True)
+            else:
+                st.info("No market opportunities identified yet.")
+        
+        except Exception as e:
+            st.error(f"Error loading opportunities: {e}")
+    else:
+        st.info("Market opportunity tracking not yet available.")
+
+    # Sentiment Monitoring Section
+    st.header("📊 Sentiment Monitoring")
+    
+    if os.path.exists('automation_data/sentiment_history.json'):
+        try:
+            with open('automation_data/sentiment_history.json', 'r') as f:
+                sentiment_history = json.load(f)
+            
+            if sentiment_history:
+                # Process sentiment data for visualization
+                sentiment_data = []
+                for key, score in sentiment_history.items():
+                    if '_' in key:
+                        competitor, date = key.rsplit('_', 1)
+                        sentiment_data.append({
+                            'competitor': competitor,
+                            'date': date,
+                            'sentiment': score
+                        })
+                
+                if sentiment_data:
+                    sentiment_df = pd.DataFrame(sentiment_data)
+                    
+                    # Create sentiment trend chart
+                    fig = px.line(sentiment_df, 
+                                x='date', 
+                                y='sentiment', 
+                                color='competitor',
+                                title='Competitor Sentiment Trends',
+                                labels={'sentiment': 'Sentiment Score', 'date': 'Date'})
+                    fig.add_hline(y=0, line_dash="dash", line_color="gray", annotation_text="Neutral")
+                    st.plotly_chart(fig, use_container_width=True)
+                    
+                    # Current sentiment overview
+                    st.subheader("Current Sentiment Scores")
+                    latest_sentiment = sentiment_df.groupby('competitor')['sentiment'].last().sort_values(ascending=False)
+                    
+                    cols = st.columns(min(len(latest_sentiment), 4))
+                    for i, (competitor, score) in enumerate(latest_sentiment.items()):
+                        col_idx = i % 4
+                        with cols[col_idx]:
+                            sentiment_emoji = "😊" if score > 0.1 else "😐" if score > -0.1 else "😞"
+                            color = "green" if score > 0.1 else "gray" if score > -0.1 else "red"
+                            st.markdown(f"""
+                            <div style="text-align: center; padding: 1rem; border: 1px solid {color}; border-radius: 0.5rem;">
+                                <h4>{competitor.title()}</h4>
+                                <h2 style="color: {color};">{sentiment_emoji}</h2>
+                                <p>{score:.2f}</p>
+                            </div>
+                            """, unsafe_allow_html=True)
+            else:
+                st.info("No sentiment data collected yet.")
+        
+        except Exception as e:
+            st.error(f"Error loading sentiment data: {e}")
+    else:
+        st.info("Sentiment monitoring not yet initialized.")
+
+    # Automation Controls
+    st.header("⚙️ Automation Controls")
+    
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        if st.button("🔄 Run Analysis Now"):
+            st.info("Manual analysis trigger would run the automation system once. Implementation requires API keys and background processing.")
+    
+    with col2:
+        if st.button("📊 Export Data"):
+            st.info("Data export functionality would generate CSV/JSON files of all collected intelligence. Implementation requires file generation system.")
+    
+    with col3:
+        if st.button("⚡ Setup Automation"):
+            st.info("This would guide you through setting up automated monitoring. See automation_setup.md for detailed instructions.")
+    
+    # Setup Instructions
+    st.header("🛠️ Setup Instructions")
+    
+    with st.expander("How to Enable Automation Intelligence"):
+        st.markdown("""
+        To enable the full automation intelligence system:
+        
+        1. **Install Dependencies:**
+           ```bash
+           pip install -r requirements_automation.txt
+           ```
+        
+        2. **Configure APIs:**
+           - Create `.env` file with Reddit and Gemini API keys
+           - See `automation_setup.md` for detailed instructions
+        
+        3. **Start Monitoring:**
+           ```bash
+           python competitive_intelligence_automation.py --mode schedule
+           ```
+        
+        4. **View Results:**
+           - Real-time alerts will appear in this dashboard
+           - Daily reports generated automatically
+           - Email notifications for critical alerts
+        
+        📖 **Full Setup Guide:** Check `automation_setup.md` for complete instructions
+        """)
 
 
 def render_competitive_analysis_page():
@@ -698,6 +958,8 @@ def main():
         render_strategic_reports_page()
     elif selected_page == "User Research":
         render_user_research_page()
+    elif selected_page == "Automation Intelligence":
+        render_automation_intelligence_page()
 
 
 if __name__ == "__main__":
