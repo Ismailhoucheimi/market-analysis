@@ -19,7 +19,7 @@ from competitors_config import competitor_manager, CompetitorConfig
 
 # Page configuration
 st.set_page_config(
-    page_title="Multi-Competitor Analysis Dashboard",
+    page_title="ZenFlo Strategic Analysis Platform",
     page_icon="📊",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -226,6 +226,19 @@ def render_post_card(post):
             if post.get('permalink'):
                 st.link_button("View on Reddit", post['permalink'])
 
+def render_navigation_sidebar():
+    """Render main navigation sidebar"""
+    st.sidebar.markdown("# Navigation")
+    
+    # Main navigation
+    page = st.sidebar.radio(
+        "Select Section:",
+        ["Competitive Analysis", "Strategic Reports", "User Research"],
+        key="main_navigation"
+    )
+    
+    return page
+
 def render_competitor_sidebar():
     """Render competitor selection sidebar"""
     st.sidebar.markdown("## Select Competitor")
@@ -258,13 +271,72 @@ def render_competitor_sidebar():
     st.sidebar.markdown(f"**{config.description}**")
     st.sidebar.markdown(f"**Subreddit:** r/{config.subreddit}")
     
-    
     return selected_comp
 
-def main():
-    """Main Streamlit application"""
+def render_strategic_reports_page():
+    """Render strategic reports section"""
+    st.markdown("""
+    <div class="insight-box">
+        <h1>Strategic Reports</h1>
+        <p>Comprehensive strategic analysis based on competitive intelligence and user research</p>
+    </div>
+    """, unsafe_allow_html=True)
     
-    # Render sidebar
+    # Strategic reports selection
+    st.sidebar.markdown("## Strategic Reports")
+    report = st.sidebar.radio(
+        "Select Report:",
+        ["Strategic Synthesis", "Competitive Counter-Strategies", "Feature Roadmap"],
+        key="strategic_report_selection"
+    )
+    
+    if report == "Strategic Synthesis":
+        st.header("Strategic Synthesis Report")
+        try:
+            with open('/Users/ismail/flo_market_analysis/strategic_synthesis_report.md', 'r', encoding='utf-8') as f:
+                content = f.read()
+            st.markdown(content)
+        except FileNotFoundError:
+            st.error("Strategic synthesis report not found. Please generate the report first.")
+    
+    elif report == "Competitive Counter-Strategies":
+        st.header("Competitive Counter-Strategies")
+        try:
+            with open('/Users/ismail/flo_market_analysis/competitive_counter_strategies.md', 'r', encoding='utf-8') as f:
+                content = f.read()
+            st.markdown(content)
+        except FileNotFoundError:
+            st.error("Competitive counter-strategies report not found. Please generate the report first.")
+    
+    elif report == "Feature Roadmap":
+        st.header("Detailed Feature Roadmap")
+        try:
+            with open('/Users/ismail/flo_market_analysis/detailed_feature_roadmap.md', 'r', encoding='utf-8') as f:
+                content = f.read()
+            st.markdown(content)
+        except FileNotFoundError:
+            st.error("Feature roadmap report not found. Please generate the report first.")
+
+def render_user_research_page():
+    """Render user research section"""
+    st.markdown("""
+    <div class="insight-box">
+        <h1>User Research</h1>
+        <p>Comprehensive findings from user interviews and research</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    st.header("User Research Final Report")
+    try:
+        with open('/Users/ismail/flo_market_analysis/user_research_final_report.md', 'r', encoding='utf-8') as f:
+            content = f.read()
+        st.markdown(content)
+    except FileNotFoundError:
+        st.error("User research report not found. Please ensure the report file is available.")
+
+def render_competitive_analysis_page():
+    """Render competitive analysis section"""
+    # Render competitor selection sidebar
     selected_competitor = render_competitor_sidebar()
     
     # Load competitor data
@@ -523,7 +595,21 @@ def main():
     
     # Footer
     st.markdown("---")
-    st.markdown(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | **Data Sources:** Reddit r/Notion (NEW & HOT posts)")
+    st.markdown(f"**Generated:** {datetime.now().strftime('%Y-%m-%d %H:%M:%S')} | **Data Sources:** Reddit r/{competitor_config.subreddit} (NEW & HOT posts)")
+
+def main():
+    """Main Streamlit application"""
+    
+    # Render main navigation
+    selected_page = render_navigation_sidebar()
+    
+    # Route to appropriate page
+    if selected_page == "Competitive Analysis":
+        render_competitive_analysis_page()
+    elif selected_page == "Strategic Reports":
+        render_strategic_reports_page()
+    elif selected_page == "User Research":
+        render_user_research_page()
 
 if __name__ == "__main__":
     main()
