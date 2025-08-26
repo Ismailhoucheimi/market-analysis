@@ -293,7 +293,7 @@ def render_strategic_reports_page():
     if report == "Strategic Synthesis":
         st.header("Strategic Synthesis Report")
         try:
-            with open('/Users/ismail/flo_market_analysis/strategic_synthesis_report.md', 'r', encoding='utf-8') as f:
+            with open('strategic_synthesis_report.md', 'r', encoding='utf-8') as f:
                 content = f.read()
             st.markdown(content)
         except FileNotFoundError:
@@ -302,7 +302,7 @@ def render_strategic_reports_page():
     elif report == "Competitive Counter-Strategies":
         st.header("Competitive Counter-Strategies")
         try:
-            with open('/Users/ismail/flo_market_analysis/competitive_counter_strategies.md', 'r', encoding='utf-8') as f:
+            with open('competitive_counter_strategies.md', 'r', encoding='utf-8') as f:
                 content = f.read()
             st.markdown(content)
         except FileNotFoundError:
@@ -311,7 +311,7 @@ def render_strategic_reports_page():
     elif report == "Feature Roadmap":
         st.header("Detailed Feature Roadmap")
         try:
-            with open('/Users/ismail/flo_market_analysis/detailed_feature_roadmap.md', 'r', encoding='utf-8') as f:
+            with open('detailed_feature_roadmap.md', 'r', encoding='utf-8') as f:
                 content = f.read()
             st.markdown(content)
         except FileNotFoundError:
@@ -328,7 +328,7 @@ def render_user_research_page():
     
     st.header("User Research Final Report")
     try:
-        with open('/Users/ismail/flo_market_analysis/user_research_final_report.md', 'r', encoding='utf-8') as f:
+        with open('user_research_final_report.md', 'r', encoding='utf-8') as f:
             content = f.read()
         st.markdown(content)
     except FileNotFoundError:
