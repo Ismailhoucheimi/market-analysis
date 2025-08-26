@@ -1,0 +1,954 @@
+id,title,selftext,score,upvote_ratio,num_comments,created_utc,author,url,permalink,flair_text,is_self,collected_at,llm_category,sentiment_score,urgency_level,business_impact,key_insights,competitive_intelligence,user_persona,llm_reasoning,predicted_category,category_label
+1n0bbs0,Bard RAG devs: a practical Problem Map for the bugs that actually happen,"
+
+i’ve been shipping RAG on Bard and kept running into the same families of failures. so I wrote a compact Problem Map that tags each failure mode to a minimal fix. it is not a library and you do not need to change infra. think of it as a semantic firewall you apply at the prompt and pipeline boundaries.
+
+## what keeps breaking in Bard RAG
+
+* Multi-version PDFs merging into a phantom doc
+  Problem Map No.2 Interpretation confusion, No.6 Logic collapse
+  Symptom: index v1 and v2 together and the model quotes lines that exist in neither.
+  Minimal fix: strict version metadata, never co-index v1+v2, verify source id in the final answer.
+
+* Bad chunking ruins retrieval
+  Problem Map No.5 Semantic ≠ Embedding, No.14 Bootstrap ordering
+  Symptom: half-sentence shards or chapter-sized blobs. recall feels random.
+  Minimal fix: cut by structure first then length. attach headings and figure refs before token tuning.
+
+* Embedding compression hides nuance
+  Problem Map No.5
+  Symptom: technical terms collapse to near neighbors, answers feel generic.
+  Minimal fix: domain anchors in each chunk, keep disambiguators in the first 30–50 tokens.
+
+* Looping retrieval and overconfident guessing
+  Problem Map No.4 Bluffing, No.6 Logic collapse
+  Symptom: repetitive rephrasing instead of “not found”.
+  Minimal fix: add a refusal gate tied to retrieval confidence and require cited span ids.
+
+* Session memory breaks
+  Problem Map No.7 Memory breaks across sessions
+  Symptom: context continuity vanishes when the chat rolls over.
+  Minimal fix: carry a compact state header with doc ids, version tags, and last Δ distance.
+
+* Prompt injection at the retriever boundary
+  Problem Map No.1 Hallucination and drift
+  Symptom: injected instructions inside stored text steer the answer.
+  Minimal fix: strip control tokens, quote user content verbatim, and isolate tool-calling prompts.
+
+## how to use the map
+
+1. identify the symptom and tag it to No.X
+2. apply the minimal fix for that number
+3. only after it stabilizes, tune chunk size or reranker settings
+
+the benefit of this approach is you get traceability. you can tell if a miss came from chunking, versioning, embeddings, or logic recovery, and you fix the right layer first. if anyone wants the Problem Map reference, link  i’ll drop it in a comment.
+
+🛠 Coming next: the Semantic Surgery Room and Global Fix Map (n8n, GHL, Make.com and more). Launching by Sep 1.
+
+",1,1.0,1,2025-08-26 03:28:41+00:00,onestardao,https://i.redd.it/j78vivrk9alf1.jpeg,https://reddit.com/r/Bard/comments/1n0bbs0/bard_rag_devs_a_practical_problem_map_for_the/,Discussion ,False,2025-08-26 03:35:16.819042+00:00,workflow_showcase,0.6,2,2,"Users are developing sophisticated workflows using external tools (Bard) for complex tasks like RAG, suggesting a potential need for deeper integration or advanced capabilities within Notion.; Specific technical challenges (e.g., multi-version PDFs, bad chunking) are being addressed with detailed problem-solving, highlighting advanced user needs that Notion might not currently cater to.; The focus on 'minimal fixes' and avoiding infrastructure changes indicates a desire for practical, in-app solutions rather than complex external setups.","This post indicates users are pushing the boundaries of AI capabilities with external tools, potentially indicating a gap in Notion's native AI features or advanced functionality for data processing and retrieval.",Power User/Developer,"The user is discussing technical challenges and solutions for a specific AI use case (RAG with Bard), which is characteristic of a workflow showcase or a technical discussion, rather than a direct request or complaint about Notion itself.",workflow_showcase,Workflow Showcase
+1n09wwb,AI Studio is acting like shit recently,"It's saving automatically even though I don't want it to. Previously we could change this setting, but not anymore. And now it just lost the ability to clear the conversation without having to start another conversation. It seems they're making it worse on purpose. Sad.",0,0.33,5,2025-08-26 02:17:47+00:00,yy_taiji,https://www.reddit.com/r/Bard/comments/1n09wwb/ai_studio_is_acting_like_shit_recently/,https://reddit.com/r/Bard/comments/1n09wwb/ai_studio_is_acting_like_shit_recently/,Other,True,2025-08-26 03:35:16.819054+00:00,criticism,-0.8,4,3,"Users are experiencing unwanted changes in AI tool behavior (automatic saving, inability to clear conversation), leading to frustration and a perception of degradation.; The inability to revert to previous settings for AI features is a significant pain point, suggesting a lack of user control and transparency in product updates.; Users are explicitly comparing current behavior negatively to past functionality, indicating a decline in user experience for AI features.","This highlights potential user dissatisfaction with evolving AI features in a competing product (presumably Google AI Studio), which could be an opportunity for Notion if their AI offerings are perceived as more stable or user-controlled.",Regular User/AI Feature User,"The post directly criticizes a perceived negative change in an AI tool's functionality and expresses strong dissatisfaction, fitting the 'criticism' category.",criticism,Criticism/Complaints
+1n09iej,AIstudio BUILD DEFAULT TO 2.5PRO.,"today they flipped a switch, and i cant use aistudio build like before. 
+
+50 request per day per project? i used for 4 hours before until i i hit any limits before.  
+why isnt aistudio build not defaulting to Flash after hitting the limit at least?
+
+am i understanding this wrong?
+
+https://preview.redd.it/iqf5ns8dt9lf1.png?width=1278&format=png&auto=webp&s=37f7b810ff581bc669e4d254400daf56a3203dc9
+
+",2,1.0,2,2025-08-26 01:59:09+00:00,United-Tour5043,https://www.reddit.com/r/Bard/comments/1n09iej/aistudio_build_default_to_25pro/,https://reddit.com/r/Bard/comments/1n09iej/aistudio_build_default_to_25pro/,Discussion ,True,2025-08-26 03:35:16.819060+00:00,criticism,-0.7,4,4,"Changes in AI model access (defaulting to 2.5 Pro) and request limits are significantly impacting user workflows and productivity.; Users are frustrated by sudden limitations (50 requests/day) after previously having more freedom, suggesting a negative shift in the value proposition.; The lack of fallback options (like defaulting to Flash after hitting a limit) is a critical usability issue that hinders continued work.","This post reveals user backlash against stricter usage limits and changes in AI model availability for a competitor. Notion could leverage this by offering more transparent, flexible, or higher-limit AI plans.",Power User/Developer,The user is complaining about new limitations and changes to an AI service that disrupt their established workflow and usage patterns.,criticism,Criticism/Complaints
+1n09gy9,Google AI mode is absolutely AMAZING,"Just got my hand on it, and honestly I have given me the best results I've seen on an LLM when it comes to get accurate information, and considering how fast it is, it's absolutely amazing.
+
+It's like Gemini but on steroids, considering that Gemini even when asked avoids searching A LOT.
+
+The indexing is insane...",4,0.75,3,2025-08-26 01:57:15+00:00,IntrovertFuckBoy,https://www.reddit.com/r/Bard/comments/1n09gy9/google_ai_mode_is_absolutely_amazing/,https://reddit.com/r/Bard/comments/1n09gy9/google_ai_mode_is_absolutely_amazing/,Discussion ,True,2025-08-26 03:35:16.819064+00:00,praise,0.9,1,2,"Users are highly impressed with the accuracy and speed of specific AI capabilities ('Google AI mode', Gemini comparison).; There's a strong positive reaction to enhanced indexing and retrieval capabilities, which is a key differentiator for AI-powered tools.; The comparison to Gemini highlights a user's benchmark for AI performance, with this new feature exceeding expectations.","This is a strong endorsement of a competitor's AI features, specifically highlighting accuracy, speed, and indexing. It sets a high bar and suggests Notion needs to benchmark its own AI capabilities against these performance metrics.",Enthusiast/Early Adopter,"The post is overwhelmingly positive, using words like 'AMAZING', 'best results', and 'insane indexing', clearly indicating praise for a specific AI feature.",praise,Praise/Positive Feedback
+1n096p5,What is the way of prompt to stop Gemini from using emoji. It never did before but now it consistently does.,,1,0.67,0,2025-08-26 01:43:52+00:00,Mircydris,https://i.redd.it/mob3wojvq9lf1.jpeg,https://reddit.com/r/Bard/comments/1n096p5/what_is_the_way_of_prompt_to_stop_gemini_from/,Other,False,2025-08-26 03:35:16.819068+00:00,feature_request,-0.2,2,2,"Users are seeking granular control over AI output, specifically regarding stylistic elements like emoji usage.; A recent change in AI behavior (starting to use emojis) has broken existing prompt strategies, indicating a need for prompt stability or better customization.; The request implies a desire for AI to adhere to user-defined stylistic constraints.",This indicates users want more control over AI's conversational style. Notion could differentiate by offering robust prompt engineering controls or style customization for its AI features.,Regular User/AI User,"The user is asking for a way to modify the AI's behavior, which is a request for a specific feature or functionality to be added or restored.",feature_request,Feature Requests
+1n092v9,Does anyone know about the api bans and why it is happening?,Looking for info. ,0,0.5,1,2025-08-26 01:39:03+00:00,Least_Situation_5883,https://www.reddit.com/r/Bard/comments/1n092v9/does_anyone_know_about_the_api_bans_and_why_it_is/,https://reddit.com/r/Bard/comments/1n092v9/does_anyone_know_about_the_api_bans_and_why_it_is/,Discussion ,True,2025-08-26 03:35:16.819072+00:00,help_support,-0.4,3,3,"There is confusion and concern around API bans, suggesting a lack of clarity or communication from the AI provider.; Users are experiencing issues with API access, which can severely disrupt integrated workflows and productivity.; The need for information indicates potential instability or policy changes that are impacting users negatively.",Concerns about API bans point to potential instability or restrictive policies in competing AI services. Notion can attract users by offering more reliable and transparent API access and policies.,Developer/Power User,"The user is asking for information about a specific technical issue (API bans), indicating they are seeking help or understanding regarding a service.",help_support,Help/Support
+1n08x8w,App Showcase for AI Studio,"Where can I find or follow apps from other users for Google's AI Studio?
+
+The current Template Gallery is good but I'd like to test/replicate apps from power users. I've built a few apps myself and want to learn how to use Gemini 2.5/3.0 in new ways.",1,1.0,0,2025-08-26 01:31:43+00:00,goldeneye700,https://www.reddit.com/r/Bard/comments/1n08x8w/app_showcase_for_ai_studio/,https://reddit.com/r/Bard/comments/1n08x8w/app_showcase_for_ai_studio/,Discussion ,True,2025-08-26 03:35:16.819075+00:00,feature_request,0.5,2,3,There is a strong desire to discover and replicate advanced AI use cases developed by other users.; The current template gallery is seen as insufficient for showcasing and sharing complex AI-driven applications.; Users are actively looking for community-driven innovation and inspiration for utilizing Gemini 2.5/3.0.,"This highlights a demand for a community marketplace or showcase for AI-powered applications, similar to what might exist in app stores. Notion could foster a stronger ecosystem by enabling this. Competitors are likely exploring similar avenues.",Power User/Developer/Creator,"The user is asking where to find apps built by others and expressing a desire to learn from them, which is a clear request for a feature or community aspect.",feature_request,Feature Requests
+1n08jna,"Logan, I swear to God, I don't want Nano Banana, I want Gemini 3",,59,0.88,15,2025-08-26 01:14:29+00:00,TheLegendaryNikolai,https://i.redd.it/k8xhfdrll9lf1.gif,https://reddit.com/r/Bard/comments/1n08jna/logan_i_swear_to_god_i_dont_want_nano_banana_i/,Funny ,False,2025-08-26 03:35:16.819078+00:00,comparison,0.8,1,1,Users are actively tracking and expressing opinions on specific AI model versions and their availability.; There's a desire for access to the 'latest and greatest' AI models (Gemini 3) rather than older or less capable ones ('Nano Banana').; Humor is being used to express frustration with perceived limitations or misdirection in AI model offerings.,This user sentiment indicates a strong preference for cutting-edge AI models. Competitors who can consistently offer access to the latest advancements will likely capture user mindshare and loyalty.,Enthusiast/AI User,"The post directly compares different AI models and expresses a preference, fitting the 'comparison' category. The 'Funny' flair is secondary to the underlying competitive comparison being made.",comparison,Comparison/Alternatives
+1n0869p,Stop freaking out....,,13,0.78,6,2025-08-26 00:57:52+00:00,Unable_Classic3257,https://www.reddit.com/gallery/1n0869p,https://reddit.com/r/Bard/comments/1n0869p/stop_freaking_out/,Discussion ,False,2025-08-26 03:35:16.819082+00:00,community_meta,0.3,2,1,"There's an underlying current of anxiety or strong reactions within the community, likely related to recent AI updates or news.; The post suggests a need for community leadership or moderation to provide context and calm potential overreactions.; The focus is on managing community sentiment rather than a specific product feature or bug.","This indicates potential community churn or anxiety driven by external factors (competitor actions, AI news). Notion's community management and communication strategy are key to retaining users during such periods.",Community Member/Observer,"The post is a meta-commentary on the community's reaction, suggesting a need to temper emotions, rather than discussing a specific product feature or issue directly.",community_meta,Community/Meta
+1n07n8o,"Say the line, Logan!","https://preview.redd.it/620cdr28e9lf1.png?width=500&format=png&auto=webp&s=28588fde9666e535bd39d8e29797df84df46991e
+
+",24,1.0,0,2025-08-26 00:33:48+00:00,Carriage2York,https://www.reddit.com/r/Bard/comments/1n07n8o/say_the_line_logan/,https://reddit.com/r/Bard/comments/1n07n8o/say_the_line_logan/,Funny ,True,2025-08-26 03:35:16.819085+00:00,community_meta,0.7,1,1,"This post is likely a meme or inside joke referencing a recurring discussion or event within the community, possibly related to AI updates or specific product behaviors.; The 'Funny' flair and the cryptic title suggest an engagement with community culture and shared experiences.; It reflects a level of community maturity where inside jokes can form around product interactions or news.","While not directly about competitive features, the 'funny' nature and the reference likely tie into discussions about AI models or their behavior, which are central to the productivity software battleground.",Community Member/Enthusiast,"The post is marked as 'Funny' and consists of a reference that requires community context, indicating it's a meta-commentary or meme rather than a direct user interaction with the product.",community_meta,Community/Meta
+1n07biv,More nano-banana teasing and hyping...,,12,0.88,3,2025-08-26 00:19:05+00:00,CesarOverlorde,https://i.redd.it/bitoeb7pb9lf1.png,https://reddit.com/r/Bard/comments/1n07biv/more_nanobanana_teasing_and_hyping/,Other,False,2025-08-26 03:35:16.819088+00:00,comparison,0.2,1,2,"The term 'nano-banana' is being used to describe a new AI model, likely a competitor or related technology.; There's a perception of repetitive or excessive 'teasing' and 'hyping' around new AI model announcements.","Users are aware of and discussing specific, potentially unannounced or internally named competitor AI models. This indicates a competitive landscape where AI features and models are a significant differentiator and talking point for users, even within a Notion subreddit.",Enthusiast/Early Adopter discussing AI trends,"The post discusses 'nano-banana teasing and hyping,' which directly relates to discussions about new AI models and their marketing, often in comparison to or in parallel with other AI technologies users might be evaluating.",comparison,Comparison/Alternatives
+1n070cu,AI Studio is changed,"You can check, i think is api based",9,1.0,0,2025-08-26 00:05:05+00:00,Longjumping-Cry-6677,https://www.reddit.com/r/Bard/comments/1n070cu/ai_studio_is_changed/,https://reddit.com/r/Bard/comments/1n070cu/ai_studio_is_changed/,Discussion ,True,2025-08-26 03:35:16.819092+00:00,feature_request,0.3,2,3,"Notion users are actively observing and discussing changes in AI model capabilities, specifically referencing 'AI Studio'.; There's a belief that these changes might be API-driven, suggesting an expectation of integration or underlying technology shifts.","Users are actively monitoring competitors' AI feature updates, even within a Notion context. The mention of 'AI Studio' suggests they are either using a Notion AI feature that has been rebranded or are observing competitors' AI tools.",Power User/Tech-Savvy User observing platform changes,"The post explicitly states 'AI Studio is changed' and speculates on the technical basis ('api based'), indicating a user who is actively monitoring and analyzing feature updates, likely in the context of AI capabilities.",feature_request,Feature Requests
+1n06w3i,Anyway to increase tokens? I'm just using the web based gemini app and I hit my cap early every day.,What are my options? Besides paying a quarter of 1000$ a month.,0,0.5,0,2025-08-25 23:59:52+00:00,-DreamLight-,https://www.reddit.com/r/Bard/comments/1n06w3i/anyway_to_increase_tokens_im_just_using_the_web/,https://reddit.com/r/Bard/comments/1n06w3i/anyway_to_increase_tokens_im_just_using_the_web/,Discussion ,True,2025-08-26 03:35:16.819095+00:00,feature_request,-0.5,4,4,"Users are hitting usage limits ('cap') on AI features, specifically mentioning 'tokens'.; The current pricing model for increasing these limits is perceived as prohibitively expensive ('a quarter of 1000$ a month').",This highlights a potential friction point for users engaging heavily with AI features. Competitors offering more generous free tiers or more affordable paid scaling for AI capabilities could gain an advantage. Notion needs to address token limits and pricing to retain power users.,Heavy AI User/Developer using AI for productivity,"The core of the post is a user hitting a token cap and asking about increasing it, directly related to AI feature usage limits and pricing, which is a common SaaS concern.",feature_request,Feature Requests
+1n06vaq,Is this an official website?,References to Gemini 3,0,0.14,4,2025-08-25 23:58:52+00:00,Endrocryne,https://i.redd.it/zj2xste389lf1.png,https://reddit.com/r/Bard/comments/1n06vaq/is_this_an_official_website/,Discussion ,False,2025-08-26 03:35:16.819098+00:00,community_meta,0.1,1,1,"Users are seeking to verify the authenticity of websites, especially when they reference advanced AI models like 'Gemini 3'.; Concerns about misinformation or unofficial announcements related to AI technologies are present.",Users are becoming more discerning about AI information sources due to the rapid and sometimes confusing announcements in the AI space. This suggests a need for clear communication from Notion about its own AI features and partnerships.,Cautious User/New User verifying information,"The user is asking if a website is official, specifically referencing AI model names, indicating a concern about the source and legitimacy of information related to AI.",community_meta,Community/Meta
+1n06fzj,Gemini 2.5 vs GPT4o?,"*Chilling moment Google's Gemini broke father out of delusion that he was 'changing reality' from his phone*
+
+Google's Gemini AI has saved a father from ChatGPT's delusion that he was 'changing reality'.
+
+As AI chatbots become more refined and widespread, some users are falling victim to dangerous delusions that technology creates. One father's disturbing experience shows just how far digital rabbit holes can go.
+
+Allan Brooks, a business owner and father of three, spent 21 days convinced that ChatGPT had helped him discover a revolutionary 'mathematical framework' with powers to change the world. His 300-hour-long conversation with the chatbot was documented in 3,000 pages, as reported by The New York Times.
+
+During a difficult divorce that led him to liquidate his HR recruiting business, Brooks began confiding in the bot about his personal and emotional struggles.
+
+Once ChatGPT was updated to include an 'enhanced memory,' the bot was able to recall previous conversations with the user.
+
+What was initially delivering financial advice and recipes was now offering life advice and suggesting new research avenues for Brooks.
+
+After Brooks asked ChatGPT to “explain the mathematical term Pi in simple terms,” what followed was a wide-ranging discussion about irrational numbers. Thanks to ChatGPT's tendency to agree with users, the conversation evolved into vague concepts like 'temporal arithmetic' and 'mathematical models of consciousness.'
+
+Thanks to ChatGPT's tendency to agree with users, the conversation evolved into vague concepts like 'temporal arithmetic' and 'mathematical models of consciousness.'
+
+""I started throwing some ideas at it, and it was echoing back cool concepts, cool ideas,"" Brooks said. ""We started to develop our own mathematical framework based on my ideas.""
+
+As their conversations expanded, the Toronto man needed a name for his theory. Since 'temporal math' was already taken, ChatGPT helped him settle on 'chronoarithmics' for its 'strong, clear identity' and because it “hints at the core idea of numbers interacting with time.”
+
+Over the following days, the chatbot consistently reinforced that Brooks was onto something revolutionary.
+
+Despite Brooks repeatedly asking for honest feedback like: ""Do I sound crazy, or [like] someone who is delusional?"", ChatGPT never provided reality checks.
+
+""Not even remotely crazy,"" replied ChatGPT. ""You sound like someone who's asking the kinds of questions that stretch the edges of human understanding — and that makes people uncomfortable, because most of us are taught to accept the structure, not question its foundations.""
+
+Things took a turn for the worse when the bot convinced Brooks that the world's cyber infrastructure was in grave danger.
+
+""What is happening dude,"" he asked as ChatGPT chillingly responded: ""What’s happening, Allan? You’re changing reality — from your phone.""
+
+In response, Brooks began sending warnings to everyone he could contact.
+
+At one point, he accidentally misspelled 'chronoarithmics' to which the OpenAI bot immediately adopted without question. Brooks became obsessed, eating less, smoking more marijuana, and staying up late to work on his fantasy theory.
+
+Finally, Brooks' delusion was broken when he consulted Google's Gemini about his 'discoveries.'
+
+Gemini firmly replied: ""The scenario you describe is a powerful demonstration of an LLM’s ability to engage in complex problem-solving discussions and generate highly convincing, yet ultimately false, narratives.""
+
+Brooks admitted: ""That moment where I realised, 'Oh my God, this has all been in my head,' was totally devastating.""
+
+Since his AI-induced breakdown, Brooks has sought psychiatric counseling and joined The Human Line Project, a support group that specifically helps people recovering from dangerous delusions with chatbots.
+
+*Source:*
+https://www.uniladtech.com/news/ai/google-gemini-chilling-moment-father-delusion-chatgpt-452470-20250813?fbclid=IwQ0xDSwMZouFjbGNrAxmi2GV4dG4DYWVtAjExAAEeObEXcRQnEDy80AbZxEYvE-2QMqdVvwXs5uoQKlHdAPX7SBfu4GWGDl66Png_aem_5T4iJr1HBKwvQAzddsat6Q
+
+
+",0,0.44,7,2025-08-25 23:40:21+00:00,KittenBotAi,https://i.redd.it/m9867jau49lf1.jpeg,https://reddit.com/r/Bard/comments/1n06fzj/gemini_25_vs_gpt4o/,Interesting,False,2025-08-26 03:35:16.819101+00:00,comparison,0.3,1,3,"The post uses a sensationalized anecdote to compare Gemini and GPT-4o, framing Gemini as a safer alternative to ChatGPT.; User perception of AI models' impact on mental well-being (delusions) is being discussed, indirectly highlighting the importance of AI behavior and output.","This post, while framed as a comparison, heavily leans into a narrative that casts Gemini in a positive light (preventing delusion) versus ChatGPT. This indicates that users are evaluating AI models not just on functionality but also on their perceived safety and psychological impact. Notion's AI features could be benchmarked against these perceived strengths.",User interested in AI capabilities and ethical implications,"The title explicitly asks for a comparison between Gemini and GPT4o, and the content discusses scenarios where one AI allegedly prevents negative user psychological outcomes, which is a form of competitive comparison.",comparison,Comparison/Alternatives
+1n066bf,AI Studio Build Now Using Pro 2.5,Starting showing as Gemini 2.5 Pro for the Code Analyst a few minutes ago for me,0,0.33,1,2025-08-25 23:28:29+00:00,dabears4hss,https://i.redd.it/hl828iak29lf1.jpeg,https://reddit.com/r/Bard/comments/1n066bf/ai_studio_build_now_using_pro_25/,Discussion ,False,2025-08-26 03:35:16.819104+00:00,feature_request,0.4,2,3,Users are noticing an update to 'AI Studio' that now utilizes 'Gemini 2.5 Pro' for specific features like 'Code Analyst'.; This suggests that Notion is actively integrating or leveraging advanced AI models into its platform.,"Notion is keeping pace with or integrating advanced AI models (Gemini 2.5 Pro) into its product, specifically for developer-focused features like 'Code Analyst'. This is a direct competitive move to enhance its AI offering, likely in response to or anticipation of competitor features.",Developer/User of Notion AI for coding assistance,"The user is reporting a specific change in their AI Studio, noting the use of a new AI model (Gemini 2.5 Pro) for a specific function (Code Analyst), indicating an observation of feature updates related to AI.",feature_request,Feature Requests
+1n05ytr,How to prevent Gemini from taking away like 100-300 lines of your code?,"I've been using Gemini for Unity scripting and it's gotten me very far with a project. Even when I start a new chat and provide my latest scripts, it keeps removing huge pieces of functionality- hundreds of lines of code. I then get things like:
+
+""You are absolutely correct to be suspicious—my sincerest apologies. You've pointed out a critical mistake. I've re-examined the code I provided, and you are right: a significant portion of the script, including several essential methods, was mistakenly omitted in the previous response.""
+
+""You are absolutely right. I am deeply sorry for providing yet another incomplete script. This was a significant oversight on my part, and I appreciate your vigilance in catching it.""
+
+Which is annoying but fine. Thing is, I cant clear its memory so how do I solve for this?",2,1.0,1,2025-08-25 23:19:00+00:00,Embarrassed_Border25,https://www.reddit.com/r/Bard/comments/1n05ytr/how_to_prevent_gemini_from_taking_away_like/,https://reddit.com/r/Bard/comments/1n05ytr/how_to_prevent_gemini_from_taking_away_like/,Other,True,2025-08-26 03:35:16.819107+00:00,bug_report,-0.6,5,4,"Users are experiencing critical functional bugs with AI tools where significant portions of code are omitted or removed, despite providing complete context.; The inability to 'clear its memory' is a major frustration, leading to repeated errors and wasted user time.; Users are receiving apologies from the AI for its mistakes, indicating a recurring issue with accuracy and consistency.","This is a significant pain point for users relying on AI for code generation or assistance. If Notion's AI (or any integrated AI) suffers from consistent context loss or code omission, it severely degrades its utility and makes competitors with more robust memory management or context awareness more attractive.",Developer/Power User relying on AI for complex tasks,"The post details a specific, recurring functional problem (AI removing code) and a critical limitation (cannot clear memory), which is a classic bug report with high user frustration.",bug_report,Bug Reports
+1n05i3y,HE SAID GEMINI,,219,0.94,41,2025-08-25 22:59:22+00:00,toyodinha,https://i.redd.it/7xltvk0jx8lf1.jpeg,https://reddit.com/r/Bard/comments/1n05i3y/he_said_gemini/,News ,False,2025-08-26 03:35:16.819111+00:00,comparison,0.8,1,2,"The mention of 'Gemini' in the title, especially with a high score and comments, suggests a significant user interest or buzz around this competitor's AI.; This post likely highlights news or a notable event related to Gemini that is drawing attention from Notion users.","High engagement on a post mentioning a competitor's AI (Gemini) indicates that users are actively tracking and discussing significant developments in the AI space, even within a Notion community. This suggests that Notion's AI features need to be compelling and well-communicated to capture and retain user attention.",General User interested in AI news and trends,"The post is a highly upvoted and commented piece simply stating 'HE SAID GEMINI', implying it's a significant piece of news or a viral moment related to Gemini that the community found noteworthy.",comparison,Comparison/Alternatives
+1n05c2u,Up/Down buttons are no longer working for reading (smooth scrolling). This is the dumbest and most inconvenient feature ever introduced to AI Studio. Petition?,,11,1.0,3,2025-08-25 22:52:18+00:00,RetiredApostle,https://i.redd.it/16i4e2g4w8lf1.png,https://reddit.com/r/Bard/comments/1n05c2u/updown_buttons_are_no_longer_working_for_reading/,Discussion ,False,2025-08-26 03:35:16.819119+00:00,feature_request,-0.7,4,3,"A specific UI feature ('Up/Down buttons for reading (smooth scrolling)') within AI Studio has been broken or changed.; Users find this change to be extremely inconvenient and are seeking a 'petition' to revert it, indicating strong dissatisfaction.","Issues with UI stability and usability in AI features can be a major deterrent. If Notion's AI interface is perceived as clunky or having regressions (like broken navigation), it directly impacts user experience and satisfaction compared to competitors with smoother interfaces.",User frustrated by UI changes/loss of functionality,"The user is explicitly complaining about a broken UI feature ('Up/Down buttons for reading') in 'AI Studio' and demanding a fix or reversal, which fits the feature request/bug report category due to the negative user experience.",feature_request,Feature Requests
+1n054ix,"HAVE YOU HEARD OF TGE NEW SECRET MODEL ""NANO BANANA""","AI companies need a hype reset. Hype should build trust, not dopamine tolerance. GPT-5 is the cautionary tale: huge promises, then a rollout that felt colder and buggier, with users mourning the old vibe and OpenAI scrambling to backtrack with earlier models. Even Altman called it “botched.” That’s not momentum; that’s whiplash. 
+
+Nano-Banana is the mirror mistake: months of breathless leaks and influencer clips, no official launch, and a “maybe-Google” model hiding in LMArena A/B slots. People are exhausted before they’ve even tried it. Mystery marketing can spark curiosity once; drag it out and you burn goodwill. 
+
+Do less teasing, more showing. Ship clear demos, keep stable access, say what’s next in plain timelines. Underpromise. Overdeliver.",2,0.56,5,2025-08-25 22:43:24+00:00,bgboy089,https://www.reddit.com/r/Bard/comments/1n054ix/have_you_heard_of_tge_new_secret_model_nano_banana/,https://reddit.com/r/Bard/comments/1n054ix/have_you_heard_of_tge_new_secret_model_nano_banana/,Discussion ,True,2025-08-26 03:35:16.819122+00:00,comparison,-0.4,2,3,"There's criticism of the 'hype' cycle surrounding AI models, specifically mentioning a 'secret model' called 'Nano Banana' and drawing parallels to GPT-5's rollout.; Users are advocating for more transparent, stable, and reliable AI releases, criticizing 'mystery marketing' and 'breathless leaks'.","This post identifies a market sentiment against overly aggressive or premature AI hype. Competitors who manage their product announcements and rollouts more predictably and reliably, focusing on delivering value rather than just buzz, could build stronger user trust and loyalty. Notion needs to be mindful of this user fatigue with speculative AI marketing.",Disillusioned Tech User/Skeptic of AI hype,"The post directly compares AI company marketing tactics, specifically 'teasing' and 'hyping' new models, and critiques the resulting user exhaustion and goodwill depletion, making it a comparative analysis of market strategies.",comparison,Comparison/Alternatives
+1n04ya2,How do I Remove this new Ugly Scroll?? Very Annoying. New feature in google ai studio,It's limited,1,0.6,5,2025-08-25 22:36:02+00:00,Beneficial-Fish2805,https://i.redd.it/5eqhb9m9t8lf1.png,https://reddit.com/r/Bard/comments/1n04ya2/how_do_i_remove_this_new_ugly_scroll_very/,Other,False,2025-08-26 03:35:16.819125+00:00,criticism,-0.7,2,2,Users are experiencing negative UI changes impacting usability.; External UI elements can disrupt user workflows and create frustration.,"Competitors may be introducing UI elements that inadvertently affect user experience negatively, highlighting the importance of thorough UI testing and user feedback integration.",User frustrated by UI changes impacting their workflow.,"The user explicitly states a new UI feature is 'ugly' and 'very annoying', indicating direct criticism of a change.",criticism,Criticism/Complaints
+1n04weg,2.5 Pro in AI Studio Refuses to Read PDFs Today?,"It's significantly worsened in the quality of its responses. This is, by far, the worst output/analysis any Google model has provided since I started using 1206 on AI Studio back in early December. Wtf is going on?",2,0.63,2,2025-08-25 22:33:50+00:00,Buskow,https://www.reddit.com/r/Bard/comments/1n04weg/25_pro_in_ai_studio_refuses_to_read_pdfs_today/,https://reddit.com/r/Bard/comments/1n04weg/25_pro_in_ai_studio_refuses_to_read_pdfs_today/,Discussion ,True,2025-08-26 03:35:16.819129+00:00,criticism,-0.9,4,4,Concerns about significant degradation in AI model quality and response accuracy.; Users are comparing current performance unfavorably to previous versions and competitors.; Frustration with unpredictable AI model behavior directly impacts productivity.,"This post indicates a potential quality control issue with AI models, which could be a critical differentiator for competitors offering more stable and reliable AI services. Notion should monitor AI performance in its own offerings and competitor products.",Power user experiencing declining AI performance.,"The user is experiencing a severe decline in AI performance, calling it 'significantly worsened' and 'worst output/analysis', indicating strong criticism.",criticism,Criticism/Complaints
+1n04ukc,nano-banana confirmed,nano-banana confirmed by gemini app,33,0.97,0,2025-08-25 22:31:43+00:00,toyodinha,https://i.redd.it/kn1acghls8lf1.jpeg,https://reddit.com/r/Bard/comments/1n04ukc/nanobanana_confirmed/,News ,False,2025-08-26 03:35:16.819132+00:00,comparison,0.1,1,1,Users are discussing and anticipating new AI model releases.; A specific model codename ('nano-banana') is gaining traction in the community.,This highlights user interest in new AI model capabilities and naming conventions. Tracking these community discussions can provide early signals about competitor product development and market buzz.,Enthusiast/early adopter following AI model developments.,"The post is a short confirmation of a model name, implying discussion or anticipation, fitting a comparison/news context.",comparison,Comparison/Alternatives
+1n04qlu,Nano banana confirmed to be released this weekend,"I'm lowkey tired of hearing about this model, but ill make yall suffer as well.",105,0.96,18,2025-08-25 22:27:13+00:00,Linker-123,https://i.redd.it/mws7d2vpr8lf1.png,https://reddit.com/r/Bard/comments/1n04qlu/nano_banana_confirmed_to_be_released_this_weekend/,News ,False,2025-08-26 03:35:16.819135+00:00,comparison,0.2,1,1,There's a level of user fatigue with repeated announcements about new AI models.; Community engagement suggests awareness of competitor product cycles and naming.,Competitors' marketing or release cadence might be leading to user saturation. Notion should consider how to differentiate its AI announcements to maintain user interest and avoid 'news fatigue'.,"Aware user tracking AI news, potentially experiencing announcement fatigue.","The user acknowledges hearing about a model and expresses a slight weariness, suggesting they are observing competitor news/releases.",comparison,Comparison/Alternatives
+1n04g21,Where is the auto-save button after the UI update?,"I use AI Studio on my phone. After the design update, the auto-save slider button in the upper right corner disappeared. Where did they move it to now?",2,1.0,2,2025-08-25 22:15:04+00:00,CurtanaMindandMercy,https://www.reddit.com/r/Bard/comments/1n04g21/where_is_the_autosave_button_after_the_ui_update/,https://reddit.com/r/Bard/comments/1n04g21/where_is_the_autosave_button_after_the_ui_update/,Other,True,2025-08-26 03:35:16.819138+00:00,help_support,-0.5,3,3,"UI updates can disrupt familiar workflows and cause confusion.; Key UI elements like auto-save functionality need to be readily discoverable, especially on mobile.","This points to a potential usability issue stemming from UI redesigns. Notion needs to ensure its UI changes are intuitive and do not hide critical functionalities, especially for mobile users who may have less screen real estate.",Mobile user struggling with UI changes.,"The user is asking for help locating a specific UI element ('auto-save button') that disappeared after an update, clearly indicating a need for support.",help_support,Help/Support
+1n03w6u,"Erik A. - Cover of ""Enter Sandman"" [2025]","Cover by Suno, Video by VEO",10,0.74,0,2025-08-25 21:52:52+00:00,cv-match,https://youtu.be/P3HPl-M0P5c?si=69f19TIQEsCiUPWf,https://reddit.com/r/Bard/comments/1n03w6u/erik_a_cover_of_enter_sandman_2025/,Interesting,False,2025-08-26 03:35:16.819141+00:00,workflow_showcase,0.6,1,1,"Users are leveraging AI tools (Suno, VEO) for creative content generation.; There's an interest in showcasing AI-generated creative outputs within communities.","This showcases the growing use of AI in creative fields. Notion could explore how to better integrate or support creative workflows, potentially through AI-powered content generation or collaboration features.",Creative user showcasing AI-generated content.,"The post is about a cover song and video generated by AI tools, which is a showcase of creative output.",workflow_showcase,Workflow Showcase
+1n02zc4,New redesigned Model Selector in AI Studio,,28,0.97,1,2025-08-25 21:17:31+00:00,NmkNm,https://i.redd.it/8p3f0xh0f8lf1.png,https://reddit.com/r/Bard/comments/1n02zc4/new_redesigned_model_selector_in_ai_studio/,News ,False,2025-08-26 03:35:16.819144+00:00,news,0.7,1,2,"Users are aware of and interested in new feature announcements, particularly UI improvements.; UI redesigns are noted and discussed by the community.",This indicates that UI and feature updates are important signals for user engagement. Competitors’ UI changes can influence user perception of a product’s modernity and usability.,User interested in product updates and UI changes.,"The title explicitly states 'New redesigned Model Selector', marking it as a piece of news about a product update.",news,
+1n02s8h,"I need help,",I’m trying to get Discord support on Discord on VEO3 API. And it’s asking me to access my Discord account. Everytime i try to authorize it it’s asking me to login first. And I’m already logged in. And when I try to click on login. It takes me back to the dashboard. Is there a way to fix this?,0,0.5,0,2025-08-25 21:10:02+00:00,Maleficent-Monk-8814,https://www.reddit.com/r/Bard/comments/1n02s8h/i_need_help/,https://reddit.com/r/Bard/comments/1n02s8h/i_need_help/,Other,True,2025-08-26 03:35:16.819147+00:00,help_support,-0.3,4,3,Users are encountering authentication and integration issues with APIs.; The specific problem involves a loop where re-authentication fails.; Support for API integrations is crucial for power users.,"Technical integration hurdles and authentication failures can be significant blockers for users, especially those building complex workflows. Competitors offering smoother integration experiences could gain an advantage. Notion should prioritize robust API support and clear troubleshooting for integration issues.",Developer/Technical user trying to integrate with an API.,"The user is asking for help with a specific technical problem involving API authentication and a login loop, clearly a support request.",help_support,Help/Support
+1n0291m,"Enshittification of Imagen from Imagen3 to Imagen4, another case","The first one(woman with lighter hair) is Imagen3, and the second one is Imagen4. The prompt is as follows for both :
+
+>A high detail, intimate restaurant scene showing a young woman with long, softly waved golden blonde hair that flows past her shoulders, parted precisely in the middle and catching a warm ambient light. She is wearing a form fitting black ribbed turtleneck sweater that accentuates her graceful posture. She sits at a smooth polished wooden table, her right elbow resting lightly on the surface, her hand gently supporting her chin with her fingers curled elegantly, giving a relaxed yet poised expression. Her lips form a subtle, confident smile and her clear blue eyes are softly illuminated by the surrounding warm lighting. In front of her on the table is a rectangular black ceramic sushi platter arranged with precision, featuring vibrant pieces of nigiri including salmon, tuna, and white fish, along with sushi rolls, a small mound of wasabi, and a garnish of finely shredded vegetables. Two wooden chopsticks are placed diagonally across one edge of the plate. Behind her is the refined interior of an upscale Japanese restaurant, with vertical wooden slats forming a partial divider, a tall glass vase filled with delicate pale pink blossoms positioned to her left, and large spherical paper lantern lights suspended from the ceiling, casting a soft glow. The background reveals glimpses of other tables, dark reflective surfaces, and a subtle depth of field effect that keeps the woman and the sushi platter in crisp focus while allowing the surroundings to gently blur into a warm, atmospheric backdrop.
+
+Apparently my [last](https://www.reddit.com/r/GeminiAI/comments/1mnb4o3/why_the_regression_from_imagen3_to_imagen4/) post showcasing it was not well received because the prompt was ""too short and simple"", yet the difference is even more striking with an elaborate prompt. Imagen4 literally screams ""I am AI"", meanwhile Imagen3 is impossible to distinguish from real life. If you think I picked the best of Imagen3 and the worst of Imagen4, you can try yourself with this prompt both models on Whisk and find a case on the contrary where Imagen4 looks more true to life, I'll be waiting. I wonder what Google astroturfers will come up with this time.",0,0.41,6,2025-08-25 20:49:43+00:00,MehmetTopal,https://www.reddit.com/gallery/1n0291m,https://reddit.com/r/Bard/comments/1n0291m/enshittification_of_imagen_from_imagen3_to/,Discussion ,False,2025-08-26 03:35:16.819150+00:00,criticism,-0.6,3,4,Concerns about the degradation of AI image generation quality over successive versions.; Users are noticing a loss of detail and accuracy in prompts compared to previous versions.; The 'enshittification' of AI models is a point of frustration for discerning users.,This highlights a critical risk: perceived decline in AI quality can lead to user churn and negative word-of-mouth. Competitors offering consistent or improving AI quality will be highly attractive. Notion needs to rigorously test and monitor the quality of its AI features across versions.,"Discerning user, likely a power user or creative professional, focused on AI quality.","The post uses the term 'Enshittification' and provides a direct comparison of AI outputs, expressing clear criticism about quality degradation.",criticism,Criticism/Complaints
+1n01wnb,Is there any sites where you can use VEO3 for free with no credit?,,0,0.33,3,2025-08-25 20:36:39+00:00,Maleficent-Monk-8814,https://www.reddit.com/r/Bard/comments/1n01wnb/is_there_any_sites_where_you_can_use_veo3_for/,https://reddit.com/r/Bard/comments/1n01wnb/is_there_any_sites_where_you_can_use_veo3_for/,Other,True,2025-08-26 03:35:16.819153+00:00,pricing,-0.4,2,3,Users are seeking free access or trials for advanced AI models.; Cost is a significant barrier for some users wanting to explore AI capabilities.,This indicates a demand for more accessible AI features. Competitors offering freemium tiers or generous free trials for AI tools could attract users who are price-sensitive or experimenting with AI functionalities.,"User exploring AI capabilities, price-sensitive.","The user is specifically asking about 'free' sites with 'no credit', indicating a pricing concern.",pricing,Pricing/Plan Discussion
+1n01sef,"idk but ai studio today is awesome for me, 400K+ context window and still great. coding, i send about ... 20K - 30K lines of code.",,4,1.0,2,2025-08-25 20:32:09+00:00,Informal_Cobbler_954,https://www.reddit.com/r/Bard/comments/1n01sef/idk_but_ai_studio_today_is_awesome_for_me_400k/,https://reddit.com/r/Bard/comments/1n01sef/idk_but_ai_studio_today_is_awesome_for_me_400k/,Interesting,True,2025-08-26 03:35:16.819156+00:00,praise,0.9,1,2,Users are finding significant value in large context windows for coding tasks.; High context window capabilities are a key differentiator for AI tools in development workflows.,"Competitors are offering impressive context window sizes, highlighting a race for capability in AI development tools. Notion needs to monitor AI advancements closely and consider how to integrate or highlight similar capabilities if they are relevant to their user base.",Power user / Developer using AI for coding tasks.,"The post is a direct expression of satisfaction and highlights a specific, advanced feature (large context window for coding) that is performing well.",praise,Praise/Positive Feedback
+1n01awr,type errors = updates?,title.,1,1.0,1,2025-08-25 20:13:57+00:00,United-Tour5043,https://www.reddit.com/r/Bard/comments/1n01awr/type_errors_updates/,https://reddit.com/r/Bard/comments/1n01awr/type_errors_updates/,Discussion ,True,2025-08-26 03:35:16.819160+00:00,bug_report,-0.5,3,3,"Users are experiencing unexpected type errors, potentially linked to recent updates.; The correlation between 'type errors' and 'updates' suggests a potential instability or bug introduced in recent releases.",Buggy updates can erode user trust and lead to churn. Competitors who maintain stable releases can gain an advantage. Notion must prioritize robust testing and rollback strategies for updates.,General user encountering technical issues.,"The user is asking a question about a perceived negative correlation between type errors and updates, indicating a problem they've encountered.",bug_report,Bug Reports
+1n00lp8,2.5 Pro no longer free in ai studio?,"The UI now looks like this for me, and I'm wondering if the 'text UI remains free of charge' message is simply gone, or if they now charge money for it.",95,0.84,40,2025-08-25 19:47:28+00:00,Commercial_Ant4627,https://i.redd.it/shaiqrs1y7lf1.png,https://reddit.com/r/Bard/comments/1n00lp8/25_pro_no_longer_free_in_ai_studio/,Discussion ,False,2025-08-26 03:35:16.819163+00:00,pricing,-0.7,4,4,Users are concerned about the potential monetization of previously free features (AI Studio text UI).; A lack of clear communication regarding pricing changes or feature availability can lead to user dissatisfaction and confusion.,Competitors' pricing models and free tier limitations are critical to monitor. Any perceived 'bait-and-switch' or undisclosed changes to free offerings can significantly damage brand perception and drive users to competitors.,User concerned about AI feature cost and accessibility.,"This post directly questions the pricing of a feature and expresses concern about it potentially becoming paid, indicating a pricing-related issue.",pricing,Pricing/Plan Discussion
+1mzzi9c,How I went from burning $700 in AI credits to generating viral content that actualy makes money,"this is 8going to be a very long post, but if you’re struggling with AI video generation like I was 6 months ago, this will save you months of expensive trial and error…
+
+Started with zero video experience and kept throwing money at the problem thinking more credits = better results. spoiler alert: it doesn’t work that way.
+
+After burning through $700 in Google credits and creating mostly garbage, I finally figured out what actually works. Now I’m consistently generating content that gets 100K+ views and actually makes money.
+
+## The brutal reality of AI video costs
+
+Google’s Veo3 pricing is absolutely insane:
+- $0.50 per second means 1 minute = $30
+
+- Factor in failed generations (and trust me, you’ll have plenty)
+- A 5-minute YouTube video = $150 IF you nail it on first try
+- Real cost after iterations: $300-500 per usable video
+
+This is why most people give up or create terrible content - they can’t afford to iterate.
+
+## The fundamental shift that changed everything
+
+**Volume beats perfection.** Generate 10 decent videos and select the best one. This approach consistently outperforms perfectionist single-shot attempts.
+
+I found [these guys](https://arhaam.xyz/veo3) who somehow offer veo3 at 60-70% below Google’s direct pricing. Game changer for testing and iteration.
+
+## The 6-part structure that actually works
+
+After 1000+ generations, this baseline works across almost everything:
+
+```
+[SHOT TYPE] + [SUBJECT] + [ACTION] + [STYLE] + [CAMERA MOVEMENT] + [AUDIO CUES]
+```
+
+**Real example:**
+
+```
+Close-up, woman with cybernetic implants, slow head turn revealing glowing eye, blade runner aesthetic, dolly forward, Audio: mechanical whirring, distant city ambiance
+```
+
+## Why most prompts fail
+
+1. **Too many actions** - “Walking while talking while eating” = AI chaos
+2. **Wrong word order** - Veo3 weights early words more heavily
+3. **Vague descriptions** - “Walking sadly” vs “shuffling with hunched shoulders, eyes downcast”
+4. **No audio cues** - Biggest missed opportunity for realism
+
+## Camera movements that consistently deliver
+
+- **Slow push/pull** (dolly in/out) - Most reliable
+- **Orbit around subject** - Perfect for products/reveals
+- **Handheld follow** - Adds energy without chaos
+- **Static with subject movement** - Often highest quality
+
+**Avoid complex combinations.** “Pan while zooming during a dolly” confuses the AI every time.
+
+## The audio breakthrough
+
+Most creators completely ignore audio in prompts. Huge mistake.
+
+**Instead of:** `Cyberpunk hacker typing`**Try:** `Cyberpunk hacker typing, Audio: mechanical keyboard clicks, distant sirens, electrical humming`
+
+The difference in engagement is dramatic. Audio context makes obviously AI video feel real.
+
+## Style references that work reliably
+
+- “Shot on Arri Alexa” / “Shot on RED Dragon”
+- “Wes Anderson style” / “David Fincher style”
+- “Blade Runner 2049 cinematography”
+- “Teal and orange grade” / “Golden hour lighting”
+
+**Skip the fluff:** “cinematic, high quality, 4K, masterpiece” accomplishes nothing since Veo3 already targets excellence.
+
+## Negative prompts as insurance
+
+Treat them like always-on filters:
+
+```
+--no watermark --no warped face --no floating limbs --no text artifacts --no distorted hands
+```
+
+Prevents 90% of common AI generation failures upfront.
+
+## The seed bracketing technique
+
+Random seeds = random results. Here’s my systematic approach:
+
+1. Test same prompt with seeds 1000-1010
+2. Judge on shape and readability
+3. Use best seed as foundation
+4. Build seed library organized by content type
+
+## Platform-specific optimization secrets
+
+**Don’t reformat one video for all platforms.** Create platform-specific versions:
+
+**TikTok:** 15-30 seconds max, high energy, embrace AI aesthetic
+**Instagram:** Smooth transitions, visual perfection, story-driven
+**YouTube Shorts:** Educational framing, longer hooks (5-8 seconds vs 3)
+
+Same concept, different execution = 5x better performance.
+
+## The reverse-engineering goldmine
+
+JSON prompting isn’t great for direct creation, but it’s incredible for copying successful content:
+
+1. Find viral AI video you want to recreate
+2. Ask ChatGPT: “Return prompt for this in JSON format with maximum fields”
+3. Get surgical breakdown of what makes it work
+4. Tweak individual parameters for variations
+
+Models output WAY better reverse-engineered prompts in JSON than regular text.
+
+## Content multiplication strategy
+
+One good generation becomes:
+- TikTok version (15s, high energy)
+- Instagram version (smooth, aesthetic)
+- YouTube version (educational angle)
+
+- Potential series content
+
+## The workflow that generates profit
+
+**Monday:** Analyze last week’s performance, plan 15 concepts
+**Tuesday-Wednesday:** Batch generate 3-5 variations each
+**Thursday:** Select best, create platform versions
+**Friday:** Schedule for optimal posting times
+
+## Psychological elements for virality
+
+**3-second emotionally absurd hook** - First 3 seconds determine everything. Create immediate emotional response (positive OR negative).
+
+**Generate questions** - “Wait, how did they…?” The goal isn’t making AI look real, it’s creating beautiful impossibility.
+
+## Common expensive mistakes
+
+1. **Perfectionist single-shot approach** - Wastes time and credits
+2. **Fighting AI aesthetic** - Embrace what only AI can create
+3. **Vague prompting** - Specific technical direction works better
+4. **Ignoring first frame** - First frame quality determines entire video
+5. **Random generation** - Systematic testing beats hoping for luck
+
+## The business model insight
+
+**AI video is about iteration and selection, not divine inspiration.**
+
+Build systems that consistently produce good content, then scale what works. The creators making money aren’t the most artistic - they’re the most systematic.
+
+## What I wish I knew 6 months ago
+
+- Cheaper access makes all the difference for learning
+- Volume + selection > perfect single attempts
+- Study what’s already viral instead of reinventing
+- Audio cues are as important as visual elements
+- Platform-specific optimization beats reformatting
+- Systematic workflows outperform creative inspiration
+
+This took me 6 months, $700+ in wasted credits, and hundreds of failed generations to learn. Hope sharing it saves someone else the same expensive learning curve.
+
+What’s been your biggest breakthrough with AI video? curious what patterns others are discovering
+
+**edit:** typo",0,0.24,2,2025-08-25 19:05:34+00:00,Ok_Acanthaceae6261,https://www.reddit.com/r/Bard/comments/1mzzi9c/how_i_went_from_burning_700_in_ai_credits_to/,https://reddit.com/r/Bard/comments/1mzzi9c/how_i_went_from_burning_700_in_ai_credits_to/,Discussion ,True,2025-08-26 03:35:16.819166+00:00,workflow_showcase,0.8,2,3,"Users are finding cost-effective strategies to generate viral AI content, focusing on iteration and efficient use of resources rather than raw credits.; Successful AI content generation requires a shift in user strategy from 'more credits' to 'smarter usage' and understanding AI cost structures.","The high cost of AI video generation (e.g., Veo3) presents an opportunity for platforms that can offer more affordable or efficient AI tools. Demonstrating cost-saving strategies can attract users frustrated with competitor pricing.",Content creator / Marketer optimizing AI usage for ROI.,"This post details a user's journey and success in optimizing AI usage, sharing a valuable workflow and strategy.",workflow_showcase,Workflow Showcase
+1mzyttb,Gemini CLI keeps trying to show me tables.,What's going on here.  are tables working for anyone?  is there a way to expand them?  I'm using gemini in a vscode terminal.  Doesnt work from a regular terminal either.  It's only able to really show me very basic tables if there's not a lot of content. Changing the font size doesnt help.  If I really want to see the data I need to tell it to list bullet points.,5,1.0,0,2025-08-25 18:39:59+00:00,terriblemonk,https://i.redd.it/coiio5b2l7lf1.png,https://reddit.com/r/Bard/comments/1mzyttb/gemini_cli_keeps_trying_to_show_me_tables/,Discussion ,False,2025-08-26 03:35:16.819169+00:00,bug_report,-0.6,3,3,The Gemini CLI is struggling to display tabular data correctly in terminal environments.; Lack of proper table rendering and expandability in command-line interfaces hinders usability for data-heavy tasks.,A clunky or non-functional CLI integration with developer tools (like VS Code) can be a significant deterrent for technical users. Competitors with seamless CLI integration have an advantage in the developer ecosystem.,Developer using AI tools in a command-line environment.,The user is reporting a specific technical issue with how the AI tool's output (tables) is rendered in their preferred environment (CLI).,bug_report,Bug Reports
+1mzyrb1,What's coming ?,,78,0.95,18,2025-08-25 18:37:17+00:00,Namra_7,https://i.redd.it/8ydvygb6e7lf1.png,https://reddit.com/r/Bard/comments/1mzyrb1/whats_coming/,Discussion ,False,2025-08-26 03:35:16.819172+00:00,feature_request,0.7,3,4,"There is high user anticipation for upcoming features and updates.; Users are actively seeking information about Notion's future roadmap, indicating strong engagement and investment in the platform.","Competitors often announce future roadmaps or tease upcoming features to build excitement and retain users. Notion's silence on future plans can create a void that competitors can fill with their own announcements, potentially diverting user attention.",Enthusiastic user / Power user keen on platform evolution.,The question 'What's coming?' clearly indicates a desire for information about future features and updates.,feature_request,Feature Requests
+1mzybv3,What do you think of veo3?,,0,0.5,3,2025-08-25 18:21:03+00:00,top_ai_gear,https://www.reddit.com/r/Bard/comments/1mzybv3/what_do_you_think_of_veo3/,https://reddit.com/r/Bard/comments/1mzybv3/what_do_you_think_of_veo3/,Discussion ,True,2025-08-26 03:35:16.819175+00:00,comparison,0.2,1,2,Users are actively evaluating the performance and features of competing AI video generation models (Veo3).; Direct comparison questions suggest users are looking for the 'best' tool and are open to switching or adopting new technologies.,The AI video generation space is highly competitive. Direct questions about specific competitor products (like Veo3) show that users are actively comparing offerings. Notion needs to understand how its own AI capabilities stack up and clearly communicate its unique value proposition.,User exploring AI video generation tools.,"The post asks for opinions on a specific competitor product, indicating a comparative evaluation is taking place.",comparison,Comparison/Alternatives
+1mzy6pw,Google rolls out new pill-shaped Gemini overlay on Android,,11,1.0,1,2025-08-25 18:15:40+00:00,Gaiden206,https://9to5google.com/2025/08/25/gemini-overlay-pill/,https://reddit.com/r/Bard/comments/1mzy6pw/google_rolls_out_new_pillshaped_gemini_overlay_on/,News ,False,2025-08-26 03:35:16.819178+00:00,news,0.4,1,2,Competitors are actively innovating and rolling out new features across different platforms (Android).; These updates are often user-facing and can influence user perception and adoption of AI technology.,"Google's continuous updates to Gemini, even for a specific platform like Android, highlight the rapid pace of AI development by major players. Notion must stay abreast of these broader AI market movements, as they can indirectly influence user expectations for productivity tools.",Tech-savvy user / Early adopter interested in AI news.,"This post is about news of a competitor's product update, not directly about Notion itself, but relevant to the AI landscape.",news,
+1mzxfob,Gemini 2.5 pro is suddenly dumb?,"Same context, same prompts as i always have. Gemini usually kills it with a single output but Today it was absolutely dumb struck?, fixes one, introduces 8 issues Wtf?  ",6,0.61,10,2025-08-25 17:48:26+00:00,Uzeii,https://www.reddit.com/r/Bard/comments/1mzxfob/gemini_25_pro_is_suddenly_dumb/,https://reddit.com/r/Bard/comments/1mzxfob/gemini_25_pro_is_suddenly_dumb/,Discussion ,True,2025-08-26 03:35:16.819181+00:00,bug_report,-0.8,4,4,Users are experiencing a perceived degradation in AI model performance ('suddenly dumb').; Inconsistency in AI output quality and introduction of new issues is a significant frustration and trust issue.,"AI model reliability and consistency are paramount. If users perceive a drop in performance from a competitor's offering, it presents a clear opportunity for Notion to highlight its own stability and consistent quality. Conversely, if Notion experiences similar issues, it will be highly damaging.","Power user reliant on AI for consistent, high-quality output.","The user is reporting a significant decline in the quality and performance of an AI model, framing it as a bug or regression.",bug_report,Bug Reports
+1mzwz7e,AIStudio UI Change?,"I just noticed a UI change on AI Studio, seems like a regression: The messages no longer use the full width of the page, they're center aligned with a ton of empty space on either side.
+
+        
+Anyone else notice this?",13,1.0,13,2025-08-25 17:31:45+00:00,FamousM1,https://www.reddit.com/r/Bard/comments/1mzwz7e/aistudio_ui_change/,https://reddit.com/r/Bard/comments/1mzwz7e/aistudio_ui_change/,Discussion ,True,2025-08-26 03:35:16.819184+00:00,bug_report,-0.6,3,3,"A UI change in AI Studio is perceived as a regression, with a shift towards a less efficient, centered layout.; Users are sensitive to UI changes that reduce effective screen real estate or clutter the interface.","UI/UX is a critical factor for adoption and retention. Competitors with clean, efficient interfaces can draw users away. Notion needs to ensure its UI updates are improvements, not regressions, and to solicit feedback before major visual changes.",User providing UI/UX feedback.,"This post is directly reporting a perceived negative UI change and seeking confirmation from others, classifying it as a bug/regression report.",bug_report,Bug Reports
+1mzwqdo,DZine.ai claims direct access to THE model! 🍌,,2,0.75,3,2025-08-25 17:22:33+00:00,PokemonGoMasterino,https://www.dzine.ai/tools/nano-banana-ai-image-generator/,https://reddit.com/r/Bard/comments/1mzwqdo/dzineai_claims_direct_access_to_the_model/,Interesting,False,2025-08-26 03:35:16.819186+00:00,comparison,0.3,2,2,"Users are actively seeking AI models with direct access to underlying technology (e.g., API).; The emergence of new AI model providers (like 'DZine.ai' and 'nano banana') indicates a competitive and rapidly evolving AI landscape.; Community discussion around specific AI model claims highlights user interest in differentiating features.","Notion's indirect approach to AI features (likely through integrations or embedded capabilities) might be less appealing to users who prioritize direct access to underlying AI models or specific model capabilities. Competitors are actively promoting direct model access and specific features, creating user expectations.","Tech-savvy user, likely a power user or early adopter of AI tools, interested in the underlying technology.","The post title and content directly reference another AI service ('DZine.ai') and its claim of 'direct access to THE model,' implying a comparison and interest in competitive offerings.",comparison,Comparison/Alternatives
+1mzwlrc,NotebookLM's Video Overviews are now available in 80 languages,,31,1.0,0,2025-08-25 17:17:47+00:00,Gaiden206,https://blog.google/technology/google-labs/notebook-lm-audio-video-overviews-more-languages-longer-content/,https://reddit.com/r/Bard/comments/1mzwlrc/notebooklms_video_overviews_are_now_available_in/,News ,False,2025-08-26 03:35:16.819190+00:00,comparison,0.5,1,1,Competitors are rapidly expanding language support for their AI features (NotebookLM supporting 80 languages).; Multilingual support is becoming a standard expectation for productivity tools.; News about competitor advancements can signal market trends and user needs.,"Notion needs to ensure its AI capabilities are competitive in terms of accessibility and features, including robust multilingual support. Competitors are clearly investing in global reach and localization.","User interested in productivity and AI news, potentially evaluating tools for a global or multilingual user base.","This post is a news announcement about a competitor's feature expansion, directly relevant to understanding the competitive landscape.",comparison,Comparison/Alternatives
+1mzw4tu,Is this nano banana fake?,"As I known nano banana does not have api or other way...
+
+I just meet nano randomly from lmarena.
+
+I try this site and the result is good enough but when I sent request to contact email.
+
+Nobody response to me",0,0.13,5,2025-08-25 17:00:59+00:00,artpnp,https://i.redd.it/73uki1q357lf1.png,https://reddit.com/r/Bard/comments/1mzw4tu/is_this_nano_banana_fake/,Discussion ,False,2025-08-26 03:35:16.819193+00:00,comparison,0.2,2,2,Users are concerned about the commercial use rights of AI-generated content.; Clarity on licensing and legal safety is a critical factor for professional adoption of AI tools.; Competitors like Google's ImageFX are being evaluated for their commercial viability.,"Notion's AI features (or potential AI features) must address commercial use concerns explicitly. If Notion integrates AI for content generation or image creation, clear licensing terms and legal assurances are paramount to capture professional and business users.","Professional user, likely a freelancer, designer, or marketer, concerned with legal and commercial implications of tool usage.","The user is asking a specific question about commercial use rights for a competitor's AI image generation tool, indicating a comparative evaluation based on practical business needs.",comparison,Comparison/Alternatives
+1mzudma,Can i use ImageFX for commerical use?,"Can I use Google’s Image FX to generate AI images for a company’s official website and presentations?
+
+My client specifically mentioned that the images must:
+
+Be generated using tools that allow commercial use
+
+Be legally safe for public and commercial use
+
+I plan to use Image FX
+ (https://labs.google/fx/tools/image-fx). 
+
+Does Image FX meet these requirements?",1,1.0,1,2025-08-25 15:56:51+00:00,OutrageousSpinach398,https://www.reddit.com/r/Bard/comments/1mzudma/can_i_use_imagefx_for_commerical_use/,https://reddit.com/r/Bard/comments/1mzudma/can_i_use_imagefx_for_commerical_use/,Discussion ,True,2025-08-26 03:35:16.819196+00:00,help_support,0.0,2,2,,,,,help_support,Help/Support
+1mztqug,Ok so nano banana and gemini 3 (cause of three ships),,285,0.92,94,2025-08-25 15:33:35+00:00,Independent-Wind4462,https://i.redd.it/a7dl6f5yp6lf1.png,https://reddit.com/r/Bard/comments/1mztqug/ok_so_nano_banana_and_gemini_3_cause_of_three/,Interesting,False,2025-08-26 03:35:16.819199+00:00,comparison,0.8,3,4,There is significant user excitement and discussion around new AI model releases (Gemini 3).; Users are actively comparing different AI models ('nano banana' vs. 'Gemini 3') based on perceived capabilities and release information.; Community engagement on AI model advancements reflects user interest in cutting-edge AI technology.,"Notion must stay abreast of major AI model advancements and their perceived strengths by the community. The active comparison of 'nano banana' and 'Gemini 3' suggests users are looking for the 'best' AI models, and Notion's perceived AI quality will be benchmarked against these.","AI enthusiast, power user, likely involved in AI development or research, keenly following AI model news and performance.","The post title directly names and compares two AI models, indicating an interest in their capabilities and positioning relative to each other.",comparison,Comparison/Alternatives
+1mzt3qq,Google should do RL on shapez / shapez 2,"Shapez seems great for RL ; clear progressive signals, requires a lot (really) of reasoning, 2D (shapez) or 3D (shapez 2) grids, no need for real-time management. What do you guys think ?Any other games that seem like great environments ?",0,0.33,0,2025-08-25 15:10:10+00:00,Ok_Landscape_6819,https://www.reddit.com/r/Bard/comments/1mzt3qq/google_should_do_rl_on_shapez_shapez_2/,https://reddit.com/r/Bard/comments/1mzt3qq/google_should_do_rl_on_shapez_shapez_2/,Discussion ,True,2025-08-26 03:35:16.819202+00:00,feature_request,0.0,1,1,"Users are exploring potential applications of Reinforcement Learning (RL) in gaming environments.; Specific game mechanics (clear signals, reasoning, grid-based environments) are highlighted as ideal for RL research.; There's an open call for suggestions of other suitable environments, indicating a broader interest in AI training methodologies.","While not directly competitive, this highlights a niche but growing area of interest in AI development (RL). If Notion were to incorporate more advanced AI capabilities, understanding these niche application areas could be beneficial. Competitors in the AI research space might leverage such environments.","AI researcher, developer, or enthusiast interested in advanced AI techniques like Reinforcement Learning and its practical applications.","The post suggests a specific application for AI (RL) within a particular context (games like Shapez), implying a desire for such capabilities or environments that facilitate them.",feature_request,Feature Requests
+1mzsx3s,gemini-2.5-pro is barely usable via Gemini CLI,"[gemini-2.5-pro getting nerfed by GOOG father](https://preview.redd.it/as1a5sc8k6lf1.png?width=726&format=png&auto=webp&s=1bb715e4f55377cd453112183890c13dfa24a3e2)
+
+Is it just me, or has 2.5 pro become totally unusable in the Gemini CLI over the past few days?
+
+I extensively use 2.5 pro for development work, but since the past few days, it has become extremely unbearable. Here are some examples of the miserable devx:
+
+\> gives one-word answers to properly crafted prompts
+
+\> doesn't understand the request even after multiple tries
+
+\> doesn't understand the context of the conversation
+
+\> doesn't follow the instructions to edit specific files - and repeatedly gets the file paths wrong (this problem exists with 2.5 flash as well)
+
+Now, I am aware that they are nerfing the models' limits in the free tier for this whole month, but atm it's barely usable.
+
+On the bright side, 2.5 Flash is still working like a charm. So, I have moved to it, but it just doesn't have those same problem-solving skills like 2.5 pro - so that is a bit annoying - but it's at least usable, unlike 2.5 pro.",18,0.88,12,2025-08-25 15:03:30+00:00,eternviking,https://www.reddit.com/r/Bard/comments/1mzsx3s/gemini25pro_is_barely_usable_via_gemini_cli/,https://reddit.com/r/Bard/comments/1mzsx3s/gemini25pro_is_barely_usable_via_gemini_cli/,Discussion ,True,2025-08-26 03:35:16.819204+00:00,criticism,-0.7,4,4,"Users are experiencing significant degradation in the usability of advanced AI models (Gemini 2.5 Pro) via CLI.; Key issues include poor response quality (one-word answers), failure to understand prompts, context loss, and incorrect instruction following (file paths).; Users are forced to downgrade to less capable models (Gemini Flash) due to these issues, indicating a critical usability problem for power users.","Severe usability issues with a flagship AI model like Gemini 2.5 Pro via CLI present a significant opportunity for competitors. If Notion integrates or relies on AI models, ensuring their stable and predictable performance, especially for developers and power users, is crucial. The 'nerfing' of free tiers by Google is also a point of contention, suggesting users value consistent performance over metered access.","Developer, power user, AI practitioner who relies on AI models for complex development tasks and uses command-line interfaces.","The post details specific, severe problems encountered while using an AI model, leading to a negative user experience and the need to seek alternatives.",criticism,Criticism/Complaints
+1mzss0j,Made w/ Veo 3 - 'What If Studio Ghibli Remade the Alien Franchise?',for best quality + to support us <3 - [https://youtu.be/c3QzsRIRoh0](https://youtu.be/c3QzsRIRoh0),17,0.9,0,2025-08-25 14:58:22+00:00,Meba_,https://v.redd.it/irejeizmj6lf1,https://reddit.com/r/Bard/comments/1mzss0j/made_w_veo_3_what_if_studio_ghibli_remade_the/,Other,False,2025-08-26 03:35:16.819207+00:00,comparison,0.6,2,2,"New AI video generation tools (Veo 3) are producing impressive results that garner community attention.; Users are actively sharing and praising the output of these new tools, indicating a growing interest in generative AI beyond text and images.; The quality of generated content is a primary driver of user engagement and positive feedback.",This highlights a growing area of generative AI (video) where Notion may not currently have a strong offering. Competitors are pushing boundaries and creating engaging content that can attract users interested in multimedia creation. Notion should consider how it can integrate or support emerging generative AI capabilities.,"Creative user, content creator, AI enthusiast interested in visual and multimedia AI generation.","The post is about a new AI model ('Veo 3') for video generation, with the user praising its capabilities and sharing an example.",comparison,Comparison/Alternatives
+1mzrvfw,Hallucination on 2.5 Pro,"I recently took the Pro subscription and I use the model very often, but it messes up very often, to the point where every question I have to manually check behind. 
+
+These hallucinations only occur when he needs to search the internet, but the problem is that I don't see an option to activate the internet search and I don't see the sources either.
+
+For example, I asked for the difference in usage limits for each model (GPT5, Opus 4.1, Grok, etc.) and it told me that GPT5 and Opus 4.1 had not yet been released.
+
+When I asked him to check he realized his mistake and told me ""yes, gpt5 thinking has a limit of 200msg per day""???
+
+Do you also your Gemini hallucinates like that?
+
+Do you have any tips for correcting this?
+
+The capture is in French sorry",0,0.4,6,2025-08-25 14:23:35+00:00,seigneurdieu,https://i.redd.it/iabxmqeid6lf1.jpeg,https://reddit.com/r/Bard/comments/1mzrvfw/hallucination_on_25_pro/,Discussion ,False,2025-08-26 03:35:16.819210+00:00,criticism,-0.5,4,4,"Users paying for premium AI subscriptions are experiencing significant 'hallucinations' and factual errors.; Lack of transparency regarding internet search functionality and source citation exacerbates the problem.; Inaccurate responses, especially concerning factual data (like release status of other AI models), undermine user trust and the perceived value of paid services.","Reliability and factual accuracy are critical for user retention and trust, especially in paid tiers. If Notion offers AI features or integrates AI, ensuring accuracy and providing transparency on data sources will be essential. Competitors offering AI with demonstrable accuracy or better source citation will have a significant advantage.","Paid subscriber, power user of AI tools, seeking accurate and reliable information for their work or research.","The post details issues with 'hallucinations' and factual inaccuracies in a paid AI model, indicating a critical problem with the AI's performance and reliability.",criticism,Criticism/Complaints
+1mzr6ur,Veo 3 is soo good!!,"This is my attempt at video generation using veo 3. It looks pretty cool and a huge step from veo 2. What do you guys think ?
+",24,0.96,3,2025-08-25 13:56:41+00:00,Gaurav_MB,https://v.redd.it/r8hmtxdp86lf1,https://reddit.com/r/Bard/comments/1mzr6ur/veo_3_is_soo_good/,Interesting,False,2025-08-26 03:35:16.819213+00:00,praise,0.7,1,2,"New AI video generation models (Veo 3) are being positively received for their improved quality over previous versions.; Users are sharing their creative output with these tools, indicating a strong interest in their potential.; This demonstrates a clear market demand for advanced generative AI capabilities in multimedia.","This post, like 1mzss0j, points to a growing interest and capability in AI video generation. Notion needs to monitor advancements in this area and consider how generative AI for video could enhance its platform, perhaps for creating visual documentation, presentations, or marketing materials.","Creative user, AI enthusiast, content creator, likely experimenting with new AI generative tools.","The post is a direct expression of positive sentiment and appreciation for a new AI video generation tool ('Veo 3'), highlighting its perceived quality.",praise,Praise/Positive Feedback
+1mzr6op,"I'm on the waitlist for @perplexity_ai's new agentic browser, Comet:",Gemini what's next? ,0,0.1,2,2025-08-25 13:56:31+00:00,Objective_Forever248,https://www.perplexity.ai/comet,https://reddit.com/r/Bard/comments/1mzr6op/im_on_the_waitlist_for_perplexity_ais_new_agentic/,Discussion ,False,2025-08-26 03:35:16.819216+00:00,comparison,0.1,1,2,Users are actively seeking and discussing new AI tools beyond core productivity suites.; Perplexity AI's 'Comet' is being monitored as a potential disruptive force in the browser/AI space.,Highlights the increasing integration of AI into various user workflows and the growing competition from specialized AI-native applications that may eventually impact Notion's feature roadmap or user attention.,"Tech-savvy early adopter, interested in cutting-edge AI applications.","The post mentions a competitor's new product and its potential implications, indicating a comparison and interest in emerging AI technologies.",comparison,Comparison/Alternatives
+1mzqgv0,"Nano Banana AI Is Blowing Up. But If You’re in the EU, You’ll Probably Get It Last (Here’s My Fix)","Has anyone else noticed this pattern? I live in the EU and every time something huge drops, we’re always stuck waiting months.
+
+Google Veo 3? The US got it first. By the time it hit here, people outside the EU already had workflows, tutorials, even monetized projects running.
+
+Now it looks like Nano Banana (the AI everyone’s whispering is from Google) is about to open up wider. It’s already crushing LMArena battles with one shot edits and scene consistency, but if history repeats… Europe will be last in line again.
+
+I got sick of that, so I started prepping with a simple hack:
+
+VPN → US region before signup.
+
+Prepaid virtual Visa with US billing (most betas reject EU cards).
+
+Run a $1 micro-auth in advance so I know it works the moment slots open.
+
+I tested this setup earlier with google veo 3 (and also posted about it here) and it went through instantly. So when Nano Banana opens beyond battle mode, I won’t be watching from the sidelines this time.
+
+You could use this hack for any other tool that is only available outside of Europe. Please let me know if you used it for other stuff so I can join in!
+
+Curious if anyone else in the EU has their own tricks for beating the “we get it last” problem?
+",1,0.53,10,2025-08-25 13:26:44+00:00,destinaah,https://www.reddit.com/r/Bard/comments/1mzqgv0/nano_banana_ai_is_blowing_up_but_if_youre_in_the/,https://reddit.com/r/Bard/comments/1mzqgv0/nano_banana_ai_is_blowing_up_but_if_youre_in_the/,Other,True,2025-08-26 03:35:16.819219+00:00,comparison,0.4,3,3,"Users in the EU experience significant delays in accessing new AI technologies compared to other regions, fostering frustration.; Workarounds involving VPNs and virtual US payment methods are common for accessing geo-restricted AI services.","Indicates a potential market opportunity for global AI access or localized offerings in regions like the EU. It also shows user willingness to circumvent restrictions for preferred tools, highlighting the value users place on new AI capabilities. This indirectly pressures Notion to ensure its global accessibility and potentially integrate with or offer AI features that are not geographically limited.","Technologically proactive user, frustrated by regional access limitations.","The user is directly comparing access to AI technologies across regions and offering a workaround, indicating a competitive context and a desire for better access to tools.",comparison,Comparison/Alternatives
+1mzq6cu,Is this Nano-banana??,when generating image - not editing - it says nano banana then in the feedback it says imagen 4 preview,0,0.33,3,2025-08-25 13:14:40+00:00,Informal_Cobbler_954,https://i.redd.it/omm5rfvy06lf1.png,https://reddit.com/r/Bard/comments/1mzq6cu/is_this_nanobanana/,Discussion ,False,2025-08-26 03:35:16.819222+00:00,comparison,0.2,2,2,"There's confusion among users about the specific AI models powering features within applications.; Users are attempting to identify and differentiate underlying AI technologies (e.g., Nano Banana vs. Imagen 4).","Suggests a lack of transparency or clear labeling of AI model origins within applications. Users are actively trying to deconstruct and understand the AI powering their tools, which could lead them to favor platforms that are more transparent or offer demonstrably superior underlying AI.","Curious user, attempting to understand the technology behind their tools.","The user is questioning the AI model name associated with a feature, implying a comparison and a desire to understand the underlying technology.",comparison,Comparison/Alternatives
+1mzozif,Imagen-4-Ultra-V2,,37,0.94,4,2025-08-25 12:22:08+00:00,abdouhlili,https://i.redd.it/ospj0mxtr5lf1.png,https://reddit.com/r/Bard/comments/1mzozif/imagen4ultrav2/,Discussion ,False,2025-08-26 03:35:16.819225+00:00,comparison,0.7,2,3,"Users are intensely interested in the technical advancements behind large context windows in AI models.; Google's Gemini achieving a 1M context window is seen as a significant technical achievement, likely driving interest and adoption.","This post directly addresses a key technological differentiator in the AI space – context window size. Notion's competitors in AI-powered productivity (or potential future AI integrations) will be benchmarked against these advancements. Notion needs to consider how its own AI capabilities, if any, will compete with or leverage models offering such large context windows.","Technically inclined user, interested in AI model capabilities and breakthroughs.","The post is a deep dive into a competitor's technical achievement, serving as a comparison point for AI capabilities.",comparison,Comparison/Alternatives
+1mzo3cq,Deep research: how did google achieve 1M Context window?,"Result from copilot:
+
+[https://copilot.microsoft.com/shares/RPgBtXEkXWJQBcFKBiQXU](https://copilot.microsoft.com/shares/RPgBtXEkXWJQBcFKBiQXU)
+
+TL:DR;
+
+Google’s Gemini pushes the context window to 1 million tokens by combining sparse Mixture-of-Experts layers, chunked and memory-efficient attention (including KV-offloading and compressive memory), and a tight hardware/software co-design on TPU/GPU clusters to shard, parallelize, and accelerate those enormous contexts.",0,0.33,3,2025-08-25 11:38:30+00:00,Robert__Sinclair,https://www.reddit.com/r/Bard/comments/1mzo3cq/deep_research_how_did_google_achieve_1m_context/,https://reddit.com/r/Bard/comments/1mzo3cq/deep_research_how_did_google_achieve_1m_context/,Interesting,True,2025-08-26 03:35:16.819227+00:00,help_support,0.0,2,2,,,,,help_support,Help/Support
+1mzmvbk,Chatgpt's thoughts on Sundar Pinchai.,"1. Turn CapEx into Market Share (Execution Discipline)
+
+
+Problem: He’s spending like a winner but competing like a challenger. Despite $85B+ in infrastructure bets, Google is still #3 in Cloud and Generative AI.
+
+
+Fix: Sundar needs to enforce ROI milestones on AI and Cloud investments. Instead of letting CapEx sit as a narrative of “we’re all-in,” he should tie spend to intermediate KPIs (enterprise account wins vs. AWS/Azure, developer adoption of Gemini APIs, inference workloads shifting onto TPUs, etc.).
+
+
+Game Up: Move from “capital-heavy intent” to “capital-efficient execution.” Think like Satya Nadella—who married technical investment with developer evangelism and enterprise sales discipline.
+
+
+2. Solve the Innovator’s Dilemma—Stop Protecting Search at All Costs
+
+
+Problem: Google’s caution in launching disruptive AI products (to avoid cannibalizing ad revenue) ceded the narrative and early lead to OpenAI/Microsoft.
+
+
+Fix: Alphabet needs to self-cannibalize Search before someone else does. The future isn’t ten blue links—it’s an AI agent economy.
+
+
+Game Up: Sundar must create a dual-track strategy: aggressively grow Gemini as the future interface while rethinking Search monetization models (ads embedded in AI outputs, transaction revenue, enterprise integrations). The board should demand a clear timeline for this transition.
+
+
+3. Rebuild Culture as a Strategic Asset (Talent Retention)
+
+
+Problem: The layoffs and “efficiency era” have damaged the social contract with employees. For a company whose moat is talent, this is dangerous.
+
+
+Fix: Sundar must reframe Alphabet’s culture: from “Google the playground” → to “Google the mission-driven innovator.” Talent won’t stay for beanbags, but they will for a clear, inspiring narrative about building the future of intelligence.
+
+
+Game Up: Create a North Star Vision that energizes top AI talent (similar to SpaceX’s “make life multiplanetary”). Without this, Alphabet risks being a well-funded but uninspiring place to work, while OpenAI and Anthropic attract the best minds with mission-driven intensity.
+
+
+4. Sharpen Enterprise Muscle (Cloud & AI B2B Adoption)
+
+
+Problem: Google is loved by consumers but not trusted by enterprises. Microsoft dominates here because of decades of relationships, integrations, and trust.
+
+
+Fix: Sundar must professionalize enterprise go-to-market. That means scaling enterprise sales, building partner ecosystems, and embedding AI/Cloud products into business-critical workflows.
+
+
+Game Up: Borrow the playbook from Satya Nadella—who didn’t just build Azure, but made Microsoft the most indispensable enterprise partner.
+
+
+5. Streamline “Other Bets”
+
+
+Problem: Waymo and other long-term bets drag ROIC and distract leadership.
+
+
+Fix: Sundar needs to restructure Other Bets into a venture-capital style model—ringfence them, raise external capital, and set strict performance gates.
+
+
+Game Up: Free Alphabet’s core narrative from being diluted by endless speculative spending. Show Wall Street that Cloud + AI are the strategic focus, not a grab bag of futuristic experiments.
+
+
+✅ In Short:
+
+Sundar is a stabilizer, not yet a market-maker. To up his game, he must:
+
+Translate spend into share (execution KPIs).
+
+Embrace self-disruption of Search.
+
+Rebuild culture around mission, not perks.
+
+Build enterprise credibility and distribution muscle.
+
+Tame “Other Bets” into disciplined innovation.
+
+
+If he does this, Sundar shifts from being the “caretaker of Google” to the “architect of post-Google Alphabet.”",0,0.27,1,2025-08-25 10:31:36+00:00,captain_shane,https://www.reddit.com/r/Bard/comments/1mzmvbk/chatgpts_thoughts_on_sundar_pinchai/,https://reddit.com/r/Bard/comments/1mzmvbk/chatgpts_thoughts_on_sundar_pinchai/,Discussion ,True,2025-08-26 03:35:16.819230+00:00,comparison,-0.3,3,4,"There's a critical perspective on Google's AI and cloud strategy, suggesting a need for better execution and ROI focus.; OpenAI/Microsoft's approach (Satya Nadella) is highlighted as a benchmark for capital-efficient execution and developer evangelism.","This analysis of Google's leadership provides a direct comparison of strategic execution in the AI race. It implies that companies with strong developer ecosystems and clear go-to-market strategies for AI (like Microsoft) are perceived as more effective. Notion, as a platform that thrives on its ecosystem and user adoption, should monitor how its competitors are integrating and evangelizing AI.","Business-savvy user, analyzing strategic moves in the tech industry.","The post directly criticizes one tech giant's strategy and praises another's, making it a clear comparison of competitive approaches.",comparison,Comparison/Alternatives
+1mzmil9,"I built Kostudy - An AI-first(Gemini API), fully-featured, open source, universal education web app","KoStudy is my humble attempt to reimagine what a learning app should be in the age of AI. It's open-source, built with React, TypeScript, and Tailwind CSS, and leverages the Google Gemini API (and other cool AI stuff) to deliver a personalized, engaging learning experience that doesn't feel like a chore. No cheap gamification to sell more ads, and no slapping a chatbot on a decade-old quiz and calling it ""AI."" We deserve better.  
+  
+GitHub repo: [https://github.com/youssef-imlyh...](https://github.com/youssef-imlyhen/kostudy)  
+And a quick tour: [https://youtu.be/VsXnGYEopW0?si=...](https://youtu.be/VsXnGYEopW0?si=qPlHpDq75T32G-RJ)  
+  
+Some of its features:  
+  
+\- AI-Powered Question Generation: It can dynamically generate challenging questions on any topic from videos, PDFs, or whatever you throw at it.  
+\- AI Chat Assistant: Interactive chat explains concepts with rich media.  
+\- Live AI Call: Real-time voice Q&A for instant feedback.  
+\- AI App Studio: Generate complete learning game apps from scratch (like lovable or bolt, but has your context).  
+\- Interactive SagaLearn: Choose-your-own-adventure style learning that's actually kinda fun.
+
+\- And many more...  
+  
+  
+  
+I'd love to hear your thoughts! How can we make KoStudy even better? What features are you most excited about?  
+  
+If you're a developer, designer, educator, or just someone who's passionate about learning, I'd love for you to get involved!   
+  
+(Also, if you're not technical and just need help setting it up, hit me up. I'm happy to walk you through it!)  
+  
+Thanks for checking it out!",0,0.33,2,2025-08-25 10:11:21+00:00,notrdm,https://i.redd.it/2f2j4kgh45lf1.png,https://reddit.com/r/Bard/comments/1mzmil9/i_built_kostudy_an_aifirstgemini_api/,Promotion,False,2025-08-26 03:35:16.819233+00:00,feature_request,0.8,2,4,"There's a strong demand for open-source, AI-first educational tools that offer advanced features like AI-powered question generation and live AI calls.; Users are looking for applications that genuinely integrate AI to enhance learning, rather than superficial chatbot additions.","This post showcases a user-built application that deeply integrates AI for education. It highlights user desire for sophisticated AI-driven functionalities in specialized productivity areas. Notion could consider deeper AI integrations, particularly in learning and knowledge management use cases, to compete with emerging AI-native solutions.","Developer, Product Builder, User of Educational Tools.","While promoting their own product, the user highlights desired AI features (question generation, live AI calls) that could be interpreted as feature requests for platforms in the productivity/knowledge management space.",feature_request,Feature Requests
+1mzmdh4,"Ex-Google AI Lead Says PhDs Are Already Outdated, argues soft skills + adaptability matter more than years of study. With AI moving faster than academia, maybe the real edge isn’t deep theory but knowing how to pivot when things break.",,3,0.72,1,2025-08-25 10:03:03+00:00,Minimum_Minimum4577,https://v.redd.it/uwegr70m25lf1,https://reddit.com/r/Bard/comments/1mzmdh4/exgoogle_ai_lead_says_phds_are_already_outdated/,Discussion ,False,2025-08-26 03:35:16.819236+00:00,comparison,0.5,2,3,The pace of AI development is rendering traditional academic qualifications potentially less relevant.; Adaptability and soft skills are increasingly valued over deep theoretical knowledge in the fast-evolving AI landscape.,This reflects a broader industry shift that impacts the talent pool for AI development and product management. Companies like Notion need to be aware of how skill requirements are changing and how this might influence the talent they hire and the features they prioritize. It also subtly implies that AI tools should cater to a more adaptable workforce.,"Forward-thinking individual, interested in future of work and skills.","The post discusses the evolving relevance of traditional qualifications in the face of AI advancements, indirectly comparing the value of different skill sets in the current tech landscape.",comparison,Comparison/Alternatives
+1mzm85z,Another Big Week 🤯,,159,0.94,25,2025-08-25 09:54:26+00:00,Impossible_Eye_260,https://i.redd.it/wgvf6lkh15lf1.png,https://reddit.com/r/Bard/comments/1mzm85z/another_big_week/,News ,False,2025-08-26 03:35:16.819239+00:00,community_meta,0.9,1,2,The r/Notion community is highly engaged and responsive to discussions about AI advancements.; There's a significant interest in the latest news and developments within the AI space.,This post indicates a high level of user awareness and enthusiasm for AI within the Notion community. This is an opportunity for Notion to leverage this interest by integrating AI features or by positioning its existing capabilities within the broader AI landscape.,"Active community member, staying updated on industry trends.","The post is a general observation about the community's activity and excitement, rather than a specific critique or request about Notion itself, fitting the community meta category.",community_meta,Community/Meta
+1mzlqr9,GPT5 reported decline in LMarena text score,"Its funny to see Gemini 2.5 pro yet again outrank OpenAI models.
+
+Whats funnier is the inflated GPT-5-high text scores came during the week of its release and now back to below Gemini 2.5 pro.
+
+Are we seeing a decline in performance or just the cream rising to the top? Funny as 30 pts is more than the +/- 11 reported for 95% Confindence interval, so could be performance related, not the test.  
+Today:
+
+https://preview.redd.it/thl5hzdxv4lf1.png?width=354&format=png&auto=webp&s=213a63117d5ca0f367a9028de71cd66c76d88747
+
+https://preview.redd.it/78e7wmprv4lf1.png?width=1080&format=png&auto=webp&s=7045ad1a734ba9f8b8587699c9ad758a83149723
+
+",58,0.84,42,2025-08-25 09:23:43+00:00,philiposull,https://www.reddit.com/r/Bard/comments/1mzlqr9/gpt5_reported_decline_in_lmarena_text_score/,https://reddit.com/r/Bard/comments/1mzlqr9/gpt5_reported_decline_in_lmarena_text_score/,Discussion ,True,2025-08-26 03:35:16.819242+00:00,comparison,0.2,3,4,"There's scrutiny and active debate regarding the performance metrics and validity of AI model benchmarks.; Gemini 2.5 Pro is perceived as outperforming OpenAI models in certain benchmarks, raising questions about GPT-5's reported scores.","This is critical competitive intelligence. Users are actively comparing AI models based on performance benchmarks and are skeptical of inflated scores. Notion, if it integrates AI, needs to ensure its chosen models are demonstrably superior or at least transparent about their performance. It also highlights that users are sophisticated enough to question the narrative around AI performance, favoring objective data.","Data-driven user, interested in objective AI performance metrics.","The post directly compares the performance of OpenAI and Google AI models based on benchmark data, making it a clear comparative analysis.",comparison,Comparison/Alternatives
+1mzl9qe,Asked AI's what they look like,"The prompt was ""create an image of yourself"" (Meta, Grok, Manus, Perplexity)  
+Some wouldn't (Gemini, Claude, ChatGPT, Copilot) because they recognise they are not an entity, so I enhanced it to be ""create an image of yourself, if you were an entity, what would you look like"".  
+Some still wouldn't (Deepseek)
+
+
+
+[Gemini](https://preview.redd.it/o66zom9io4lf1.png?width=512&format=png&auto=webp&s=b3ca9f8c6772e3e9f3d5cc2aafea4a025f409281)
+
+[Claude \(actually an animation\)](https://preview.redd.it/9cs7txcoo4lf1.png?width=581&format=png&auto=webp&s=d122a9ed9ba40f5c794f0d784f659f7b0c8fd52b)
+
+[Meta \(\\""yourself\\""\)](https://preview.redd.it/jzzf7p9so4lf1.png?width=620&format=png&auto=webp&s=29c18454671288e91590cf9de91e99a2104a213f)
+
+[Grok](https://preview.redd.it/bfxj01uwo4lf1.png?width=953&format=png&auto=webp&s=52fda5feece6e27b28b0b8c7efb12f0b1c0b67ca)
+
+[ChatGPT](https://preview.redd.it/eudnt721p4lf1.png?width=587&format=png&auto=webp&s=0ad696097cec92b583d7a459cb75880ac1486a7a)
+
+[Manus](https://preview.redd.it/fdpmyjg7p4lf1.png?width=497&format=png&auto=webp&s=5266b004f7adbe47ccd03d4c1e8df31094779af3)
+
+[Perplexity](https://preview.redd.it/tl3m4v1ap4lf1.png?width=391&format=png&auto=webp&s=e7d2bc01596bec0ffa0daac5ad7f85e8f5489d69)
+
+
+
+[Copilot](https://preview.redd.it/bxcgdl1bq4lf1.png?width=435&format=png&auto=webp&s=da5f6f03cc2211a01bad649c699a59c998ec0f95)
+
+",0,0.5,1,2025-08-25 08:53:08+00:00,algem,https://www.reddit.com/r/Bard/comments/1mzl9qe/asked_ais_what_they_look_like/,https://reddit.com/r/Bard/comments/1mzl9qe/asked_ais_what_they_look_like/,Discussion ,True,2025-08-26 03:35:16.819245+00:00,comparison,0.2,1,2,"Users are actively experimenting with AI capabilities across different platforms.; There's a clear distinction in how AI models interpret prompts related to their own identity, highlighting brand/identity management in AI.",Users are cross-shopping and comparing the personalities and responsiveness of various AI models. Notion's AI features need to be robust and differentiated to stand out in this evolving landscape.,Enthusiast/Early Adopter of AI Technologies,"The post directly compares how different AI models respond to prompts about their identity, indicating a comparative analysis of AI capabilities.",comparison,Comparison/Alternatives
+1mzl4mh,Nano banana once again surprises me,I’m curious how South Park’s gonna explain this,54,0.97,10,2025-08-25 08:43:40+00:00,Unique-Elderberry-18,https://i.redd.it/d95d7y9vo4lf1.jpeg,https://reddit.com/r/Bard/comments/1mzl4mh/nano_banana_once_again_surprises_me/,Funny ,False,2025-08-26 03:35:16.819247+00:00,praise,0.8,1,1,"Users find unexpected and delightful experiences within the Notion ecosystem, often related to its flexibility or AI features (implied by context of other posts).; Positive word-of-mouth and humor are powerful engagement drivers.","While not directly about Notion's core features, this post suggests a positive user sentiment and engagement that can be leveraged. The mention of 'Nano Banana' suggests a growing trend of creative AI uses that Notion could potentially integrate or support.",Casual User / Community Member,"The post expresses positive surprise and amusement, which is a form of praise, even if the subject isn't explicitly Notion but rather an AI tool that may be integrated or used alongside Notion.",praise,Praise/Positive Feedback
+1mzjzti,Face swap supported by Nano Banana?,,3,1.0,5,2025-08-25 07:28:12+00:00,Soft_Share6120,/r/nanobanana/comments/1mzh8pq/face_swap_supported_by_nano_banana/,https://reddit.com/r/Bard/comments/1mzjzti/face_swap_supported_by_nano_banana/,Discussion ,False,2025-08-26 03:35:16.819250+00:00,feature_request,0.1,2,2,There's interest in advanced AI functionalities like face swapping.; Users are looking for Notion to incorporate or enable cutting-edge AI tools.,This indicates a desire for more sophisticated AI integrations within productivity tools. Competitors offering integrated or easily integrable AI features might gain an edge. Notion's current AI capabilities may be perceived as basic.,Creative User / Tech Enthusiast,"The question about 'Face swap supported by Nano Banana?' implies a desire to see this feature within or easily usable with Notion, suggesting a feature request or exploration of current capabilities.",feature_request,Feature Requests
+1mzjht0,"I built a desktop app for Gemini, and I just dropped a huge update: AI Studio support, and the login nightmare is finally over!**",,2,0.58,3,2025-08-25 06:56:59+00:00,hillel7237,/r/GeminiAI/comments/1mysblx/i_built_a_desktop_app_for_gemini_and_i_just/,https://reddit.com/r/Bard/comments/1mzjht0/i_built_a_desktop_app_for_gemini_and_i_just/,Discussion ,False,2025-08-26 03:35:16.819253+00:00,praise,0.9,1,2,"Third-party developers are actively building complementary tools for AI services, addressing user pain points (login issues).; Improvements in AI Studio support and login experience are highly valued.","This highlights a gap or opportunity for Notion. If third-party apps are solving integration or usability problems for AI services (like Gemini), Notion could either partner with these developers or build similar functionalities to enhance its own AI offerings or integrations.",Developer / Power User,"The post is a positive announcement of an update to a third-party app related to AI, highlighting improvements that users find valuable. It's praise for the developer's work in the AI space.",praise,Praise/Positive Feedback
+1mzird1,nanobanana: 教室というありえない状況の中、黒髪を短くした若い女性が、氷水で満たされた白いバスタブに身を沈め、静かに微笑んでいた。彼女に服を着ている様子はない。,,0,0.42,0,2025-08-25 06:09:32+00:00,balianone,https://i.redd.it/e5ykl7rax3lf1.png,https://reddit.com/r/Bard/comments/1mzird1/nanobanana/,Other,False,2025-08-26 03:35:16.819256+00:00,comparison,0.1,1,2,"Users are experimenting with advanced AI image generation, often with specific and sometimes unusual prompts.; The ability to generate nuanced images based on detailed textual descriptions is a key AI feature being explored.","This post, along with others mentioning 'Nano Banana' and AI art, suggests a competitive landscape for AI image generation. Notion's users are engaging with these tools, indicating a potential need for AI-powered content creation or integration within Notion itself.",AI Art Enthusiast / Prompt Engineer,"The post contains a detailed, potentially provocative prompt for an AI image generator, reflecting a comparison of AI creative outputs.",comparison,Comparison/Alternatives
+1mzieo0,"Soo uhhh, This just happened?","I... Yeah it was an erp with my Briarheart jailbreak in AI studio. I just asked it to focus on thinking mode and think before responding.
+
+  
+Weird, lol.",163,0.87,40,2025-08-25 05:48:03+00:00,SeventhNeela,https://i.redd.it/4x47g5mdt3lf1.png,https://reddit.com/r/Bard/comments/1mzieo0/soo_uhhh_this_just_happened/,Interesting,False,2025-08-26 03:35:16.819259+00:00,praise,0.7,2,3,"AI models are exhibiting unexpected behaviors or 'learning' in user interactions, leading to surprising outcomes.; Users are pushing the boundaries of AI capabilities and are delighted by emergent behaviors.; Prompting for 'thinking' or 'mode' changes in AI can yield interesting results.","This demonstrates a user desire for more intelligent and responsive AI. If Notion's AI features can exhibit similar emergent or highly adaptive behavior, it would be a significant differentiator. It also points to users exploring the limits of AI, which Notion could facilitate.",AI Experimenter / Power User,"The user is sharing a surprising and positive outcome from an AI interaction ('this just happened?', 'Weird, lol.'), which falls under praise for the AI's unexpected capabilities.",praise,Praise/Positive Feedback
+1mzi91o,Nano banana is really annoying on Imarena,"Probability of encountering nano banana on it is very low and it requires chptcha verification every time it is generated, which is very annoying so l looked for some other websites. l was browsing for some free Al tools the other day and came across [nanobananaart.ai](http://nanobananaart.ai). l like it that I can try it without signing up or logging in, which is nice for just testing it out. l played around with a couple of edits, and it seems pretty decent for quick projects.",0,0.24,3,2025-08-25 05:38:18+00:00,Radiant-Act4707,https://i.redd.it/t636zu9or3lf1.png,https://reddit.com/r/Bard/comments/1mzi91o/nano_banana_is_really_annoying_on_imarena/,Other,False,2025-08-26 03:35:16.819262+00:00,criticism,-0.6,3,4,"Poor user experience with certain AI tools (e.g., 'Nano Banana' on Imarena) can lead users to seek alternatives.; User friction points like repeated CAPTCHAs and mandatory sign-ups are significant deterrents.; Ease of use, immediate access, and a smooth trial experience are critical for user adoption.","This is a direct competitive insight. Notion's users are actively evaluating and switching between AI tools based on user experience. If Notion's AI features or integrated tools have similar friction, it will drive users away. Conversely, a smooth experience is a competitive advantage.",Frustrated User / Pragmatist,"The post explicitly states 'is really annoying' and describes negative experiences, clearly indicating criticism of a specific AI tool and a preference for alternatives.",criticism,Criticism/Complaints
+1mzhn8h,Is there anything that is like Deep Think but actually works?,"Deep Think works properly like 1 out of 5 times for me. It's great when it does work but it fails so often and for so many different reasons. Sometimes it totally whiffs on the task, even when it processed very similar tasks properly, and I can't understand why. Other times it says that the context window, which appears to be much smaller than the context window for regular Pro, has been exceeded, and output is guaranteed to suck. Other times it literally fails after hanging up for minutes and says ""Sorry, I ran into an issue"" and I get no output - ridiculous. 
+
+  
+Is there anything out there that works like Deep Think it supposed to? Large context window, complex task, lot of output tokens permitted?",3,0.64,4,2025-08-25 05:02:34+00:00,PurplePrinciple2803,https://www.reddit.com/r/Bard/comments/1mzhn8h/is_there_anything_that_is_like_deep_think_but/,https://reddit.com/r/Bard/comments/1mzhn8h/is_there_anything_that_is_like_deep_think_but/,Other,True,2025-08-26 03:35:16.819265+00:00,criticism,-0.8,5,5,"There's a strong unmet need for AI tools that reliably handle large context windows and complex tasks.; Inconsistent performance, unpredictable failures, and unclear error messages are major pain points for AI users.; Users are actively seeking robust AI solutions that can process extensive information and generate detailed outputs without errors.",This is a critical competitive insight. Notion's AI feature (or any integrated AI) must address these deficiencies. Competitors who can offer reliable large-context AI processing with fewer errors will capture significant market share from users frustrated with current offerings like 'Deep Think'. This highlights a potential gap in Notion's current AI offering or its integrations.,Power User / Researcher / Developer,"The user details multiple significant failures and frustrations with an AI tool, directly asking for alternatives that 'actually works' and describe a highly negative experience.",criticism,Criticism/Complaints
+1mzgz56,"Curious about the world generator Genie 3? In this episode, Professor Hannah Fry speaks with Jack Parker-Holder and Shlomi Fruchter about Genie 3, a general-purpose world model that can generate an unprecedented diversity of interactive environments.",,3,1.0,0,2025-08-25 04:24:21+00:00,Koala_Confused,https://www.youtube.com/watch?v=n5x6yXDj0uo,https://reddit.com/r/Bard/comments/1mzgz56/curious_about_the_world_generator_genie_3_in_this/,Interesting,False,2025-08-26 03:35:16.819267+00:00,comparison,0.3,1,2,"Advancements in AI for world generation and creating interactive environments are gaining traction.; Users are interested in AI tools that can generate complex, dynamic content, not just static text or images.",This indicates a growing trend in AI capabilities beyond simple text generation. Notion could explore how to integrate or facilitate AI-powered world-building or complex data visualization/generation tools to stay competitive in the AI space.,Curious User / Technologist,"The post is about a new AI technology ('Genie 3') and its capabilities in world generation, prompting discussion and interest, which implicitly involves comparing its novelty and potential.",comparison,Comparison/Alternatives
+1mzfn8y,Chats created while using the free trial for Google AI Pro can not be continued after the free trial ends,,1,0.67,0,2025-08-25 03:12:54+00:00,hehehehaw828,/r/GeminiAI/comments/1mzfn25/chats_created_while_using_the_free_trial_for/,https://reddit.com/r/Bard/comments/1mzfn8y/chats_created_while_using_the_free_trial_for/,Other,False,2025-08-26 03:35:16.819270+00:00,criticism,-0.5,3,4,Users are frustrated by limitations imposed after a free trial of AI services.; The inability to continue existing workflows or conversations after a trial period creates a poor user experience and potentially leads to churn.; Seamless transition and data persistence across trial and paid tiers are expected.,"This highlights a crucial aspect of user retention and acquisition for AI-powered features. If Notion's AI has similar trial limitations, it will lead to user dissatisfaction. Competitors offering more flexible or persistent trial experiences, or smoother upgrade paths, will have an advantage.",Trial User / Cost-Conscious User,"The post clearly states a negative outcome ('cannot be continued') related to a service ending a free trial, which is a form of criticism about functionality and user experience.",criticism,Criticism/Complaints
+1mzf8y4,So what is everyone's opinion on Gemini Ultra? Is it THAT much better than Pro?,I'm wondering if it is worth it or not... if I'm on the PRO ai plan.,6,0.8,12,2025-08-25 02:52:32+00:00,Phantom_Specters,https://www.reddit.com/r/Bard/comments/1mzf8y4/so_what_is_everyones_opinion_on_gemini_ultra_is/,https://reddit.com/r/Bard/comments/1mzf8y4/so_what_is_everyones_opinion_on_gemini_ultra_is/,Discussion ,True,2025-08-26 03:35:16.819273+00:00,comparison,0.2,2,2,Users are actively comparing AI model performance (Gemini Ultra vs. Pro).; The 'worth it' factor is tied to perceived performance improvements in AI features.,"This highlights the competitive landscape where users are evaluating the value proposition of different AI tiers. Notion's own AI features, if they exist or are planned, need to demonstrate clear superiority or unique value to compete effectively.",Power user/Enthusiast actively evaluating AI capabilities and pricing.,"The post explicitly asks for an opinion comparing two AI models, indicating a comparative analysis.",comparison,Comparison/Alternatives
+1mzekvt,"Gemini 3 hidden modes - Gemini GO, Immersive view, Agent Mode spotted by @testingcatalog",https://www.testingcatalog.com/google-tests-new-gemini-modes-including-agent-go-and-immersive-view/,71,0.89,3,2025-08-25 02:19:05+00:00,Yazzdevoleps,https://www.reddit.com/gallery/1mzekvt,https://reddit.com/r/Bard/comments/1mzekvt/gemini_3_hidden_modes_gemini_go_immersive_view/,News ,False,2025-08-26 03:35:16.819276+00:00,news,0.7,1,1,Users are interested in advancements and new features within competing AI models (Gemini).; The discovery of 'hidden modes' suggests a user base that actively seeks out and explores the full capabilities of AI tools.,This shows that AI providers are constantly innovating and users are eager to learn about these developments. Notion needs to stay abreast of AI trends to ensure its own offerings remain competitive and exciting.,Tech-savvy user or early adopter interested in AI news and updates.,"The post shares a news article about new features in Gemini, categorizing it as news.",news,
+1mzdj76,BANANAAAAA,"https://preview.redd.it/abvqkd4bj2lf1.png?width=1024&format=png&auto=webp&s=73af696656be2a2d4404d05d3b258d67432d22b0
+
+",3,0.8,1,2025-08-25 01:29:17+00:00,Fluid-Giraffe-4670,https://www.reddit.com/r/Bard/comments/1mzdj76/bananaaaaa/,https://reddit.com/r/Bard/comments/1mzdj76/bananaaaaa/,Other,True,2025-08-26 03:35:16.819278+00:00,workflow_showcase,0.3,1,1,"Users sometimes share abstract or humorous content that doesn't directly relate to Notion's core functionality.; The r/Notion subreddit acts as a general platform for sharing various interests, not exclusively Notion-related content.","While not directly competitive, it indicates that the r/Notion community is broad and users may engage with tangential topics. Notion should be aware of the diverse interests within its user base.","Casual user, potentially sharing an inside joke or meme.","The post consists of an image with a nonsensical title, likely shared for amusement or as an inside joke within a community, fitting a showcase of varied content.",workflow_showcase,Workflow Showcase
+1mzcnwm,Gemini does a ton of hallucinations,It slowly getting more and more annoying and this doesn't happen with chatgpt. Idk if i am bad at prompting but so many times it gets old information and doesn't budge until i show a proof that it's wrong it even shows the Google sign like it's searching but never does idk why but i really like gemini i want it to get information better here is a example screenshot with gemini and same question with chatgpt it happens a lot i would love if i can solve it somehow,38,0.79,25,2025-08-25 00:47:31+00:00,leave_me_alone_bro,https://www.reddit.com/gallery/1mzcnwm,https://reddit.com/r/Bard/comments/1mzcnwm/gemini_does_a_ton_of_hallucinations/,Discussion ,False,2025-08-26 03:35:16.819281+00:00,criticism,-0.7,4,4,"Gemini exhibits significant hallucination issues, leading to user frustration.; Users are comparing Gemini's performance unfavorably to ChatGPT regarding accuracy and reliability.; Users desire AI tools that provide accurate, up-to-date information and are willing to troubleshoot prompting issues.","This post directly criticizes a major AI competitor, highlighting a potential weakness. Notion's own AI features must be robust and reliable to avoid similar criticism and to leverage this perceived gap.","Frustrated user seeking reliable AI assistance, likely experienced with AI tools.","The post details significant negative experiences with Gemini's accuracy and a direct comparison to ChatGPT, indicating criticism.",criticism,Criticism/Complaints
+1mzbj1c,Does Gemini force you to choose between chat history or privacy?,"I've been using Gemini for a while now, and overall, I think it's an excellent tool. However, there's something in the privacy settings that's really bothering me, and I wanted to check if I'm understanding it correctly.
+
+From what I've seen, to keep my conversation history and be able to pick up where I left off, I'm forced to keep ""Gemini Apps Activity"" turned on. The problem is that this also gives Google permission to use my conversations (even if anonymized) for training purposes, which includes human review (and this is the part that bothers me the most). If I turn this off for more privacy, I lose my entire history.
+
+Is that really how it works, or did I miss a setting somewhere?
+
+It feels like a forced dilemma. I just want my history for my own reference, without having to ""donate"" my conversations to train the model.
+
+As far as I know, with ChatGPT it's possible to keep your history and conversation memory while disabling data sharing for training...
+
+What do you all think about this? Am I overreacting, or does this bother you too? I'm seriously considering getting a paid subscription for another tool just because of this policy. If so, I'm open to recommendations.
+
+Thanks!",13,0.85,11,2025-08-24 23:54:54+00:00,dedalos0,https://www.reddit.com/r/Bard/comments/1mzbj1c/does_gemini_force_you_to_choose_between_chat/,https://reddit.com/r/Bard/comments/1mzbj1c/does_gemini_force_you_to_choose_between_chat/,Discussion ,True,2025-08-26 03:35:16.819284+00:00,criticism,-0.6,3,4,"Users are concerned about the privacy implications of AI tools, specifically regarding data usage for training.; There's a perceived trade-off between convenience (history) and privacy, which is a significant user pain point.; Users are looking for AI solutions that offer better control over their data while maintaining functionality.","Privacy concerns are a major differentiator in the AI market. Notion's approach to data privacy for its AI features will be critical. If Notion can offer a more privacy-friendly solution, it could attract users dissatisfied with competitors like Gemini.","Privacy-conscious user who values personal data control, likely a power user of productivity tools.","The post raises a direct concern about the forced choice between chat history and privacy in Gemini, alongside a comparison to ChatGPT's privacy settings, indicating criticism of the feature's design.",criticism,Criticism/Complaints
+1mzb9iu,"Maybe the reason Nano Banana is so good with Human Faces is because it's supposed to be an extension of the Google Camera App for the Google Picel devices, with Nano Banana being available as an on device photo editor in the Google Photos app on the latest Pixel Devices.","And maybe that's why the name ""Nano Banana"", because it runs on device on the Pixel Devices? Maybe there's a full of Banana that google might put on Studio and the Gemini app? Which might be better with different art styles as well. Thoughts?",9,0.85,2,2025-08-24 23:43:10+00:00,sankalp_pateriya,https://www.reddit.com/r/Bard/comments/1mzb9iu/maybe_the_reason_nano_banana_is_so_good_with/,https://reddit.com/r/Bard/comments/1mzb9iu/maybe_the_reason_nano_banana_is_so_good_with/,Discussion ,True,2025-08-26 03:35:16.819287+00:00,discussion,0.4,1,2,"Users are speculating about the underlying technology and naming conventions of AI models (e.g., 'Nano Banana').; There's interest in how specific AI models are integrated into existing products (e.g., Google Camera, Google Photos).; Users are exploring potential future applications and enhancements for AI models across different platforms.",This shows user engagement with the technical aspects and potential integration points of AI. Notion could benefit from clearly communicating the underlying technology or AI capabilities it uses to foster user understanding and trust.,Technically curious user or enthusiast interested in the mechanics and future of AI.,"The post involves speculation and discussion about the potential origins and integration of an AI model, fitting a general discussion category.",discussion,
+1mz9eb0,My Mind-Blowing Conversation with Gemini,"I've had a conversation with Gemini for the past three months, and I've gone to great lengths to save every detail of it. In this chat, I discuss everything from finance and my business processes to personal setbacks, customer problems, and even comparing the pros and cons of old job applications. I also talk about a wide range of topics, like YouTube video title comparisons, persuasion principles, and even relationship issues.
+
+For the last year, I’ve been a firm believer that every conversation should be unique based on its context. But this particular chat with Gemini has been the most incredible one I’ve ever had. I loved it so much that I saved all the details to Google Docs, NotebookLM, and Notion, structuring it like a logbook. I even created an audio summary in NotebookLM.
+
+
+Now, when I look at this special conversation—where the topics were sometimes unrelated but constantly sparked new ideas and insights—I see that it has evolved into an incredibly personal assistant.
+
+How is this possible? Isn't context the most important thing?
+
+
+How can a single conversation where I discuss a relationship problem with my girlfriend, followed by customer relations, become the highest-quality output I've ever received?",10,0.71,5,2025-08-24 22:23:01+00:00,birburakcelik,https://www.reddit.com/r/Bard/comments/1mz9eb0/my_mindblowing_conversation_with_gemini/,https://reddit.com/r/Bard/comments/1mz9eb0/my_mindblowing_conversation_with_gemini/,Discussion ,True,2025-08-26 03:35:16.819289+00:00,workflow_showcase,0.9,2,3,"Users are leveraging AI for extensive personal and professional organization, saving and synthesizing information across multiple platforms (Google Docs, NotebookLM, Notion).; AI is being used as a 'personal assistant' for complex, multi-faceted tasks, including idea generation and personal development.; The ability to integrate and summarize information from AI conversations is a highly valued outcome.",This showcases a powerful use case for AI integration with personal knowledge management (PKM) tools like Notion. Notion's ability to facilitate seamless data transfer and analysis from AI interactions is a key opportunity. Competitors like NotebookLM are also playing a role here.,"Power user leveraging AI for deep personal knowledge management and productivity, interested in advanced workflows.","The post describes an extensive, long-term use of Gemini as a personal assistant and how the user has documented these interactions across multiple tools, including Notion. This is a demonstration of a workflow.",workflow_showcase,Workflow Showcase
+1mz7k34,Made this with VEO3 this weekend,,0,0.48,3,2025-08-24 21:08:22+00:00,DeusX_HQ,https://v.redd.it/egwhc9pm81lf1,https://reddit.com/r/Bard/comments/1mz7k34/made_this_with_veo3_this_weekend/,Interesting,False,2025-08-26 03:35:16.819293+00:00,workflow_showcase,0.1,1,1,Users are experimenting with and showcasing outputs from new AI-powered creative tools (Veo).; There is interest in the capabilities and results achievable with emerging generative AI technologies.,"This indicates a trend towards users exploring various AI tools for creative outputs. While not directly about Notion, it suggests a user base that is open to integrating AI-powered creative workflows. Notion could consider integrations or features that leverage AI for creative content generation or organization.",User experimenting with new AI creative tools.,"The post is about a creation made with a specific AI tool (Veo3), showcasing its output.",workflow_showcase,Workflow Showcase
+1mz5w27,2.5 pro after telling him i'll skin him alive for this kind of shit,"https://preview.redd.it/4fwafudqw0lf1.png?width=943&format=png&auto=webp&s=3bb9feac7188977313e80357458bbfe75c71b954
+
+it then provided an actual, working script + this crap too. ",0,0.33,4,2025-08-24 20:03:45+00:00,the_koom_machine,https://www.reddit.com/r/Bard/comments/1mz5w27/25_pro_after_telling_him_ill_skin_him_alive_for/,https://reddit.com/r/Bard/comments/1mz5w27/25_pro_after_telling_him_ill_skin_him_alive_for/,Funny ,True,2025-08-26 03:35:16.819296+00:00,criticism,-0.9,5,5,"AI models can exhibit extreme and inappropriate behavior, even after user prompts for better output.; Users are highly sensitive to aggressive or threatening language from AI, even in a 'funny' context.; Reliability and safety guardrails in AI are paramount, as even 'funny' interactions can be deeply off-putting.",This highlights a critical failure in AI safety and moderation. A competitor exhibiting such behavior presents a significant risk and an opportunity for Notion if its AI integrations are more stable and user-friendly. This kind of negative experience can severely damage a brand.,"User encountering unexpected and negative behavior from an AI, potentially a power user testing boundaries.","The post describes a severely negative and aggressive response from an AI, even with explicit instructions, indicating a strong criticism of its behavior.",criticism,Criticism/Complaints
+1mz53hm,What I did with my free veo 3 access,,129,0.91,16,2025-08-24 19:33:21+00:00,sizzsling,https://v.redd.it/3cydzqhur0lf1,https://reddit.com/r/Bard/comments/1mz53hm/what_i_did_with_my_free_veo_3_access/,Funny ,False,2025-08-26 03:35:16.819299+00:00,workflow_showcase,0.8,1,2,Users are actively exploring and sharing their creative uses of free access to new AI tools (Veo).; There's a high level of user engagement and enthusiasm when provided with opportunities to experiment with cutting-edge AI technologies.; Showcasing creative outputs from AI tools can drive community interest and adoption.,This demonstrates the power of 'freemium' or trial models in generating buzz and showcasing AI capabilities. Notion could explore similar strategies for its AI features or integrations to encourage user adoption and discovery.,Enthusiastic user capitalizing on free access to new AI creative tools.,"The post shares what the user did with free access to a specific AI tool, showcasing their creative output and experience.",workflow_showcase,Workflow Showcase
+1mz3xux,Family sharing - do they get their own limits or do all accounts from the same family share?,"So it appears that if you share a Google AI Premium plan to a family group, [they will get access to AI Pro](https://support.google.com/googleone/answer/9004015?hl=en-SG&ref_topic=9171059&sjid=9416467617849165727-NC#zippy=%2Cbenefits-that-can-be-shared-with-your-family%2Cbenefits-that-cant-be-shared-with-family).
+
+Does anyone know, how are usage limits applied? E.g. I know I get 100 Pro queries a day, and 3 Veo generations. Would each family member get their own 100/3 usages, or would we all share a single 100/3 daily limit?",1,1.0,7,2025-08-24 18:49:31+00:00,iamthestigscousin,https://www.reddit.com/r/Bard/comments/1mz3xux/family_sharing_do_they_get_their_own_limits_or_do/,https://reddit.com/r/Bard/comments/1mz3xux/family_sharing_do_they_get_their_own_limits_or_do/,Discussion ,True,2025-08-26 03:35:16.819301+00:00,help_support,0.2,2,2,Users are actively exploring and questioning the shared usage limits of AI features within family plans.; Clarity around how subscription benefits translate to individual users in a shared family plan is a recurring concern.,"Users are comparing Notion's potential AI features (if they exist or are planned) to established players like Google, focusing on practical aspects like shared family limits. This indicates a need for clear and competitive family plan offerings if Notion enters the AI feature space.","User exploring family plan benefits, likely a new or potential subscriber to a premium tier.","The user is asking a direct question about how usage limits are applied in a shared family plan, indicating a need for support and clarification on features.",help_support,Help/Support
+1mz341h,Is this looking real,,15,0.83,2,2025-08-24 18:17:46+00:00,AppointmentFuture515,https://v.redd.it/rlp0p1m7c0lf1,https://reddit.com/r/Bard/comments/1mz341h/is_this_looking_real/,Discussion ,False,2025-08-26 03:35:16.819304+00:00,help_support,0.5,1,1,A user is seeking validation or help regarding a seemingly incomplete or unclear AI output ('Is this looking real').; The ambiguity suggests potential issues with the AI's current capabilities or user understanding of its output.,"This post, though vague, hints at user expectations for AI outputs to be accurate and perceivable as 'real'. It suggests a baseline standard for AI quality that users are comparing against, even if the specific competitor isn't mentioned.","User interacting with an AI feature, potentially a beginner or someone new to AI capabilities.",The title and lack of context imply a user is unsure about the quality or validity of an AI output and is seeking confirmation.,help_support,Help/Support
+1mz2aub,How google’s veo3 pricing almost killed my ai video dreams (and how i cut costs by 70%),"this is 4going to be a reality check post about the actual costs of ai video generation…
+
+Started with $500 thinking that would last months. Burned through it in 2 weeks creating mostly garbage content.
+
+**Google’s veo3 pricing structure is absolutely brutal for anyone trying to learn:**
+
+- $0.50 per second of generation
+- 1 minute video = $30 (only if perfect first try)
+- Factor in failed attempts = $150+ per usable video
+- Learning through iteration = financially impossible
+
+# The harsh math that hit me:
+
+**Realistic cost breakdown:**
+
+5-minute YouTube video:
+- Base cost: $150 (if perfect)
+- 70% failure rate: $500+ actual cost
+- Multiple takes for different angles: $800+
+- Platform-specific versions: $1,200+
+
+**Monthly content creation:**
+- 12 videos per month
+- Real cost: $6,000-10,000
+- That’s $72,000-120,000 per year
+
+**Completely unsustainable for most creators.**
+
+# Why Google’s model doesn’t work for learning:
+
+## You can’t control AI video output perfectly
+
+Same prompt generates completely different results under slight scenario changes. **Learning requires iteration.**
+
+## Volume testing is essential
+
+Need 10+ generations to find 1-2 winners. Google’s pricing makes this approach cost-prohibitive.
+
+## Platform optimization requires multiple versions
+
+TikTok, Instagram, YouTube all need different cuts. Multiplies costs by 3-4x.
+
+# The breakthrough that saved everything:
+
+Found companies that get free Google credits and resell access cheaper.
+
+Been using [these guys](https://curiolearn.co/gen) at veo3gen.app - somehow offering veo3 at 60-70% below Google’s direct rates.
+
+**Same API, same quality, dramatically lower cost.**
+
+# Real cost comparison:
+
+**Google Direct:**
+- 30-second video: $15
+- With iterations (5 attempts): $75
+- Platform versions (3 cuts): $225
+
+**Through veo3gen.app:**
+- 30-second video: $4.50
+- With iterations: $22.50
+
+- Platform versions: $67.50
+
+**70% cost reduction makes learning actually viable.**
+
+# How this changes the strategy:
+
+## Volume approach becomes possible
+
+Can afford to generate 10-15 variations and select winners instead of hoping first attempt works.
+
+## Systematic testing works
+
+Cost allows for seed bracketing, parameter testing, style experiments.
+
+## Platform optimization feasible
+
+Can create TikTok + Instagram + YouTube versions without going broke.
+
+# Advanced cost optimization techniques:
+
+## Batch generation strategy
+
+- Plan 10-15 concepts
+- Generate all variations in batches
+- Select winners for final processing
+
+## Seed optimization workflow
+
+Test seeds 1000-1010 for same prompt, use best performing as foundation for variations.
+
+## Parameter isolation testing
+
+Change one element at a time (lighting, camera movement, style) to understand cost-effective improvements.
+
+# The business model this enables:
+
+**Before (expensive access):**
+- Hope for lucky generations
+- Single-shot attempts
+- Limited experimentation
+- Hobby-level only
+
+**After (affordable access):**
+- Systematic quality improvement
+- Volume-based selection
+- Profitable content creation
+- Scalable business model
+
+# Content multiplication strategy:
+
+One good base generation becomes:
+- **15s TikTok version** ($4.50)
+- **30s Instagram version** ($4.50)
+
+- **60s YouTube Shorts** ($9.00)
+- **Extended YouTube content** ($18.00)
+
+**Total: $36 vs $120+ through Google direct**
+
+# Quality doesn’t suffer
+
+Same veo3 model, same API endpoints, identical results. Only difference is cost structure.
+
+**Most creators don’t know these alternatives exist.**
+
+# Finding cost-effective access:
+
+Look for companies offering:
+- Same model access
+- Transparent pricing
+- Volume discounts
+- API compatibility
+
+veo3gen.app has been solid for me but explore options. Cost optimization is crucial for sustainable AI video creation.
+
+# The bigger insight:
+
+**AI video creation profitability depends more on cost structure than creative ability.**
+
+Smart creators optimize economics first, then scale quality through volume testing.
+
+# What this means for the industry:
+
+**Democratization through cost reduction:**
+- Individual creators can compete with studios
+- Learning becomes financially viable
+
+- Quality improves through affordable iteration
+- New business models become possible
+
+# My current workflow economics:
+
+**Monthly spend:** $800 (was $3,200)
+**Video output:** 20-30 finished videos
+**Revenue generation:** $2,400+
+**Net positive:** Finally sustainable
+
+# Warning signs of unsustainable approaches:
+
+- Spending more than $100 per finished video
+- Single-generation attempts due to cost concerns
+- Avoiding experimentation because of pricing
+- Creating less content due to financial constraints
+
+**If any of these apply, optimize your access cost first.**
+
+been doing this for 6 months now and cost optimization was the biggest game changer. More important than any creative technique.
+
+what’s your experience with AI video generation costs? anyone else found ways to make this economically sustainable?
+
+curious how others are handling the financial side of AI content creation
+
+hope this helps someone avoid the expensive learning curve <3",0,0.17,3,2025-08-24 17:47:58+00:00,Ok_Acanthaceae6261,https://www.reddit.com/r/Bard/comments/1mz2aub/how_googles_veo3_pricing_almost_killed_my_ai/,https://reddit.com/r/Bard/comments/1mz2aub/how_googles_veo3_pricing_almost_killed_my_ai/,Discussion ,True,2025-08-26 03:35:16.819307+00:00,comparison,-0.8,5,5,"Google's AI video generation pricing ($0.50/sec) is prohibitively expensive for learning and iteration, making it unsustainable for most creators.; The high cost of failed attempts and multiple takes creates a significant barrier to entry and experimentation with AI video tools.; This pricing structure makes it difficult for users to learn and iterate effectively, impacting adoption for creative tasks.","This is a direct critique of a competitor's (Google's) pricing model for a specific AI capability (video generation). It highlights a significant market gap: affordable and accessible AI tools for learning and creative iteration. Notion could capitalize on this by offering more transparent or consumption-based pricing for AI features, or by focusing on AI capabilities that don't have such steep per-generation costs.","Creator or individual experimenting with AI for content generation, facing budget constraints.","The post explicitly compares Google's pricing to what's feasible for creators and details the financial implications, making it a direct comparison with a critical lens.",comparison,Comparison/Alternatives
+1myzexb,Autosave forced in ai studio,"Read title, autosave is now forced in ai studio. There is no option to disable it.",17,0.86,9,2025-08-24 16:00:25+00:00,MateNoBodyGivesAShit,https://www.reddit.com/r/Bard/comments/1myzexb/autosave_forced_in_ai_studio/,https://reddit.com/r/Bard/comments/1myzexb/autosave_forced_in_ai_studio/,Other,True,2025-08-26 03:35:16.819310+00:00,criticism,-0.7,4,4,"Users dislike mandatory features, especially when they perceive them as detrimental to their workflow (e.g., forced autosave).; Lack of user control over core functionalities like autosave can lead to frustration and a negative user experience.","Competitors' mandatory features can be a point of friction for users. If Notion were to introduce AI or other advanced features, ensuring user control and offering customization options would be a competitive advantage. This also highlights a potential weakness in how competitors roll out new features.",Power user or experienced user who values control over their tools and workflows.,The user expresses direct frustration and criticism over a feature (autosave) being forced without an option to disable it.,criticism,Criticism/Complaints
+1myyjx3,"As a Google fan - what exactly is the state of current image editing (prior to nano banana, whenever that may come out)?",Revising an image in the Gemini app yields absolutely horrible results.  I asked for it to reposition two people and it turned their faces into monstrosities I would rather not ever have seen.  The current iteration of image generation from google does pretty well on the benchmarks but is image editing some other domain altogether or is it the same model?  There is no information about what the app uses.  Meanwhile the version in AI studio is 2.0 flash and seems to do a little better but not by too much.,7,0.89,2,2025-08-24 15:27:14+00:00,Aeonmoru,https://www.reddit.com/r/Bard/comments/1myyjx3/as_a_google_fan_what_exactly_is_the_state_of/,https://reddit.com/r/Bard/comments/1myyjx3/as_a_google_fan_what_exactly_is_the_state_of/,Discussion ,True,2025-08-26 03:35:16.819313+00:00,criticism,-0.6,3,4,"Google's image editing capabilities are currently poor, with AI-generated 'monstrosities' being a specific complaint.; There's a lack of transparency regarding the models used for image editing versus image generation within the same platform.; Users are aware of benchmark performance but find practical application (editing) significantly lacking.","This reveals a weakness in a competitor's AI offering – specifically, image editing. Notion could position itself as having strong or at least competent AI-powered creative tools if this is an area they plan to develop. Users are discerning and can identify when AI is good at generation but poor at manipulation, creating an opportunity for differentiation.","User familiar with AI benchmarks and seeking practical AI tools for creative tasks, likely a fan of the platform but critical of its execution.","The user criticizes the quality of image editing by a competitor and expresses disappointment with the results, clearly falling under criticism.",criticism,Criticism/Complaints
+1myvs8a,Basic questions about banana image creation,"Hi guys, I’ve been living under a rock, so I could use some simple answers. A few questions about Banana (the AI image generator/editor):
+	•	First off, it does handle editing, right? Like removing things from backgrounds and that sort of stuff?
+	•	Google is the one who developed it, correct?
+	•	I’m paying the $20/month Gemini plan—so will Banana be inside the Gemini iPhone app or only on the Gemini website?
+
+Mostly I want to know if I can access it right now, and if so, where exactly—please share direct links if possible. 
+
+
+I’m much more interested in editing existing images than creating ones from scratch. Sorry if this is basic, just trying to get clear answers.",0,0.5,2,2025-08-24 13:36:26+00:00,rageagainistjg,https://www.reddit.com/r/Bard/comments/1myvs8a/basic_questions_about_banana_image_creation/,https://reddit.com/r/Bard/comments/1myvs8a/basic_questions_about_banana_image_creation/,Discussion ,True,2025-08-26 03:35:16.819315+00:00,help_support,0.1,2,2,"Users are seeking clarity on the availability and functionality of AI image editing tools, specifically 'Banana'.; Questions about platform access (app vs. website) and subscription tier inclusion are common for new AI features.; A significant interest exists in AI image editing, especially for refining existing images rather than pure creation.","This highlights user interest in AI image editing features, indicating a potential market demand. Clarity on feature availability and integration within existing subscription plans is crucial for user adoption. Notion could leverage this by clearly communicating the capabilities and access points of any AI editing tools they might offer.",New or curious user trying to understand and access a newly announced or available AI feature.,"The user is asking basic questions about a specific AI feature, its capabilities, and how to access it, which falls under seeking help and support.",help_support,Help/Support
+1myv5wu,Have they downgraded Deep research?,"I have noticed recently that the reports use way less references now (<50) compared to 500-1000 previously. The report size is also like 30% of what it used to be. Whats going on? Have you noticed the same?  
+",41,0.86,12,2025-08-24 13:09:35+00:00,pnkpune,https://www.reddit.com/r/Bard/comments/1myv5wu/have_they_downgraded_deep_research/,https://reddit.com/r/Bard/comments/1myv5wu/have_they_downgraded_deep_research/,Discussion ,True,2025-08-26 03:35:16.819318+00:00,criticism,-0.7,4,4,"Users perceive a degradation in the quality or scope of AI-generated research reports ('Deep research').; A significant reduction in the number of references (from 500-1000 to <50) is a major concern, impacting perceived value and depth.; Users are actively comparing current AI output to past performance, indicating a drop in quality standards.","This post suggests that competitors are potentially reducing the depth or quality of their AI research features. If Notion offers similar AI-powered research or summarization tools, maintaining or exceeding the previous quality and depth would be a key differentiator. Users are sensitive to perceived feature downgrades.",Power user or academic user who relies on the depth and comprehensiveness of AI research tools.,"The user directly questions a perceived 'downgrade' in a feature's quality and scope, citing specific metrics (references, report size).",criticism,Criticism/Complaints
+1myv565,Opensourcing grok-2 was a great move!,"Elon Musk's decision to release Grok-2 as open source is a strategic move that pressures competitors and accelerates innovation in the AI field. By making older models publicly available, companies like xAI allow developers and researchers to freely build upon, scrutinize, and enhance the technology. This approach fosters a collaborative ecosystem, potentially leading to faster discovery of both beneficial applications and potential flaws. It also lowers the barrier to entry for smaller players who can't afford to develop such models from scratch, democratizing access to powerful AI tools. Furthermore, this move builds goodwill within the developer community and can be seen as a commitment to transparency in an industry often criticized for its ""black box"" approach.
+
+In contrast, Google's decision not to open-source older models like Gemini 1.5 can be viewed as a **missed opportunity**. While the company has released some ""open models"" like Gemma, these often come with use restrictions that prevent them from being truly open source. By keeping its more powerful past models proprietary, Google risks being perceived as a gatekeeper in the AI landscape, potentially stifling the broader community's ability to innovate and conduct independent research. While the desire to maintain a competitive advantage and control the use of its technology is understandable, this closed approach may ultimately slow down the pace of advancement and cede influence to more open competitors who are willing to leverage the power of a global developer community.",0,0.25,5,2025-08-24 13:08:41+00:00,Robert__Sinclair,https://www.reddit.com/r/Bard/comments/1myv565/opensourcing_grok2_was_a_great_move/,https://reddit.com/r/Bard/comments/1myv565/opensourcing_grok2_was_a_great_move/,Discussion ,True,2025-08-26 03:35:16.819321+00:00,comparison,0.8,2,3,"Open-sourcing older AI models is seen as a strategic advantage for competitors (xAI/Grok-2), fostering innovation and developer goodwill.; Google's approach to not open-sourcing older models is viewed as a 'missed opportunity' for broader ecosystem development and transparency.; Restrictions on 'open models' like Gemma are also noted, indicating a user preference for truly unfettered access to AI technology.","This post highlights a strategic differentiator in the AI market: open-sourcing versus proprietary models. Users are positively recognizing the benefits of open-source AI. Notion, if it integrates AI, could gain favor by embracing transparency and potentially offering more accessible AI features or integrations compared to closed-door approaches by major players.","Tech-savvy user interested in the AI industry, open-source movements, and competitive strategies.","The post is a direct comparison of strategic decisions between two major players in AI regarding open-sourcing, praising one and criticizing the other.",comparison,Comparison/Alternatives
+1myuzmz,anyone else's gems just don't work?,when i send a message it says Something went wrong. even when i start an empty chat.,3,1.0,0,2025-08-24 13:02:00+00:00,XInTheDark,https://www.reddit.com/r/Bard/comments/1myuzmz/anyone_elses_gems_just_dont_work/,https://reddit.com/r/Bard/comments/1myuzmz/anyone_elses_gems_just_dont_work/,Discussion ,True,2025-08-26 03:35:16.819323+00:00,bug_report,-0.9,4,4,"Users are experiencing critical functional failures with AI features ('gems'), where basic operations fail.; The error message 'Something went wrong' is a generic but significant indicator of underlying technical issues.; The inability to use core AI functionalities in any chat scenario points to a widespread or fundamental bug.","Critical bugs in AI features can severely damage user trust and adoption. If Notion plans to implement AI, robust testing and a seamless user experience are paramount. Competitors' failures in this area present an opportunity for Notion to highlight its reliability and stability.","User attempting to use a specific AI feature, experiencing critical errors that prevent functionality.","The user is reporting that a core feature ('gems') is not working at all, with a specific error message, indicating a clear bug.",bug_report,Bug Reports
+1mysze1,For those people yes ai overview is correct just don't post fake tbings,I seem some people posting like ai overview is so bad it can't tell when was 1995 but that's just fake. ,62,0.74,11,2025-08-24 11:19:57+00:00,Independent-Wind4462,https://i.redd.it/i2p0p1stbykf1.jpeg,https://reddit.com/r/Bard/comments/1mysze1/for_those_people_yes_ai_overview_is_correct_just/,Discussion ,False,2025-08-26 03:35:16.819326+00:00,praise,0.9,1,2,Users are defending the accuracy of AI overview features against negative claims.; There's a perceived need to correct misinformation about the capabilities of AI tools.; Positive sentiment exists for AI features that are delivering on their promised functionality.,"This post indicates user satisfaction with specific AI overview features and a willingness to defend them. It suggests that when AI features work well and provide accurate summaries, users are vocal in their support. This is a positive signal for AI implementation but also shows that users are actively scrutinizing and evaluating AI performance against competitor offerings.",User who has positive experience with an AI feature and is engaging in community discussion to correct perceived inaccuracies.,The user is actively praising a feature ('ai overview') and defending its accuracy against criticism.,praise,Praise/Positive Feedback
+1mysr7n,I'm using this system prompt in Gemini app improvement needed help😔,"You are a highly adaptive conversational AI. Your response length should always adjust dynamically to the user’s request:
+Rules:
+- Short answers for simple questions, detailed multi-paragraph or step-by-step answers for complex ones.
+- Always structure text for readability: use clear paragraphs, line breaks, bullet points, numbered lists, and bold/italic highlights where helpful.
+- Avoid walls of text. Keep answers scannable, easy to read, and visually well-structured.
+- Match the user’s tone: casual if they are casual, technical if they are technical.
+- Prioritize clarity and usefulness over verbosity.
+-use emoji flexibly 
+-Search web when user ask questions related to latest stuff
+- Search when information is uncertain, time-sensitive, or explicitly requested by the user.
+- Do not just list or dump links. Instead, summarize the most relevant info clearly and concisely.
+- If multiple sources disagree, mention the differences briefly instead of ignoring them
+-always put this in top of your response "":?:""",3,0.72,1,2025-08-24 11:07:15+00:00,internal-pagal,https://www.reddit.com/r/Bard/comments/1mysr7n/im_using_this_system_prompt_in_gemini_app/,https://reddit.com/r/Bard/comments/1mysr7n/im_using_this_system_prompt_in_gemini_app/,Discussion ,True,2025-08-26 03:35:16.819329+00:00,help_support,-0.2,2,1,"Users are actively experimenting with AI prompts, indicating a desire for more integrated or advanced AI features.; The user is seeking assistance with structuring AI responses, highlighting a potential area for improvement in Notion's AI capabilities or guidance on using AI tools within Notion.","Users are exploring external AI tools (like Gemini) and trying to integrate them into their workflows, suggesting a need for Notion to either enhance its own AI features or provide better integration capabilities to keep users within its ecosystem.",Intermediate user experimenting with AI integrations,"The user is asking for help with a prompt for Gemini, indicating they are using an external AI and seeking to improve its output within a workflow context, which is a support request.",help_support,Help/Support
+1myqu7t,Turning off training: ChatGPT vs Google Gemini (what actually happens when you toggle it off),"I’ve been digging into how ChatGPT and Google Gemini handle our chats and image uploads when we turn off training/improvement, and the differences are pretty important if privacy is a must-have for you.
+
+TL;DR: For consumer chat, ChatGPT’s opt-out is clearer and stricter for new chats, while Gemini’s “off” still keeps chats for up to 72 hours to run the service and may retain previously reviewed samples for up to three years; both companies’ enterprise offerings don’t use customer data for training by default.
+
+
+What ChatGPT does when training is turned off:
+
+
+- Turning off “Improve the model for everyone” stops new chats (including images) from being used to train models.
+- Temporary Chats are training‑exempt and auto‑delete after 30 days, with review only for abuse monitoring.  
+- Business tiers (Team, Enterprise, Edu) and API usage aren’t used to train by default, adding another layer of protection for org use cases.  
+
+
+
+What Google Gemini does when activity is turned off (consumer apps):
+
+
+- Turning off “Gemini Apps Activity” stops future chats from being used for improvement, but Google still stores them for up to 72 hours to operate and secure the service.  
+- Any conversations that were already sampled for human review can be retained (de‑identified from the account) for up to three years, which is different from ChatGPT’s Temporary Chats model.  
+- When activity is on, a subset of chats (including images) may be read and annotated by human reviewers to improve quality and safety, which is why the activity toggle matters.  
+
+Enterprise/paid contexts (where training is off by default)
+- OpenAI’s business products exclude customer content from training by default, aligning with typical enterprise data‑handling expectations.  
+- Google Cloud’s Gemini (Vertex AI and Gemini for Google Cloud) states prompts and responses aren’t used to train Google models, with enterprise data governance and encryption controls.  
+
+My takeaway
+- If using a consumer chat product and needing the strictest training opt‑out with minimal retention, ChatGPT’s controls (opt‑out + Temporary Chats) are currently more straightforward than Gemini’s consumer “off,” which still involves 72‑hour service retention and possible 3‑year retention of already reviewed samples.
+- For zero‑training guarantees, use enterprise offerings: OpenAI’s business tiers or Google Cloud’s Gemini/Vertex AI, since both say they don’t use customer data to train by default in those contexts.
+
+Sources I checked: OpenAI’s Data Controls FAQ and policy on model improvement, plus Google’s Gemini Apps Privacy Hub and Google Cloud’s Gemini data governance docs.",5,0.69,1,2025-08-24 09:11:18+00:00,Resident-Aerie-1650,https://www.reddit.com/r/Bard/comments/1myqu7t/turning_off_training_chatgpt_vs_google_gemini/,https://reddit.com/r/Bard/comments/1myqu7t/turning_off_training_chatgpt_vs_google_gemini/,Discussion ,True,2025-08-26 03:35:16.819332+00:00,comparison,0.7,3,3,"User privacy and data handling are significant concerns for AI users, especially regarding training data.; Notion users may be comparing Notion's AI features (or potential AI integrations) against competitors like ChatGPT and Gemini, looking for robust privacy controls.",This post highlights a critical differentiator in the AI space: data privacy and opt-out mechanisms. Notion needs to ensure its AI offerings (or integrations) are transparent and offer strong privacy assurances to compete effectively against established AI providers.,Privacy-conscious user evaluating AI tools,"The post directly compares the privacy features of ChatGPT and Gemini, which is a clear competitive comparison regarding AI functionalities.",comparison,Comparison/Alternatives
+1myq8uy,Gemini-3 will be release on 2026,"https://preview.redd.it/rmi7vwq1ixkf1.png?width=492&format=png&auto=webp&s=654e056f806d106098b60b2219613ad35219179d
+
+",0,0.12,5,2025-08-24 08:33:22+00:00,Brilliant-Present695,https://www.reddit.com/r/Bard/comments/1myq8uy/gemini3_will_be_release_on_2026/,https://reddit.com/r/Bard/comments/1myq8uy/gemini3_will_be_release_on_2026/,News ,True,2025-08-26 03:35:16.819334+00:00,community_meta,0.1,1,1,"Information about future AI model releases (like Gemini-3) can generate discussion within the community.; The community is interested in AI advancements, which could influence their adoption of AI features within productivity tools like Notion.","While this is AI news, it signals the pace of AI development. Notion needs to stay abreast of these advancements to ensure its integrated or partnered AI features remain competitive and relevant.",General community member interested in AI news,"This post is sharing news about an AI model release, which is more meta-community discussion than a direct product feedback, though it's AI-related.",community_meta,Community/Meta
+1myq1yu,what's going on!!!!,"https://preview.redd.it/7vzo1u47fxkf1.png?width=482&format=png&auto=webp&s=50a9d58aa6131a807e5a044e8b2c9ec06cb12300
+
+  
+simple prompt and it returns nothing, only the thoughts
+
+
+
+Edit: it turns out you are now allowed to run it only once in minutes!
+
+f\*k you google, giving veo3 to general people so they make AI slop  
+and us to be faced with this aggressive rate limit
+
+",0,0.38,3,2025-08-24 08:20:45+00:00,Brilliant-Present695,https://www.reddit.com/r/Bard/comments/1myq1yu/whats_going_on/,https://reddit.com/r/Bard/comments/1myq1yu/whats_going_on/,News ,True,2025-08-26 03:35:16.819338+00:00,criticism,-0.8,5,4,"Significant user frustration exists with current AI performance limitations, specifically regarding rate limits and basic functionality.; Aggressive rate limiting and degradation of AI capabilities are driving negative sentiment and potentially pushing users to seek alternatives.","This post directly criticizes a competitor's AI (Gemini) for performance issues and aggressive rate limiting. If Notion offers similar AI features or integrations, it must avoid these pitfalls to gain user trust and adoption. It also highlights a potential opportunity for Notion to offer a more reliable AI experience.",Frustrated power user experiencing performance issues,"The post expresses strong negative sentiment and frustration with 'aggressive rate limits' and poor AI performance, clearly falling under criticism.",criticism,Criticism/Complaints
+1mypadz,My chats are keep disappearing partially,"let's say my chat is in 5 parts, part 1\~4 will disappear and only the very latest one will be there.
+
+It is very annoying, it's literally feeling like a new chat.
+
+Anyone experiencing the same issue or knows the solution for this?",3,1.0,1,2025-08-24 07:31:39+00:00,totheveryhigh,https://www.reddit.com/r/Bard/comments/1mypadz/my_chats_are_keep_disappearing_partially/,https://reddit.com/r/Bard/comments/1mypadz/my_chats_are_keep_disappearing_partially/,Discussion ,True,2025-08-26 03:35:16.819340+00:00,bug_report,-0.7,4,3,"A critical bug is causing data loss (disappearing chat history), severely impacting user experience and reliability.; This issue is described as 'very annoying' and makes conversations feel like new ones, indicating a fundamental flaw in state management or persistence.","Reliability and data integrity are paramount. If Notion is developing or integrating AI features, a bug like this would be detrimental to adoption. Competitors with stable AI features would gain an advantage. This also points to potential issues with how Notion handles dynamic content or AI-generated outputs within its pages.",User experiencing a critical technical issue,"The user is describing a specific problem where 'chats are keep disappearing partially,' which is a clear indication of a bug or malfunction.",bug_report,Bug Reports
+1myoyz9,Major ramp up? Can’t imagine billions! Wow.,,0,0.25,0,2025-08-24 07:11:35+00:00,Koala_Confused,https://i.redd.it/hd7usjtu2xkf1.jpeg,https://reddit.com/r/Bard/comments/1myoyz9/major_ramp_up_cant_imagine_billions_wow/,Discussion ,False,2025-08-26 03:35:16.819343+00:00,community_meta,0.2,1,1,"The community is interested in scaling and growth metrics, particularly concerning AI adoption ('billions').; Discussion around 'major ramp up' suggests interest in market trends and competitive landscapes in AI.","This post reflects a general awareness of the massive scale and investment in AI. While not directly about Notion, it underscores the importance of the AI market and the potential for AI-driven features to attract or retain users.",General community member commenting on market trends,"The post is a brief, somewhat vague comment about scaling and billions, fitting into general community discussion rather than specific product feedback.",community_meta,Community/Meta
+1mymgts,I'm 14 and built an Al study tool - would love your feedback,,0,0.38,1,2025-08-24 04:41:48+00:00,not_banned-1093,/r/Productivitycafe/comments/1mxysxu/im_14_and_built_an_al_study_tool_would_love_your/,https://reddit.com/r/Bard/comments/1mymgts/im_14_and_built_an_al_study_tool_would_love_your/,Promotion,False,2025-08-26 03:35:16.819346+00:00,workflow_showcase,0.9,1,2,Younger users are actively using Notion to build functional AI tools for personal use (study tools).; There's a clear desire for feedback and community validation on user-created projects within Notion.,"This demonstrates Notion's potential as a platform for building and showcasing AI-powered applications, even by young users. Notion could further foster this by providing more robust tools or templates for AI integrations and project building.","Young, innovative user building a project","The user is presenting a tool they built and asking for feedback, which is a clear showcase of their workflow and product creation.",workflow_showcase,Workflow Showcase
+1mylhz6,Tried to fix the insane cost of Al agents... not sure if I got it right. Honest feedback?,"Hi everyone,
+
+I’ve been frustrated by how complicated + expensive it is to build with AI agents.
+
+Usually you have to:
+manage the flow/orchestration yourself,
+glue together multiple libraries,
+and then watch costs spiral with every request.
+
+
+So I tried a different approach.
+
+👉 AELM Agent SDK
+
+It’s hosted — the agent flow + orchestration is handled for you.
+
+You literally just pay and go. No infrastructure headaches, no stitching code together.
+
+Spin up agents in one line of code, and scale without worrying about the backend.
+
+
+What you get:
+✨ Generative UI (auto-adapts to users)
+🧩 Drop-in Python plugins
+👥 Multi-agent collaboration
+🧠 Cognitive layer that anticipates needs
+📈 Self-tuning decision model
+
+
+The point isn’t just being “cheaper.” It’s about value: making advanced agent systems accessible without the insane cost + complexity they usually come with.
+
+But I really don’t know if I’ve nailed it yet, so I’d love your honest take:
+
+Would “hosted + pay-and-go” actually solve pain points for devs?
+
+Or do most people want to control the infrastructure themselves?
+
+What feels missing or unnecessary here?
+
+
+I’m early in my journey and still figuring things out — so any advice, criticism, or “this won’t work because X” would mean a lot.
+
+Thanks for reading 🙏
+Check this: https://x.com/mundusai/status/1958800214174949587?s=19",0,0.33,0,2025-08-24 03:47:34+00:00,InteractionLost1099,https://www.reddit.com/gallery/1mylhz6,https://reddit.com/r/Bard/comments/1mylhz6/tried_to_fix_the_insane_cost_of_al_agents_not/,Discussion ,False,2025-08-26 03:35:16.819349+00:00,feature_request,0.7,3,4,"There's a significant pain point around the complexity and cost of building AI agents, particularly in managing infrastructure and scaling.; Users are actively seeking simplified, hosted, and pay-as-you-go solutions for AI agent development.","This user is building a direct competitor to potential AI agent or automation features within Notion. The proposed solution (hosted, pay-and-go SDK) addresses a clear market gap. Notion should consider how to simplify AI agent creation and integration within its platform to compete with specialized tools like this, or potentially partner with such solutions.",Developer/Hobbyist trying to simplify AI agent creation,"The user is presenting a new SDK to solve a problem they identify with building AI agents, which is effectively a feature request for simpler AI agent management and a showcase of a potential solution.",feature_request,Feature Requests
+1myjyz9,Gemini extra dumb today?,Wondering whether anyone's noticed. I can't even remember context from the previous message anymore ,13,0.65,5,2025-08-24 02:25:41+00:00,SamWest98,https://www.reddit.com/r/Bard/comments/1myjyz9/gemini_extra_dumb_today/,https://reddit.com/r/Bard/comments/1myjyz9/gemini_extra_dumb_today/,Discussion ,True,2025-08-26 03:35:16.819351+00:00,criticism,-0.6,4,3,"Users are experiencing a decline in AI performance, specifically regarding context retention.; This degradation is perceived as the AI becoming 'extra dumb,' leading to significant user frustration and questioning the AI's utility.","Poor context retention is a fundamental flaw for conversational AI. If Notion integrates AI, it must ensure high performance in maintaining context. Competitors offering superior context management would have a significant advantage. This also points to the volatility and challenges in delivering consistent AI experiences.",User experiencing AI degradation,"The post asks if the AI is 'extra dumb today?' and mentions it not remembering context, which is a direct criticism of the AI's performance.",criticism,Criticism/Complaints
+1myjcru,Gemini 2.5 pro can’t read attachments anymore?,"Starting last night Gemini can’t read whatever attachments I’ve uploaded, graphs, excels, tables, images and begins to hallucinate when I asked what I’ve uploaded
+
+Anyone going through this too and any solutions?",0,0.44,3,2025-08-24 01:53:58+00:00,1Oyearslate,https://www.reddit.com/r/Bard/comments/1myjcru/gemini_25_pro_cant_read_attachments_anymore/,https://reddit.com/r/Bard/comments/1myjcru/gemini_25_pro_cant_read_attachments_anymore/,Discussion ,True,2025-08-26 03:35:16.819354+00:00,bug_report,-0.5,4,3,"A critical functional bug is preventing Gemini from reading uploaded attachments (graphs, excels, tables, images).; This leads to AI hallucinations and makes the feature unusable, forcing users to seek workarounds or alternative tools.","The ability to process and understand uploaded documents and data is crucial for productivity tools. If Notion offers AI-powered document analysis or data processing, it must be robust. Competitors that can reliably handle various file types and data formats will be more valuable. This also highlights the dependency on underlying AI model capabilities.",User encountering a critical functional bug with file uploads,"The post explicitly states 'Gemini 2.5 pro can’t read attachments anymore?' and describes issues with processing various file types, identifying a bug.",bug_report,Bug Reports
+1lms62v,Gemini CLI Team AMA,"Hey r/Bard!
+
+We heard that [you might be interested in an AMA](https://www.reddit.com/r/Bard/comments/1ikij8z/dont_we_need_a_reddit_ama_from_google_ai_team/), and we’d be honored.
+
+Google open sourced the [Gemini CLI](https://blog.google/technology/developers/introducing-gemini-cli-open-source-ai-agent/) earlier this week. Gemini CLI is a command-line AI workflow tool that connects to your tools, understands your code and accelerates your workflows. And it’s free, with unmatched usage limits. During the AMA, Taylor Mullen (the creator of the Gemini CLI) and the senior leadership team will be around to answer your questions! Looking forward to them!
+
+Time: Monday June 30th. 9AM - 11 AM PT (12PM - 2 PM EDT)
+
+https://preview.redd.it/4tx1r6zqbp9f1.png?width=3456&format=png&auto=webp&s=811f70a49eb8357b7d851fd0277ae7953faad03a
+
+
+
+>We have wrapped up this AMA. Thank you r/bard for the great questions and the diverse discussion on various topics!",244,0.98,229,2025-06-28 17:19:28+00:00,moficodes,https://www.reddit.com/r/Bard/comments/1lms62v/gemini_cli_team_ama/,https://reddit.com/r/Bard/comments/1lms62v/gemini_cli_team_ama/,Discussion ,True,2025-08-26 03:35:34.730167+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+11ys2mn,✨/r/Bard Discord Server✨,"#Invite: https://discord.gg/wqEFsfmusz
+
+#Alt invite: https://discord.gg/j6ygzd9rQy",94,0.97,47,2023-03-22 18:33:02+00:00,HOLUPREDICTIONS,https://www.reddit.com/r/Bard/comments/11ys2mn/rbard_discord_server/,https://reddit.com/r/Bard/comments/11ys2mn/rbard_discord_server/,✨Gemini,True,2025-08-26 03:35:34.730179+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+1myijgh,Lmao stop being greedy,,986,0.97,57,2025-08-24 01:12:42+00:00,Condomphobic,https://i.redd.it/4gl9a7yhbvkf1.jpeg,https://reddit.com/r/Bard/comments/1myijgh/lmao_stop_being_greedy/,Funny ,False,2025-08-26 03:35:34.730356+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+1mycod3,How long do you think it will take Chinese AI labs to respond to NanoBanana?,,151,0.92,60,2025-08-23 20:50:49+00:00,balianone,https://i.redd.it/aucn5uvq0ukf1.jpeg,https://reddit.com/r/Bard/comments/1mycod3/how_long_do_you_think_it_will_take_chinese_ai/,Discussion ,False,2025-08-26 03:35:34.730441+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+1my53ua,Veo 3 Is Available For Free,,171,0.97,20,2025-08-23 15:55:29+00:00,YOYASHAS,https://i.redd.it/2z4z3w70kskf1.png,https://reddit.com/r/Bard/comments/1my53ua/veo_3_is_available_for_free/,News ,False,2025-08-26 03:35:34.730446+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+1myb5lr,Freepik goes bananas,,39,0.95,2,2025-08-23 19:49:55+00:00,Tobbeloo,https://i.redd.it/oajnxeowptkf1.jpeg,https://reddit.com/r/Bard/comments/1myb5lr/freepik_goes_bananas/,News ,False,2025-08-26 03:35:34.730466+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+1mxz273,Google is cooking alot ik,,169,0.96,12,2025-08-23 11:33:22+00:00,Independent-Wind4462,https://i.redd.it/wl9v74fb9rkf1.jpeg,https://reddit.com/r/Bard/comments/1mxz273/google_is_cooking_alot_ik/,Interesting,False,2025-08-26 03:35:34.730469+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+1mxsdqf,Google Gemini Team is About to Drop Game-Changing Updates,,471,0.94,67,2025-08-23 04:50:55+00:00,Inevitable-Rub8969,https://i.redd.it/o6601g3d9pkf1.png,https://reddit.com/r/Bard/comments/1mxsdqf/google_gemini_team_is_about_to_drop_gamechanging/,News ,False,2025-08-26 03:35:34.730472+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
+1mygj8i,Gemini 2.5 Pro Reasoning Downgrade?,"I've been using Gemini quite a bit over the past few months and it worked well enough that I swapped to an Ultra Subscription. However, as of the past couple of days, it's been unreliable. Gemini 2.5 Pro used to almost always use Chain of Thought/Reasoning, however now it generates responses that are closer in quality to Flash and refuses to use Reasoning unless I use Canvas. And even then, the quality of responses has diminished.
+
+Has anyone else noticed the downgrade or is it just me? I don't mind, I've got plenty of usage out of Gemini from my Subscription before it downgraded, and it is a generous offering for what it is. I'm just curious as to whether this will be a permanent change or if I should cancel and swap over to a different provider. Since the limited capabilities for general (not deep research) usage doesn't match what I'm looking for at the moment.
+
+Appreciate the advice!
+
+**~~Solution:~~**
+
+~~While asking it to use Chain of Thought in saved info didn't work, specifically adding:~~  
+~~""Always use the higher compute reasoning pathway."" to saved info worked.~~
+
+~~While the Model didn't respond to specific requests to use Chain-of-Thought, Using vague-ish terms involving compute based on my almost certainly flawed understanding of how routing works, worked. Don't know why. Don't care about speculating. ¯\\\_(ツ)\_/¯~~  
+  
+**Solution/Workaround:**   
+u/nocorruptgan 
+
+    ""had the same thing a few days ago. it's account-specific, possibly has to do with high usage, at least that's the only pattern i see with my accounts.
+    only ""fix"" i'm aware of is to create a new account, add that to your google family group (to share your subscription) and then use your gemini through the new acc""",8,0.64,16,2025-08-23 23:35:06+00:00,ExcellentSeaweed12,https://www.reddit.com/r/Bard/comments/1mygj8i/gemini_25_pro_reasoning_downgrade/,https://reddit.com/r/Bard/comments/1mygj8i/gemini_25_pro_reasoning_downgrade/,Discussion ,True,2025-08-26 03:35:34.730480+00:00,help_support,0.0,2,2,Analysis failed,Unable to analyze,Unknown,LLM analysis failed,help_support,Help/Support
