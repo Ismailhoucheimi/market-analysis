@@ -287,14 +287,25 @@ def main():
             return
         
         # Parse command line arguments
-        resume_mode = '--resume' in sys.argv or len(sys.argv) > 1 and sys.argv[1].endswith('.csv')
+        resume_mode = '--resume' in sys.argv
         input_file = None
+        competitor = None
+        output_file = None
         
-        if len(sys.argv) > 1:
-            for arg in sys.argv[1:]:
-                if arg.endswith('.csv'):
-                    input_file = arg
-                    break
+        i = 1
+        while i < len(sys.argv):
+            arg = sys.argv[i]
+            if arg.endswith('.csv') and not input_file:
+                input_file = arg
+            elif arg == '--competitor' and i + 1 < len(sys.argv):
+                competitor = sys.argv[i + 1]
+                i += 1
+            elif arg == '--output' and i + 1 < len(sys.argv):
+                output_file = sys.argv[i + 1]
+                i += 1
+            elif arg == '--resume':
+                resume_mode = True
+            i += 1
         
         # Determine input file
         if input_file:
@@ -313,8 +324,14 @@ def main():
         
         analyzer = GeminiPostAnalyzer()
         
-        # Check for existing processed results to resume from
-        output_file = 'data/processed_posts_838.csv' if input_file else 'data/processed_posts.csv'
+        # Determine output file
+        if not output_file:
+            if competitor:
+                output_file = f'competitors/{competitor}/data/processed_posts.csv'
+            elif input_file:
+                output_file = 'data/processed_posts_838.csv'
+            else:
+                output_file = 'data/processed_posts.csv'
         processed_ids = set()
         
         if os.path.exists(output_file) and resume_mode:

@@ -1,0 +1,68 @@
+{
+  "total_posts_analyzed": 101,
+  "sentiment_distribution": {
+    "positive": 51,
+    "neutral": 14,
+    "negative": 36
+  },
+  "average_sentiment": 0.07425742574257427,
+  "high_urgency_posts": 23,
+  "high_business_impact": 35,
+  "category_distribution": {
+    "help_support": 35,
+    "feature_request": 20,
+    "bug_report": 9,
+    "comparison": 9,
+    "integration_request": 8,
+    "criticism": 5,
+    "migration": 4,
+    "workflow_showcase": 4,
+    "community_meta": 3,
+    "praise": 1,
+    "mobile_feedback": 1,
+    "performance": 1,
+    "pricing": 1
+  },
+  "top_user_personas": {
+    "Jira Administrator/Manager dealing with customer portal setup.": 1,
+    "Intermediate Jira user evaluating advanced features and their associated costs.": 1,
+    "Beginner user transitioning from another platform (GitHub) and seeking best practices for structuring work items.": 1,
+    "Beginner user trying to configure their project board and seeking more efficient ways to manage data.": 1,
+    "Beginner user seeking to automate a complex workflow involving data import from spreadsheets.": 1,
+    "Intermediate user experiencing performance degradation and questioning the platform's stability.": 1,
+    "Beginner user unfamiliar with Jira's interface and settings hierarchy.": 1,
+    "Beginner Jira Service Management user struggling with setting up and configuring approval workflows.": 1,
+    "Intermediate Jira user trying to set up automated communication workflows, specifically for release notes.": 1,
+    "Intermediate user in a demanding industry (games development) facing complex project planning needs and workarounds.": 1
+  },
+  "urgency_by_category": {
+    "bug_report": 4.444444444444445,
+    "performance": 4.0,
+    "criticism": 3.6,
+    "migration": 3.5,
+    "mobile_feedback": 3.0,
+    "pricing": 3.0,
+    "feature_request": 2.95,
+    "integration_request": 2.875,
+    "help_support": 2.4285714285714284,
+    "community_meta": 2.3333333333333335,
+    "comparison": 1.5555555555555556,
+    "workflow_showcase": 1.5,
+    "praise": 1.0
+  },
+  "business_impact_by_category": {
+    "pricing": 5.0,
+    "mobile_feedback": 4.0,
+    "performance": 4.0,
+    "feature_request": 3.75,
+    "integration_request": 3.75,
+    "bug_report": 3.6666666666666665,
+    "criticism": 3.6,
+    "migration": 3.5,
+    "help_support": 2.5714285714285716,
+    "comparison": 2.3333333333333335,
+    "workflow_showcase": 2.25,
+    "community_meta": 2.0,
+    "praise": 1.0
+  }
+}

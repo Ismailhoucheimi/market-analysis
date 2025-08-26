@@ -1,0 +1,59 @@
+{
+  "total_posts_analyzed": 102,
+  "sentiment_distribution": {
+    "positive": 71,
+    "neutral": 6,
+    "negative": 25
+  },
+  "average_sentiment": 0.2490196078431373,
+  "high_urgency_posts": 25,
+  "high_business_impact": 36,
+  "category_distribution": {
+    "help_support": 37,
+    "comparison": 17,
+    "workflow_showcase": 16,
+    "feature_request": 13,
+    "bug_report": 6,
+    "integration_request": 3,
+    "performance": 3,
+    "pricing": 3,
+    "community_meta": 2,
+    "criticism": 2
+  },
+  "top_user_personas": {
+    "Power user/Data analyst": 1,
+    "Power user or data manager working with complex linked record structures.": 1,
+    "IT decision-maker/project lead in a municipality": 1,
+    "User familiar with Excel, evaluating/using Airtable": 1,
+    "Project lead/manager in a medical products company": 1,
+    "Small business owner/manager (legal sector)": 1,
+    "Experienced Airtable professional/job seeker": 1,
+    "User managing data relationships and requiring efficient ways to create multiple linked records.": 1,
+    "Agency operations manager or lead developer managing multiple client accounts and workflows.": 1,
+    "Beginner user learning Airtable scripting and JavaScript.": 1
+  },
+  "urgency_by_category": {
+    "bug_report": 4.833333333333333,
+    "criticism": 4.0,
+    "performance": 4.0,
+    "pricing": 3.3333333333333335,
+    "feature_request": 3.1538461538461537,
+    "help_support": 2.7027027027027026,
+    "integration_request": 2.6666666666666665,
+    "comparison": 2.4705882352941178,
+    "community_meta": 1.5,
+    "workflow_showcase": 1.25
+  },
+  "business_impact_by_category": {
+    "criticism": 4.5,
+    "bug_report": 4.333333333333333,
+    "pricing": 4.333333333333333,
+    "performance": 4.0,
+    "feature_request": 3.6153846153846154,
+    "integration_request": 3.3333333333333335,
+    "comparison": 3.1176470588235294,
+    "help_support": 2.810810810810811,
+    "workflow_showcase": 2.4375,
+    "community_meta": 1.5
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "total_posts_analyzed": 199,
+  "sentiment_distribution": {
+    "positive": 100,
+    "neutral": 17,
+    "negative": 82
+  },
+  "average_sentiment": 0.007788944723618087,
+  "high_urgency_posts": 49,
+  "high_business_impact": 62,
+  "category_distribution": {
+    "criticism": 46,
+    "comparison": 30,
+    "workflow_showcase": 30,
+    "community_meta": 27,
+    "praise": 17,
+    "bug_report": 17,
+    "help_support": 13,
+    "feature_request": 9,
+    "funny": 5,
+    "performance": 2,
+    "mobile_feedback": 1,
+    "template_sharing": 1,
+    "resources": 1
+  },
+  "top_user_personas": {
+    "Casual user, Community member": 2,
+    "General subreddit user": 2,
+    "Casual AI experimenter, potentially seeking novelty and unrestricted AI output.": 1,
+    "Frustrated and disillusioned AI user, relying on AI for complex tasks.": 1,
+    "Frustrated AI user actively seeking alternatives, with a specific use case (crafting messages).": 1,
+    "User focused on personal development and mental well-being, using AI as a cognitive tool.": 1,
+    "Disillusioned paying user, feeling deceived by AI provider's practices.": 1,
+    "Observant user, commenting on broader trends in AI capabilities and celebrity involvement.": 1,
+    "Enthusiastic early adopter, tech-savvy user": 1,
+    "Community member, engaged user": 1
+  },
+  "urgency_by_category": {
+    "criticism": 3.9347826086956523,
+    "performance": 3.5,
+    "bug_report": 3.411764705882353,
+    "mobile_feedback": 3.0,
+    "feature_request": 2.7777777777777777,
+    "help_support": 2.6153846153846154,
+    "comparison": 2.033333333333333,
+    "template_sharing": 2.0,
+    "praise": 1.2352941176470589,
+    "workflow_showcase": 1.2,
+    "community_meta": 1.1111111111111112,
+    "funny": 1.0,
+    "resources": 1.0
+  },
+  "business_impact_by_category": {
+    "criticism": 4.086956521739131,
+    "performance": 3.5,
+    "bug_report": 3.3529411764705883,
+    "feature_request": 3.0,
+    "mobile_feedback": 3.0,
+    "template_sharing": 3.0,
+    "comparison": 2.9,
+    "help_support": 2.6153846153846154,
+    "praise": 2.1176470588235294,
+    "resources": 2.0,
+    "workflow_showcase": 1.6666666666666667,
+    "community_meta": 1.1481481481481481,
+    "funny": 1.0
+  }
+}

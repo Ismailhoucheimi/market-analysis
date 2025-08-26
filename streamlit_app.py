@@ -15,13 +15,14 @@ from datetime import datetime, timedelta
 import numpy as np
 from collections import Counter
 import config
+from competitors_config import competitor_manager, CompetitorConfig
 
 # Page configuration
 st.set_page_config(
-    page_title="Notion Reddit Analysis Dashboard",
+    page_title="Multi-Competitor Analysis Dashboard",
     page_icon="🎯",
     layout="wide",
-    initial_sidebar_state="collapsed"
+    initial_sidebar_state="expanded"
 )
 
 # Custom CSS for better styling
@@ -47,24 +48,19 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-@st.cache_data
-def load_data():
-    """Load and cache the processed Reddit data"""
+@st.cache_data(ttl=60)  # Cache for 60 seconds to allow fresh data loading
+def load_competitor_data(competitor: str):
+    """Load and cache competitor data"""
     try:
-        # Check if we have processed data with LLM analysis
-        processed_file = 'data/processed_posts_838.csv'
-        if os.path.exists(processed_file):
-            df = pd.read_csv(processed_file)
-            st.success(f"✅ Loaded {len(df)} posts with LLM analysis")
+        config = competitor_manager.get_competitor_config(competitor)
+        data_file = competitor_manager.load_competitor_data(competitor, "processed")
+        
+        if data_file and os.path.exists(data_file):
+            df = pd.read_csv(data_file)
+            st.success(f"✅ Loaded {len(df)} {config.display_name} posts with analysis")
         else:
-            # Fall back to combined raw data
-            raw_file = 'data/combined_new_hot_full.csv'
-            if os.path.exists(raw_file):
-                df = pd.read_csv(raw_file)
-                st.warning(f"📊 Loaded {len(df)} posts (no LLM analysis yet)")
-            else:
-                st.error("❌ No data files found. Please run the scrapers first.")
-                return None
+            st.warning(f"📊 No processed data found for {config.display_name}")
+            return None
         
         # Convert datetime columns
         df['created_utc'] = pd.to_datetime(df['created_utc'])
@@ -75,30 +71,51 @@ def load_data():
         df['word_count'] = df['selftext'].fillna('').str.split().str.len()
         df['has_content'] = df['selftext'].notna() & (df['selftext'] != '')
         
-        return df
+        return df, config
     except Exception as e:
-        st.error(f"Error loading data: {e}")
-        return None
+        st.error(f"Error loading {competitor} data: {e}")
+        return None, None
 
-@st.cache_data
-def load_comprehensive_report():
-    """Load the comprehensive analysis report"""
-    report_path = 'reports/comprehensive_notion_analysis.md'
-    if os.path.exists(report_path):
-        with open(report_path, 'r', encoding='utf-8') as f:
+@st.cache_data(ttl=60)  # Cache for 60 seconds to allow fresh data loading
+def load_comprehensive_report(competitor: str):
+    """Load the comprehensive analysis report for a competitor"""
+    config = competitor_manager.get_competitor_config(competitor)
+    
+    # Try competitor-specific report first
+    competitor_report_path = f'competitors/{competitor}/reports/analysis.md'
+    if os.path.exists(competitor_report_path):
+        with open(competitor_report_path, 'r', encoding='utf-8') as f:
             return f.read()
+    
+    # Fall back to legacy report for Notion
+    if competitor == 'notion':
+        legacy_path = 'reports/comprehensive_notion_analysis.md'
+        if os.path.exists(legacy_path):
+            with open(legacy_path, 'r', encoding='utf-8') as f:
+                return f.read()
+    
     return None
 
-@st.cache_data
-def load_batch_summaries():
-    """Load LLM batch analysis summaries"""
-    summary_path = 'reports/llm_batch_summaries.json'
-    if os.path.exists(summary_path):
-        with open(summary_path, 'r', encoding='utf-8') as f:
+@st.cache_data(ttl=60)  # Cache for 60 seconds to allow fresh data loading
+def load_batch_summaries(competitor: str):
+    """Load LLM batch analysis summaries for a competitor"""
+    config = competitor_manager.get_competitor_config(competitor)
+    
+    # Try competitor-specific summaries first
+    competitor_summary_path = f'competitors/{competitor}/reports/batch_summaries.json'
+    if os.path.exists(competitor_summary_path):
+        with open(competitor_summary_path, 'r', encoding='utf-8') as f:
             return json.load(f)
+    
+    # Fall back to legacy summaries for any competitor (they're generic)
+    legacy_path = 'reports/llm_batch_summaries.json'
+    if os.path.exists(legacy_path):
+        with open(legacy_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    
     return None
 
-def create_sentiment_chart(df):
+def create_sentiment_chart(df, competitor_config):
     """Create sentiment analysis visualization"""
     if 'sentiment_score' not in df.columns:
         return None
@@ -109,7 +126,7 @@ def create_sentiment_chart(df):
         nbins=20,
         title="📊 Sentiment Distribution",
         labels={'sentiment_score': 'Sentiment Score', 'count': 'Number of Posts'},
-        color_discrete_sequence=['#667eea']
+        color_discrete_sequence=[competitor_config.color_scheme['primary']]
     )
     fig.add_vline(x=0, line_dash="dash", line_color="red", annotation_text="Neutral")
     return fig
@@ -135,7 +152,7 @@ def create_category_chart(df):
     )
     return fig
 
-def create_timeline_chart(df):
+def create_timeline_chart(df, competitor_config):
     """Create timeline visualization"""
     df_daily = df.groupby(df['created_utc'].dt.date).agg({
         'id': 'count',
@@ -156,7 +173,7 @@ def create_timeline_chart(df):
             y=df_daily['id'],
             mode='lines+markers',
             name='Posts per Day',
-            line=dict(color='#667eea')
+            line=dict(color=competitor_config.color_scheme['primary'])
         ),
         row=1, col=1
     )
@@ -168,7 +185,7 @@ def create_timeline_chart(df):
             y=df_daily['score'],
             mode='lines+markers',
             name='Avg Score',
-            line=dict(color='#764ba2')
+            line=dict(color=competitor_config.color_scheme['secondary'])
         ),
         row=2, col=1
     )
@@ -209,21 +226,68 @@ def render_post_card(post):
             if post.get('permalink'):
                 st.link_button("🔗 View on Reddit", post['permalink'])
 
+def render_competitor_sidebar():
+    """Render competitor selection sidebar"""
+    st.sidebar.markdown("## 🏆 Select Competitor")
+    
+    # Get available competitors
+    competitors = competitor_manager.get_available_competitors()
+    display_names = competitor_manager.get_competitor_display_names()
+    
+    # Show competitor options with emojis and validation
+    competitor_options = []
+    for comp in competitors:
+        config = competitor_manager.get_competitor_config(comp)
+        validation = competitor_manager.validate_data_completeness(comp)
+        
+        # Add status indicator
+        status = "✅" if validation["has_processed_data"] else "⏳"
+        option_text = f"{config.logo_emoji} {config.display_name} {status}"
+        competitor_options.append((comp, option_text))
+    
+    # Create radio buttons
+    selected_comp = st.sidebar.radio(
+        "Choose competitor to analyze:",
+        options=[comp[0] for comp in competitor_options],
+        format_func=lambda x: next(opt[1] for opt in competitor_options if opt[0] == x),
+        key="competitor_selection"
+    )
+    
+    # Show competitor info
+    config = competitor_manager.get_competitor_config(selected_comp)
+    st.sidebar.markdown(f"**{config.description}**")
+    st.sidebar.markdown(f"**Subreddit:** r/{config.subreddit}")
+    
+    # Show data status
+    validation = competitor_manager.validate_data_completeness(selected_comp)
+    st.sidebar.markdown("### 📊 Data Status")
+    st.sidebar.write(f"✅ Processed Data: {'Available' if validation['has_processed_data'] else 'Missing'}")
+    st.sidebar.write(f"📋 Reports: {'Available' if validation['has_reports'] else 'Missing'}")
+    
+    return selected_comp
+
 def main():
     """Main Streamlit application"""
     
-    # Header
-    st.markdown("""
+    # Render sidebar
+    selected_competitor = render_competitor_sidebar()
+    
+    # Load competitor data
+    result = load_competitor_data(selected_competitor)
+    if result is None or result[0] is None:
+        st.error(f"❌ Could not load data for {selected_competitor}")
+        st.info("💡 This competitor analysis is not yet available. Data collection needed.")
+        st.stop()
+    
+    df, competitor_config = result
+    
+    # Dynamic header based on selected competitor
+    st.markdown(f"""
     <div class="insight-box">
-        <h1>🎯 Notion Reddit Analysis Dashboard</h1>
+        <h1>{competitor_config.logo_emoji} {competitor_config.display_name} Analysis Dashboard</h1>
         <p>Interactive Competitive Intelligence & User Research Platform</p>
     </div>
     """, unsafe_allow_html=True)
-    
-    # Load data
-    df = load_data()
-    if df is None:
-        st.stop()
     
     # Summary metrics (always show full dataset)
     col1, col2, col3, col4 = st.columns(4)
@@ -257,7 +321,7 @@ def main():
         
         with col1:
             # Sentiment chart
-            sentiment_chart = create_sentiment_chart(df)
+            sentiment_chart = create_sentiment_chart(df, competitor_config)
             if sentiment_chart:
                 st.plotly_chart(sentiment_chart, use_container_width=True)
             else:
@@ -272,7 +336,7 @@ def main():
                 st.info("💡 Run LLM analysis to see category breakdown")
         
         # Timeline chart
-        timeline_chart = create_timeline_chart(df)
+        timeline_chart = create_timeline_chart(df, competitor_config)
         st.plotly_chart(timeline_chart, use_container_width=True)
         
         # Top posts table
@@ -402,16 +466,16 @@ def main():
     with tab3:
         st.header("📋 Comprehensive Strategic Report")
         
-        report = load_comprehensive_report()
+        report = load_comprehensive_report(selected_competitor)
         if report:
             st.markdown(report)
         else:
-            st.warning("📄 Comprehensive report not available. Run the summary report generator first.")
+            st.warning(f"📄 Comprehensive report not available for {competitor_config.display_name}. Run the summary report generator first.")
     
     with tab4:
         st.header("🤖 AI Insights Summary")
         
-        batch_summaries = load_batch_summaries()
+        batch_summaries = load_batch_summaries(selected_competitor)
         if batch_summaries:
             st.subheader("🎯 Key Themes Across All Batches")
             

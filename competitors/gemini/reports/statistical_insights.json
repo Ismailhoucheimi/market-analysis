@@ -1,0 +1,62 @@
+{
+  "total_posts_analyzed": 109,
+  "sentiment_distribution": {
+    "positive": 51,
+    "neutral": 20,
+    "negative": 38
+  },
+  "average_sentiment": 0.05504587155963303,
+  "high_urgency_posts": 22,
+  "high_business_impact": 27,
+  "category_distribution": {
+    "comparison": 27,
+    "criticism": 18,
+    "help_support": 18,
+    "feature_request": 11,
+    "workflow_showcase": 8,
+    "bug_report": 8,
+    "praise": 7,
+    "community_meta": 6,
+    "news": 3,
+    "pricing": 2,
+    "discussion": 1
+  },
+  "top_user_personas": {
+    "Unknown": 9,
+    "Power User/Developer": 2,
+    "Enthusiast/Early Adopter": 1,
+    "Regular User/AI User": 1,
+    "Technically curious user or enthusiast interested in the mechanics and future of AI.": 1,
+    "Privacy-conscious user who values personal data control, likely a power user of productivity tools.": 1,
+    "Frustrated user seeking reliable AI assistance, likely experienced with AI tools.": 1,
+    "Casual user, potentially sharing an inside joke or meme.": 1,
+    "Tech-savvy user or early adopter interested in AI news and updates.": 1,
+    "Power user/Enthusiast actively evaluating AI capabilities and pricing.": 1
+  },
+  "urgency_by_category": {
+    "criticism": 3.7777777777777777,
+    "bug_report": 3.75,
+    "pricing": 3.0,
+    "feature_request": 2.4545454545454546,
+    "help_support": 2.1666666666666665,
+    "comparison": 1.8518518518518519,
+    "workflow_showcase": 1.375,
+    "community_meta": 1.1666666666666667,
+    "praise": 1.1428571428571428,
+    "discussion": 1.0,
+    "news": 1.0
+  },
+  "business_impact_by_category": {
+    "criticism": 3.888888888888889,
+    "pricing": 3.5,
+    "bug_report": 3.375,
+    "feature_request": 3.0,
+    "comparison": 2.4444444444444446,
+    "help_support": 2.0555555555555554,
+    "discussion": 2.0,
+    "praise": 2.0,
+    "workflow_showcase": 1.875,
+    "news": 1.6666666666666667,
+    "community_meta": 1.1666666666666667
+  }
+}

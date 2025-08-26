@@ -1,0 +1,40 @@
+[
+  {
+    "dominant_themes": [
+      "AI capabilities and limitations",
+      "User expectations for AI interaction",
+      "AI for creative and research tasks",
+      "User frustration with AI's current performance/UI"
+    ],
+    "sentiment_trend": "Mixed, leaning towards critical/frustrated on specific interactions, but curious and amused by broader AI potential.",
+    "key_competitive_threats": [
+      "Competitors offering more intuitive or less intrusive AI conversational interfaces.",
+      "AI tools providing greater control over creative outputs (image aspect ratios, verifiable content).",
+      "AI assistants that are transparent about their reasoning and minimize 'hallucinations'."
+    ],
+    "strategic_recommendations": [
+      "Invest in refining AI conversational design to eliminate user annoyances like repetitive prompts and improve conversational memory.",
+      "Develop AI features that offer granular control over outputs, especially for creative or practical tasks (e.g., image generation with aspect ratio control).",
+      "Focus on AI transparency and accuracy, providing explanations for outputs and ensuring verifiable data, particularly for research or knowledge management integrations.",
+      "Explore multi-modal AI capabilities to cater to users seeking creative and diverse AI applications."
+    ]
+  },
+  {
+    "dominant_themes": [
+      "AI performance and capabilities",
+      "Customer support experience",
+      "Mobile app reliability"
+    ],
+    "sentiment_trend": "Mixed to Negative, with significant negative sentiment around AI performance and support issues.",
+    "key_competitive_threats": [
+      "Competitors offering superior AI recall and nuance (e.g., Grok).",
+      "Competitors with more stable and reliable mobile applications.",
+      "Competitors providing better customer support experiences."
+    ],
+    "strategic_recommendations": [
+      "Prioritize immediate fixes and improvements for Notion's AI model performance, particularly regarding memory, intent understanding, and reducing 'hallucinations'. Invest in a higher-tier AI offering that genuinely delivers on advanced capabilities.",
+      "Overhaul customer support protocols to ensure empathetic and effective issue resolution. Invest in training for support staff and explore more robust feedback channels.",
+      "Address critical bugs in the mobile (Android) application, especially concerning file handling and third-party integrations, to maintain parity with desktop functionality and competitor offerings."
+    ]
+  }
+]

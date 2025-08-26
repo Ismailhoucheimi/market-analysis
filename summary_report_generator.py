@@ -20,7 +20,7 @@ class ComprehensiveSummaryGenerator:
         # Use Gemini 2.5 Pro for comprehensive analysis
         self.model = genai.GenerativeModel('gemini-2.0-flash-exp')
     
-    def create_summary_prompt(self, posts_data: str, batch_summaries: str, zenflo_context: str = "") -> str:
+    def create_summary_prompt(self, posts_data: str, batch_summaries: str, competitor_name: str = "the product", zenflo_context: str = "") -> str:
         """Create comprehensive analysis prompt for Gemini 2.5 Pro"""
         
         zenflo_analysis_section = ""
@@ -39,7 +39,7 @@ ZENFLO CONTEXT:
 {zenflo_context}
 """
         
-        prompt = f"""You are an expert product strategist and competitive intelligence analyst. Analyze this comprehensive dataset of 500+ Reddit posts from r/Notion to generate an executive summary report.
+        prompt = f"""You are an expert product strategist and competitive intelligence analyst. Analyze this comprehensive dataset of Reddit posts about {competitor_name} to generate an executive summary report.
 
 DATA PROVIDED:
 1. Individual post analysis with sentiment scores, categories, and AI insights
@@ -47,19 +47,19 @@ DATA PROVIDED:
 
 Your task is to synthesize all this information into a comprehensive report with the following sections:
 
-# COMPREHENSIVE NOTION ANALYSIS REPORT
+# COMPREHENSIVE {competitor_name.upper()} ANALYSIS REPORT
 
 ## EXECUTIVE SUMMARY
 Provide a 3-4 paragraph high-level overview of the key findings and strategic implications.
 
-## WHAT USERS LOVE ABOUT NOTION
+## WHAT USERS LOVE ABOUT {competitor_name.upper()}
 Analyze positive sentiment and praise to identify:
 - Top 5 most appreciated features/aspects
-- Why users choose Notion over competitors
+- Why users choose {competitor_name} over competitors
 - Unique value propositions that drive loyalty
 - Community strengths and engagement patterns
 
-## WHAT USERS DISLIKE ABOUT NOTION
+## WHAT USERS DISLIKE ABOUT {competitor_name.upper()}
 Analyze negative sentiment and criticism to identify:
 - Top 5 most complained about issues/limitations  
 - Common pain points across user segments
@@ -111,15 +111,24 @@ Please provide a comprehensive, data-driven analysis that a product team and exe
         
         return prompt
     
-    def generate_comprehensive_report(self, processed_data_file: str = None, batch_summaries_file: str = None, include_zenflo_analysis: bool = True) -> str:
+    def generate_comprehensive_report(self, processed_data_file: str = None, batch_summaries_file: str = None, include_zenflo_analysis: bool = True, competitor: str = None, output_file: str = None) -> str:
         """Generate comprehensive summary using Gemini 2.5 Pro"""
         
-        # Load processed posts data
-        if not processed_data_file:
-            processed_data_file = 'data/processed_posts_838.csv'
-        
-        if not batch_summaries_file:
-            batch_summaries_file = 'reports/llm_batch_summaries.json'
+        # Determine file paths based on competitor
+        if competitor:
+            from competitors_config import competitor_manager
+            config = competitor_manager.get_competitor_config(competitor)
+            
+            if not processed_data_file:
+                processed_data_file = f'competitors/{competitor}/data/processed_posts.csv'
+            if not batch_summaries_file:
+                batch_summaries_file = f'competitors/{competitor}/reports/batch_summaries.json'
+        else:
+            # Default to legacy paths
+            if not processed_data_file:
+                processed_data_file = 'data/processed_posts_838.csv'
+            if not batch_summaries_file:
+                batch_summaries_file = 'reports/llm_batch_summaries.json'
         
         print(f"📊 Loading processed posts from {processed_data_file}")
         df = pd.read_csv(processed_data_file)
@@ -183,8 +192,14 @@ Market Statistics:
 - Focuses on reducing cognitive load through intelligent task management
 """
         
+        # Get competitor display name for prompt
+        competitor_display_name = "the product" 
+        if competitor:
+            config = competitor_manager.get_competitor_config(competitor)
+            competitor_display_name = config.display_name
+        
         # Create the comprehensive analysis prompt
-        prompt = self.create_summary_prompt(posts_data_json, batch_summaries_json, zenflo_context)
+        prompt = self.create_summary_prompt(posts_data_json, batch_summaries_json, competitor_display_name, zenflo_context)
         
         print(f"🤖 Generating comprehensive report with Gemini 2.5 Pro...")
         print(f"📝 Prompt length: ~{len(prompt)} characters")
@@ -194,8 +209,12 @@ Market Statistics:
             report_content = response.text
             
             # Save the comprehensive report
-            os.makedirs('reports', exist_ok=True)
-            report_filename = 'reports/comprehensive_notion_analysis.md'
+            if output_file:
+                report_filename = output_file
+                os.makedirs(os.path.dirname(output_file), exist_ok=True)
+            else:
+                os.makedirs('reports', exist_ok=True)
+                report_filename = f'reports/comprehensive_{competitor_name}_analysis.md'
             
             with open(report_filename, 'w', encoding='utf-8') as f:
                 f.write(report_content)
@@ -232,19 +251,59 @@ Market Statistics:
 
 def main():
     """Generate comprehensive summary report"""
+    import sys
+    
+    # Parse command line arguments
+    competitor = None
+    input_file = None
+    output_file = None
+    
+    i = 1
+    while i < len(sys.argv):
+        arg = sys.argv[i]
+        if arg == '--competitor' and i + 1 < len(sys.argv):
+            competitor = sys.argv[i + 1]
+            i += 1
+        elif arg == '--input' and i + 1 < len(sys.argv):
+            input_file = sys.argv[i + 1]
+            i += 1
+        elif arg == '--output' and i + 1 < len(sys.argv):
+            output_file = sys.argv[i + 1]
+            i += 1
+        i += 1
+    
     try:
         generator = ComprehensiveSummaryGenerator()
         
         # Generate the comprehensive report
-        report = generator.generate_comprehensive_report()
+        report = generator.generate_comprehensive_report(
+            processed_data_file=input_file,
+            competitor=competitor,
+            output_file=output_file
+        )
         
         if report:
-            print(f"\n🎯 COMPREHENSIVE REPORT GENERATED!")
-            print(f"📁 Location: reports/comprehensive_notion_analysis.md")
+            # Determine output location
+            if competitor:
+                from competitors_config import competitor_manager
+                config = competitor_manager.get_competitor_config(competitor)
+                report_location = output_file or f'competitors/{competitor}/reports/analysis.md'
+                data_file = input_file or f'competitors/{competitor}/data/processed_posts.csv'
+                insights_file = f'competitors/{competitor}/reports/statistical_insights.json'
+                
+                print(f"\n🎯 {config.display_name.upper()} COMPREHENSIVE REPORT GENERATED!")
+            else:
+                report_location = output_file or 'reports/comprehensive_notion_analysis.md'
+                data_file = input_file or 'data/processed_posts_838.csv'
+                insights_file = 'reports/statistical_insights.json'
+                
+                print(f"\n🎯 COMPREHENSIVE REPORT GENERATED!")
+            
+            print(f"📁 Location: {report_location}")
             print(f"\n📊 Additional statistical insights:")
             
             # Load data for additional insights
-            df = pd.read_csv('data/processed_posts_838.csv')
+            df = pd.read_csv(data_file)
             insights = generator.generate_additional_insights(df)
             
             print(f"   Total posts analyzed: {insights['total_posts_analyzed']}")
@@ -254,10 +313,11 @@ def main():
             print(f"   Top category: {list(insights['category_distribution'].keys())[0]}")
             
             # Save insights as well
-            with open('reports/statistical_insights.json', 'w', encoding='utf-8') as f:
+            os.makedirs(os.path.dirname(insights_file), exist_ok=True)
+            with open(insights_file, 'w', encoding='utf-8') as f:
                 json.dump(insights, f, indent=2, ensure_ascii=False)
             
-            print(f"📋 Statistical insights saved to: reports/statistical_insights.json")
+            print(f"📋 Statistical insights saved to: {insights_file}")
             
         else:
             print("❌ Failed to generate comprehensive report")

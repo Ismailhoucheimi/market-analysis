@@ -1,0 +1,68 @@
+{
+  "total_posts_analyzed": 107,
+  "sentiment_distribution": {
+    "positive": 61,
+    "neutral": 16,
+    "negative": 30
+  },
+  "average_sentiment": 0.1953271028037383,
+  "high_urgency_posts": 18,
+  "high_business_impact": 30,
+  "category_distribution": {
+    "feature_request": 26,
+    "help_support": 20,
+    "workflow_showcase": 18,
+    "comparison": 16,
+    "bug_report": 7,
+    "praise": 4,
+    "migration": 4,
+    "mobile_feedback": 3,
+    "community_meta": 3,
+    "criticism": 2,
+    "template_sharing": 2,
+    "integration_request": 1,
+    "performance": 1
+  },
+  "top_user_personas": {
+    "Power user struggling with database organization": 1,
+    "Power user interested in extending functionality and customization": 1,
+    "Developer, power user, user seeking specific integrations": 1,
+    "Power user, user with large amounts of saved/clipped content": 1,
+    "General user, user sensitive to UI/UX details": 1,
+    "Writer, author, power user of writing tools": 1,
+    "Power user, knowledge manager, researcher": 1,
+    "Beginner to intermediate user, transitioning from simpler note-taking": 1,
+    "General user, mobile-first user": 1,
+    "Power user, developer, advanced knowledge worker": 1
+  },
+  "urgency_by_category": {
+    "performance": 4.0,
+    "bug_report": 3.5714285714285716,
+    "mobile_feedback": 3.3333333333333335,
+    "comparison": 3.1875,
+    "criticism": 3.0,
+    "migration": 3.0,
+    "feature_request": 2.8846153846153846,
+    "help_support": 2.45,
+    "integration_request": 2.0,
+    "template_sharing": 1.5,
+    "workflow_showcase": 1.2777777777777777,
+    "community_meta": 1.0,
+    "praise": 0.75
+  },
+  "business_impact_by_category": {
+    "performance": 4.0,
+    "feature_request": 3.5384615384615383,
+    "criticism": 3.5,
+    "migration": 3.5,
+    "comparison": 3.4375,
+    "mobile_feedback": 3.3333333333333335,
+    "bug_report": 3.0,
+    "integration_request": 3.0,
+    "help_support": 2.55,
+    "workflow_showcase": 2.111111111111111,
+    "template_sharing": 2.0,
+    "praise": 1.75,
+    "community_meta": 1.0
+  }
+}

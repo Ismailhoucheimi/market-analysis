@@ -36,9 +36,11 @@ class RedditWebScraper:
         }
         self.session.headers.update(self.headers)
         
-        # Rate limiting
-        self.min_delay = 1  # Minimum delay between requests
-        self.max_delay = 3  # Maximum delay between requests
+        # Rate limiting - Reddit allows ~100 requests per minute
+        # So we need ~0.6-1 seconds minimum between requests, adding buffer for safety
+        self.min_delay = 2  # Minimum delay between requests  
+        self.max_delay = 5  # Maximum delay between requests
+        self.pagination_delay = 15  # Extra delay between pagination requests
         
         # Ensure data directory exists
         os.makedirs(config.DATA_DIR, exist_ok=True)
@@ -247,6 +249,8 @@ class RedditWebScraper:
             if after:
                 params['after'] = after
                 print(f"  Fetching next page (after={after[:10]}...)")
+                print(f"  Waiting {self.pagination_delay}s for rate limiting...")
+                time.sleep(self.pagination_delay)  # Extra delay for pagination
             
             try:
                 self._random_delay()
@@ -303,8 +307,29 @@ class RedditWebScraper:
                     break
                     
             except Exception as e:
+                error_str = str(e)
                 print(f"Error in pagination request: {e}")
-                break
+                
+                # Check if it's a rate limit error
+                if "403" in error_str or "blocked" in error_str.lower():
+                    print(f"  Rate limited! Waiting 60 seconds before retrying...")
+                    time.sleep(60)
+                    # Try once more after the wait
+                    try:
+                        response = self.session.get(base_url, params=params, timeout=30)
+                        response.raise_for_status()
+                        data = response.json()
+                        # Continue processing if successful
+                        if 'data' in data and 'children' in data['data']:
+                            posts = data['data']['children']
+                            print(f"  Retry successful! Found {len(posts)} posts")
+                            # Process the posts (copy the processing logic here if needed)
+                        continue
+                    except Exception as retry_e:
+                        print(f"  Retry also failed: {retry_e}")
+                        break
+                else:
+                    break
         
         print(f"Total posts collected: {len(posts_data)}")
         return posts_data
@@ -443,21 +468,45 @@ if __name__ == "__main__":
         sort_method = sys.argv[1]  # 'hot', 'new', 'top', etc.
         limit = int(sys.argv[2])  # number of posts
         
-        print(f"🚀 Starting Reddit scraping for r/Notion/{sort_method} - {limit} posts")
+        # Default to Notion, but allow override
+        subreddit = 'Notion'
+        output_file = None
+        
+        # Parse additional arguments
+        i = 3
+        while i < len(sys.argv):
+            if sys.argv[i] == '--subreddit' and i + 1 < len(sys.argv):
+                subreddit = sys.argv[i + 1]
+                i += 2
+            elif sys.argv[i] == '--output' and i + 1 < len(sys.argv):
+                output_file = sys.argv[i + 1]
+                i += 2
+            else:
+                i += 1
+        
+        print(f"🚀 Starting Reddit scraping for r/{subreddit}/{sort_method} - {limit} posts")
         print("=" * 60)
         
         # Run full scraping
-        posts = scraper.scrape_subreddit_json('Notion', sort_method, limit)
-        print(f"✅ Collected {len(posts)} posts from r/Notion/{sort_method}")
+        posts = scraper.scrape_subreddit_json(subreddit, sort_method, limit)
+        print(f"✅ Collected {len(posts)} posts from r/{subreddit}/{sort_method}")
         
         if posts:
-            # Save to timestamped file
-            from datetime import datetime
-            timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
-            filename = f'data/reddit_notion_{sort_method}_{timestamp}.csv'
+            # Determine output filename
+            if output_file:
+                filename = output_file
+                # Create directory if needed
+                os.makedirs(os.path.dirname(filename), exist_ok=True)
+            else:
+                from datetime import datetime
+                timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+                filename = f'data/reddit_{subreddit.lower()}_{sort_method}_{timestamp}.csv'
+            
             df = scraper.save_to_csv(posts, filename)
             print(f"💾 Data saved to: {filename}")
             print(f"📊 Total posts: {len(df)}")
+        else:
+            print("❌ No posts collected")
     else:
         # Default test mode
         print("Testing JSON API method...")
