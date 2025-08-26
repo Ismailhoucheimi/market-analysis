@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Reddit Analysis Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .summary-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-group label {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .category-section {
+            background: white;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .category-header:hover {
+            background: #5a67d8;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .category-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-icon {
+            transition: transform 0.3s;
+        }
+        
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .category-content {
+            display: none;
+            padding: 0;
+        }
+        
+        .category-content.active {
+            display: block;
+        }
+        
+        .post {
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .post:last-child {
+            border-bottom: none;
+        }
+        
+        .post:hover {
+            background-color: #f8f9ff;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            gap: 15px;
+        }
+        
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+            line-height: 1.4;
+        }
+        
+        .post-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .post-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .post-content.collapsed {
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .post-content.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, white);
+        }
+        
+        .expand-btn {
+            color: #667eea;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .expand-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            background: #f1f3f4;
+            border: none;
+            border-radius: 5px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background-color 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #e2e6ea;
+        }
+        
+        .score {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .comments {
+            background: #2196F3;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .flair {
+            background: #FF9800;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .no-posts {
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .post-header {
+                flex-direction: column;
+            }
+            
+            .post-meta {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Notion Reddit Analysis</h1>
+            <p>Competitive Intelligence from r/Notion</p>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Posts</h3>
+                <div class="value" id="total-posts">12</div>
+            </div>
+            <div class="summary-card">
+                <h3>Date Range</h3>
+                <div class="value" style="font-size: 1rem;">2024-09-29 to 2025-08-25</div>
+            </div>
+            <div class="summary-card">
+                <h3>Average Score</h3>
+                <div class="value">27.0</div>
+            </div>
+            <div class="summary-card">
+                <h3>Average Comments</h3>
+                <div class="value">17.3</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <h3 style="margin-bottom: 15px;">📊 Filter & Search</h3>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="category-filter">Category:</label>
+                    <select id="category-filter">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sort-posts">Sort by:</label>
+                    <select id="sort-posts">
+                        <option value="score">Score (High to Low)</option>
+                        <option value="comments">Comments (High to Low)</option>
+                        <option value="date">Date (Newest First)</option>
+                        <option value="title">Title (A-Z)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-posts">Search:</label>
+                    <input type="text" id="search-posts" placeholder="Search in titles and content...">
+                </div>
+                <div class="filter-group">
+                    <label for="min-score">Min Score:</label>
+                    <input type="number" id="min-score" placeholder="0" min="0">
+                </div>
+            </div>
+        </div>
+        
+        <div id="categories-container">
+            <!-- Categories will be populated by JavaScript -->
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: white; border-radius: 10px; color: #666;">
+            <p>📈 Generated on 2025-08-25 16:24:12 by Notion Reddit Analysis Pipeline</p>
+        </div>
+    </div>
+    
+    <script>
+        // Data will be injected here
+        const data = {
+  "summary": {
+    "total_posts": 12,
+    "date_range_start": "2024-09-29",
+    "date_range_end": "2025-08-25",
+    "avg_score": 27.0,
+    "avg_comments": 17.3,
+    "generated_at": "2025-08-25 16:24:12"
+  },
+  "categories": {
+    "template_sharing": {
+      "name": "Template Sharing",
+      "count": 5,
+      "percentage": 41.66666666666667,
+      "avg_score": 11.6,
+      "avg_comments": 2.2,
+      "posts": [
+        {
+          "title": "Automate project status updates based on related tasks statuses with Notion Automations",
+          "selftext": "I've made a [video tutorial](https://www.youtube.com/watch?v=b4zPcBVjLhQ) on setting up a Notion automation that automatically updates the status of a project based on the status of its related tasks.\n\nIt's not the most straightforward process, as you have to define a variable as part of the automation in order to be able to precisely target the right project within the edit property action.\n\nThis automation setup and logic can be applied to many different use cases and database setups, so getting the hang of it once is really going to be worth it.\n\nI've been asked how to set this up multiple times, so I decided to make a video about it and to share it here since it might be helpful for others too.",
+          "score": 22,
+          "num_comments": 1,
+          "author": "consistentbenny",
+          "created_utc": "2025-08-25 10:22",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzmpnp/automate_project_status_updates_based_on_related/",
+          "flair_text": "Databases",
+          "upvote_ratio": 0.91
+        },
+        {
+          "title": "\ud83c\udf1f User Flair Overview",
+          "selftext": "# This post provides a breakdown of all of the User Flairs you might stumble upon in your daily encounters here.\n\nShould there be any changes to the Notion programs & certifications, these User Flairs will be updated to reflect those changes when time permits, and this post will be edited to include those updates.\n\nPlease check the [**Notion Certifications**](https://www.notion.so/lp/certifications) page for details on how to acquire some of the badges below.\n\n**If you have already acquired any of these distinctions and would like to request the User Flair for your account, please** [**fill out this form here**](https://wildenfree.notion.site/dc37f024388b4e0da4f7270915d54eaa?pvs=105)**.**\n\n[Notion Team Member](https://preview.redd.it/ymx4zzaz2rrd1.png?width=201&format=png&auto=webp&s=a3a5f915e2dc6730ba9aedc13e5bb5a124d019f0)\n\n*Indicates someone that is a paid staff member at the Notion Company.*\n\n[r\\/Notion Moderator](https://preview.redd.it/uy1hhyw13rrd1.png?width=128&format=png&auto=webp&s=2d74938dd163b66ba4daff51796acc4aed112bc4)\n\n*Self-explanatory, indicates an active moderator here within the subreddit.*\n\n[Certified Consultant \\(Max lvl\\) ](https://preview.redd.it/z6z0nfr73rrd1.png?width=128&format=png&auto=webp&s=db41c5d0eeeefe1ebbcaec14271db43d17703c4c)\n\n*Indicates someone with the highest level of certification Notion has to offer, who are are listed in the Notion directory for consultants. Certified individuals who provide comprehensive Notion solutions, including consulting, onboarding, complex workflow implementation, and long-term support for enterprises. They help organizations or individuals set up and customize their Notion workspaces.*\n\n[Ambassador](https://preview.redd.it/3k2uixnf3rrd1.png?width=128&format=png&auto=webp&s=1e0dafb8f4297e5e06d5587c67a60d2486872c3e)\n\n*Indicates someone who participates in the Notion Ambassador program. These individuals likely provide services, consult, build templates & have the privilege of being hosts for local, in-person Notion community meetups to connect with community members on behalf of Notion. Ambassadors are often content creators, educators, or Notion enthusiasts who help others use the platform more effectively through workshops, social media content, and online communities.*\n\n[Champion](https://preview.redd.it/rvigu9ki3rrd1.png?width=128&format=png&auto=webp&s=b212f5387ca03c508270e247efe53cd7f175aa47)\n\n*Indicates someone who participates in the Notion Champion program. These individuals are Employees or team members within companies who advocate for Notion internally. They help their colleagues learn and adopt Notion by acting as go-to resources within their organization. Champions often work to implement Notion across teams, customizing it for their workplace needs.*\n\n[Campus Leader](https://preview.redd.it/pqn7xjda6rrd1.png?width=128&format=png&auto=webp&s=cc96b2d81399bcac2920af593fe327c03dbe6675)\n\n*Indicates someone who participates in the Notion Campus Leader program. These individuals are college and university students who promote Notion on their campuses. These leaders host events, workshops, and educational sessions for their peers, spreading awareness and encouraging the adoption of Notion for academic and personal productivity.*\n\n[Advance Badge \\(lvl 3\\)](https://preview.redd.it/nq7esgwc6rrd1.png?width=121&format=png&auto=webp&s=c70cc244131c4a69122c154bf6d11b7ce330d0b1)\n\n*An official certification from Notion. The Advanced Badge certifies a higher level of expertise in Notion. This badge is awarded to those who are proficient in using Notion\u2019s more complex features, such as relational databases, advanced formulas, and automating workflows. This level signifies a deep understanding of how to customize Notion for more sophisticated and multi-faceted use cases.* \u2734\ufe0f\n\n[Settings & Sharing Badge \\(lvl 2\\)](https://preview.redd.it/grlecblg6rrd1.png?width=128&format=png&auto=webp&s=b412e900c5f8f69ec3b6e71956e46e4ac02c5c70)\n\n*An official certification from Notion. This badge is focused on managing workspace settings and permissions. It certifies users who understand how to properly configure sharing settings, manage team access, and maintain data security within Notion. It also covers workspace administration tasks such as inviting members, setting permissions, and managing integrations.* \u2734\ufe0f\n\n[Essentials Badge \\(lvl 1\\)](https://preview.redd.it/5pr73jos6rrd1.png?width=128&format=png&auto=webp&s=5d33f72c2178a5b8104160dd899c01808302a8b6)\n\n*An official certification from Notion. This badge is awarded for demonstrating a strong understanding of Notion's fundamental features. It covers core concepts such as creating and organizing pages, using blocks, and navigating the interface. It's designed to certify users who can proficiently manage their workspace and use Notion for personal or team productivity at a basic to intermediate level.* \u2734\ufe0f\n\n[Recommended Template Creator \\(lvl 2\\)](https://preview.redd.it/0a04pebp6ltd1.png?width=121&format=png&auto=webp&s=ac650d4da46c2d748d4b22903d6f64bba0b2f7d3)\n\n*Individuals highlighted as Recommended Template Creators in the official Notion Template Gallery. Will show in place of the lvl 1 Template Creator User Flair if the distinction is given.* \u2734\ufe0f\n\n[Template Creator \\(lvl 1\\)](https://preview.redd.it/nfhae1av6rrd1.png?width=121&format=png&auto=webp&s=4e01f52cdccc21034fefecb090cbedd33be7e08f)\n\n*Individuals who create and sell custom templates for different use cases within Notion, ranging from personal productivity to business management. Notion features an official template gallery where creators can list their templates, making it easier for users to find ready-to-use solutions* \u2734\ufe0f\n\n\u2734\ufe0f  For the certification badges with this mark, Users will only have the Flair associated with their highest earned credential. I explain [**more about this Modification to User Flair Displays here**](https://www.reddit.com/r/Notion/comments/1fgrtzm/modification_to_user_flairs/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).",
+          "score": 18,
+          "num_comments": 1,
+          "author": "MrWildenfree",
+          "created_utc": "2024-09-29 13:51",
+          "permalink": "https://reddit.com/r/Notion/comments/1fs4tmg/user_flair_overview/",
+          "flair_text": "\ud83d\udd14 Announcements",
+          "upvote_ratio": 1.0
+        },
+        {
+          "title": "A Deep Dive into the \"Spaghetti Problem\" of Complex Notion Workspaces",
+          "selftext": "Hello r/Notion,\n\nLike many of you, I use Notion as a \"second brain.\" But as my system grew with dozens of interconnected databases, I realized I had accidentally created a \"spaghetti mess.\" I could feel the connections through relations and rollups, but I couldn't *see* the architecture. It was a black box.\n\nThis isn't just about aesthetics; it has real consequences:\n\n* **Onboarding is difficult:** How do you explain a complex system to a new team member?\n* **Hidden Dependencies:** A small change in one database can unknowingly break a workflow somewhere else.\n* **Information Silos:** Databases become \"orphaned\" and forgotten, leading to outdated knowledge.\n\n**My Approach to a Solution: Systems Thinking**\n\nI decided to tackle this not as a software problem, but as a *systems problem*. The goal wasn't just to plot databases on a screen, but to create a visualization that was genuinely useful and intelligent.\n\nMy philosophy was based on two principles:\n\n1. **Intelligent Layout:** The graph shouldn't be a random cloud of nodes. I developed a custom layout engine that uses algorithms inspired by graph theory (like simulated annealing) to actively untangle the connections, minimize line crossings, and reveal the underlying structure.\n2. **Connection Analysis:** Not all relations are equal. The system also needed to analyze the *strength* of connections to identify which databases are true \"hubs\" in the workspace and which are merely satellites.\n\nHere is a look at the dashboard I've been building based on these principles.\n\nAs you can see, the goal is to provide a clean overview of the system's architecture. But a static map isn't enough. The tool is interactive and built for deep analysis. For example, you can:\n\n* **Search and Filter:** Instantly find specific databases by name or property, allowing you to focus only on the parts of the system you need to see.\n* **Isolate \"Orphaned\" Databases:** A key feature is the ability to quickly identify and isolate databases that are not being interconnected, helping you find valuable knowledge that has lost its connection to your system.\n* **Export Your Architecture:** Export the visual map of your workspace to different formats (like PNG or SVG) to include in documentation, presentations, or team reviews.\n\nI'm sharing this deep dive because I'd love to get feedback from other power users on this *approach* to solving the problem. Do these principles resonate with the issues you face?",
+          "score": 11,
+          "num_comments": 7,
+          "author": "One-Engine-1287",
+          "created_utc": "2025-08-25 14:30",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzs1me/a_deep_dive_into_the_spaghetti_problem_of_complex/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 0.87
+        },
+        {
+          "title": "Minimal Habit Tracker Template",
+          "selftext": "Check out the template here: [https://locominder.com/templates/notion-habit-tracker-template](https://locominder.com/templates/notion-habit-tracker-template)",
+          "score": 6,
+          "num_comments": 2,
+          "author": "locomindernotion",
+          "created_utc": "2025-08-25 14:37",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzs7xh/minimal_habit_tracker_template/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.8
+        },
+        {
+          "title": "Need advice: Using Notion to support a product + SEO strategy",
+          "selftext": "Hi , I could use some advice.\nI\u2019m looking for tips specifically from people who work with marketing/SEO, have a product to sell, and use Notion in that process.\n\nI\u2019m everything but a Notion expert and that\u2019s exactly the point. I\u2019m currently working on something that needs this integration to store and organize info, but I couldn\u2019t find any ready-made template or formula for it.\nDo you have a setup, template, or system that you follow for marketing + SEO inside Notion? Would be super grateful for any insights.",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Slow-Device-1894",
+          "created_utc": "2025-08-25 18:34",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzyoo7/need_advice_using_notion_to_support_a_product_seo/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 1.0
+        }
+      ]
+    },
+    "feature_request": {
+      "name": "Feature Requests",
+      "count": 2,
+      "percentage": 16.666666666666664,
+      "avg_score": 89.0,
+      "avg_comments": 79.0,
+      "posts": [
+        {
+          "title": "Notion really needs a \u201cUser Mode\u201d (separate from Edit Mode)",
+          "selftext": "Hey Notion community,\n\nI wanted to share a feature idea that I think could make Notion vastly more usable for everyday workflows. The problem is: **there is no way to separate \u201ccreator mode\u201d from \u201cuser mode.\u201d**\n\nRight now, everything in Notion is always editable, which is great for building, but becomes distracting when you just want to use your tables, databases, or dashboards. Every interaction invites you to tweak properties, formulas, and layouts. For people trying to focus, this constant temptation can make task management stressful or inefficient.\n\nThe solution is simple but powerful: **Notion should have a \u201cUser Mode\u201d or \u201cInteraction Mode.\u201d**\n\nHere\u2019s what it could look like:\n\n* Enter **Edit/Creator Mode** to configure databases, properties, formulas, views, and automations.\n* Exit Creator Mode to simplify the interface: only elements you want interactive remain so (checkboxes, buttons, links, etc.). All other editing controls stay hidden unless you switch back.\n* Users decide which parts of their setup stay interactive and which are locked.\n\nThis would effectively turn complex Notion setups into clean, usable apps for daily work, while keeping all the customization power intact. It\u2019s like giving creators and users two separate experiences in the same workspace.\n\nNo other tool currently combines:\n\n* Deep customization and flexibility\n* Clean, distraction-free interaction\n* The ability to selectively lock or hide editing controls\n\nIf implemented, this could make Notion **the ultimate productivity tool** for personal and team use. I hope the Notion team considers this\u2014having a \u201cUser Mode\u201d would be a game-changer.\n\n  \nWhat do you think?",
+          "score": 161,
+          "num_comments": 33,
+          "author": "Nshx-",
+          "created_utc": "2025-08-24 18:12",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz2z1n/notion_really_needs_a_user_mode_separate_from/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.97
+        },
+        {
+          "title": "\ud83d\uddf3\ufe0f Product Feedback for Notion \ud83d\udece\ufe0f",
+          "selftext": "Leave a comment on this post if you have any of the following types of feedback that you would like to reach the Notion Team:\n\n* **\ud83d\udca1 Feature Request**\n* **\ud83d\uddf3\ufe0f Product Feedback**\n\n\nPlease begin your message with the indicating category above for greater clarity.  \ne.g.: `\ud83d\udca1 Feature Request \u2014 I would like this feature`.\nPlease aim to list a singular feature request or bit of feedback, so that upvotes can clearly represent which features users wish to upvote.\n\nThe goal is to consolidate meaningful feedback making it easier for the Notion team to hear the voices of the r/Notion subreddit community. This post will refresh once every two weeks (on a Monday).\n\n**Please upvote comments that you agree with &/or have experienced! Reply with added context if you can.** The more voices heard, the greater chance that the Notion team can understand the need to address it!\n\n>\u2757If you need timely customer support regarding any BUGS, urgent or unexpected happenings in your workspace do not post here, email: **team@makenotion.com** \u2014 this will get you the fastest results.\u2757\n\nPlease do not make venting posts about the product when you haven't even reached out to customer support about the situation yet. (*Feel free to talk about it after the fact though, but do your own due diligence to actually resolve your own situation before publicly venting.*)",
+          "score": 17,
+          "num_comments": 125,
+          "author": "AutoModerator",
+          "created_utc": "2025-05-05 13:30",
+          "permalink": "https://reddit.com/r/Notion/comments/1kfbodt/product_feedback_for_notion/",
+          "flair_text": "\ud83d\uddf3\ufe0f Product Feedback",
+          "upvote_ratio": 1.0
+        }
+      ]
+    },
+    "integration_request": {
+      "name": "Integration Requests",
+      "count": 2,
+      "percentage": 16.666666666666664,
+      "avg_score": 1.0,
+      "avg_comments": 1.0,
+      "posts": [
+        {
+          "title": "Stock Tracker",
+          "selftext": "I\u2019ve been trying to make a stock tracker in Notion so I can get live stock prices. I thought that the best way to do it, was to make a google sheet with  tickers and using the google finance function to get the current prices and then update my databas in notion via Make. But I just can\u2019t seem to figure out the workflow. \n\nDoes anyone have an idea for how I can set it up?\n\nThanks in advance!\n",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Ok_Pin_6765",
+          "created_utc": "2025-08-25 18:42",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzywma/stock_tracker/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 1.0
+        },
+        {
+          "title": "Is it possible to add another AI to a Notion workspace?",
+          "selftext": "Is it possible to integrate another AI into a Notion workspace?\n\nI've tried a few things, but they haven't worked, mostly because I was trying to use commands like Notion AI's \"\\\\command,\" etc.\n",
+          "score": 1,
+          "num_comments": 2,
+          "author": "pemapi",
+          "created_utc": "2025-08-25 18:39",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzytrs/is_it_possible_to_add_another_ai_to_a_notion/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 1.0
+        }
+      ]
+    },
+    "praise": {
+      "name": "Praise/Positive Feedback",
+      "count": 1,
+      "percentage": 8.333333333333332,
+      "avg_score": 59.0,
+      "avg_comments": 4.0,
+      "posts": [
+        {
+          "title": "How did I miss this?! The new CSV mapping feature is AMAZING!",
+          "selftext": "",
+          "score": 59,
+          "num_comments": 4,
+          "author": "modernluther",
+          "created_utc": "2025-08-25 17:44",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzxbd1/how_did_i_miss_this_the_new_csv_mapping_feature/",
+          "flair_text": "\ud83e\udd79 Appreciation",
+          "upvote_ratio": 1.0
+        }
+      ]
+    },
+    "workflow_showcase": {
+      "name": "Workflow Showcase",
+      "count": 1,
+      "percentage": 8.333333333333332,
+      "avg_score": 21.0,
+      "avg_comments": 23.0,
+      "posts": [
+        {
+          "title": "5 Years with Notion: An Honest Take - but perhaps I am using my Notion PARA setup wrong.",
+          "selftext": "# Been using Notion for 5 years now and I'm stuck in the same frustrating cycle. Maybe others can relate?\n\n**The endless loop:**\n\n1. Spend hours/days tweaking Notion to fit my workflow perfectly\n2. Use it enthusiastically for a few weeks/months\n3. Gradually stop engaging with the complex setup\n4. End up just using it as a glorified knowledge database\n5. Get fed up and start over with a new setup\n6. Repeat infinitely\n\n**My biggest gripes:**\n\nNotion is simultaneously too powerful and too finicky. The customization options are overwhelming, but more importantly, things constantly break or don't show up because I missed some obscure filter setting or database property. I'll be looking for a note I KNOW exists, only to discover it's hidden because of some view configuration I forgot about.\n\nIt *could* be perfect, but it's not. The gap between potential and reality is maddening.\n\n**What I actually want (and what's inevitable):**\n\nA truly intelligent, zero-setup productivity system. Something that:\n\n* Automatically summarizes my meetings and schedules follow-ups\n* Reminds me of tasks based on context from my emails/messages\n* Tracks projects without me having to build elaborate database schemas\n* Just... works without constant maintenance\n\nRight now I'm experimenting with ChatGPT Projects as a super basic version of this vision. I dump everything into it and get contextually aware responses based on my evolving knowledge base. No setup, no maintenance, just intelligence.\n\n**The bottom line:** I'm done with apps that require me to become a database administrator just to track my life. The technology exists for something better - we just need someone to build it.\n\nAnyone else feeling this Notion fatigue? What are you using instead?",
+          "score": 21,
+          "num_comments": 23,
+          "author": "therealhumanchaos",
+          "created_utc": "2025-08-25 11:48",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzoaq6/5_years_with_notion_an_honest_take_but_perhaps_i/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.92
+        }
+      ]
+    },
+    "mobile_feedback": {
+      "name": "Mobile App Feedback",
+      "count": 1,
+      "percentage": 8.333333333333332,
+      "avg_score": 6.0,
+      "avg_comments": 10.0,
+      "posts": [
+        {
+          "title": "Why is Notion cheaper through Apple App Store?",
+          "selftext": "I\u2019ve searched everywhere online but can\u2019t find an answer.\n\nI have a Plus subscription through the App Store for under $50 per year. The same plan costs about twice as much if I buy it directly from Notion.\n\nWhat\u2019s the catch? I don\u2019t see any difference or reason why Apple users would get such a discount.",
+          "score": 6,
+          "num_comments": 10,
+          "author": "No-Promotion-4137",
+          "created_utc": "2025-08-25 13:22",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzqdfd/why_is_notion_cheaper_through_apple_app_store/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0
+        }
+      ]
+    }
+  }
+};
+        
+        let currentData = JSON.parse(JSON.stringify(data)); // Deep copy
+        
+        function renderCategories(categoriesData) {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+            
+            Object.entries(categoriesData).forEach(([categoryKey, category]) => {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.onclick = () => toggleCategory(categoryKey);
+                
+                header.innerHTML = `
+                    <div>
+                        <div class="category-title">${category.name}</div>
+                        <div class="category-stats">
+                            <span>${category.count} posts (${category.percentage.toFixed(1)}%)</span>
+                            <span>Avg Score: ${category.avg_score.toFixed(1)}</span>
+                            <span>Avg Comments: ${category.avg_comments.toFixed(1)}</span>
+                        </div>
+                    </div>
+                    <div class="toggle-icon" id="toggle-${categoryKey}">▼</div>
+                `;
+                
+                const content = document.createElement('div');
+                content.className = 'category-content';
+                content.id = `content-${categoryKey}`;
+                
+                if (category.posts.length === 0) {
+                    content.innerHTML = '<div class="no-posts">No posts match the current filters</div>';
+                } else {
+                    category.posts.forEach(post => {
+                        const postElement = createPostElement(post);
+                        content.appendChild(postElement);
+                    });
+                }
+                
+                section.appendChild(header);
+                section.appendChild(content);
+                container.appendChild(section);
+            });
+            
+            // Update category filter options
+            updateCategoryFilter(categoriesData);
+        }
+        
+        function createPostElement(post) {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            
+            const hasLongContent = post.selftext.length > 300;
+            const shortContent = hasLongContent ? post.selftext.substring(0, 300) + '...' : post.selftext;
+            
+            postDiv.innerHTML = `
+                <div class="post-header">
+                    <div class="post-title">${escapeHtml(post.title)}</div>
+                </div>
+                <div class="post-meta">
+                    <span class="score">↑ ${post.score}</span>
+                    <span class="comments">💬 ${post.num_comments}</span>
+                    <span>👤 u/${escapeHtml(post.author)}</span>
+                    <span>📅 ${post.created_utc}</span>
+                    ${post.flair_text ? `<span class="flair">${escapeHtml(post.flair_text)}</span>` : ''}
+                </div>
+                ${post.selftext ? `
+                    <div class="post-content ${hasLongContent ? 'collapsed' : ''}" id="content-${post.title.replace(/[^a-zA-Z0-9]/g, '')}">
+                        ${escapeHtml(hasLongContent ? shortContent : post.selftext)}
+                    </div>
+                    ${hasLongContent ? `<div class="expand-btn" onclick="toggleContent('${post.title.replace(/[^a-zA-Z0-9]/g, '')}', '${escapeHtml(post.selftext)}')">Show more...</div>` : ''}
+                ` : ''}
+                <div class="post-actions">
+                    ${post.permalink ? `<a href="${post.permalink}" target="_blank" class="action-btn">View on Reddit</a>` : ''}
+                </div>
+            `;
+            
+            return postDiv;
+        }
+        
+        function toggleCategory(categoryKey) {
+            const content = document.getElementById(`content-${categoryKey}`);
+            const toggle = document.getElementById(`toggle-${categoryKey}`);
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                toggle.classList.remove('rotated');
+            } else {
+                content.classList.add('active');
+                toggle.classList.add('rotated');
+            }
+        }
+        
+        function toggleContent(id, fullText) {
+            const element = document.getElementById(`content-${id}`);
+            const expandBtn = element.nextElementSibling;
+            
+            if (element.classList.contains('collapsed')) {
+                element.classList.remove('collapsed');
+                element.innerHTML = escapeHtml(fullText);
+                expandBtn.textContent = 'Show less...';
+            } else {
+                element.classList.add('collapsed');
+                element.innerHTML = escapeHtml(fullText.substring(0, 300) + '...');
+                expandBtn.textContent = 'Show more...';
+            }
+        }
+        
+        function updateCategoryFilter(categoriesData) {
+            const select = document.getElementById('category-filter');
+            const currentValue = select.value;
+            
+            // Clear existing options except "All Categories"
+            select.innerHTML = '<option value="">All Categories</option>';
+            
+            Object.entries(categoriesData).forEach(([key, category]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${category.name} (${category.count})`;
+                select.appendChild(option);
+            });
+            
+            select.value = currentValue;
+        }
+        
+        function applyFilters() {
+            const categoryFilter = document.getElementById('category-filter').value;
+            const sortBy = document.getElementById('sort-posts').value;
+            const searchTerm = document.getElementById('search-posts').value.toLowerCase();
+            const minScore = parseInt(document.getElementById('min-score').value) || 0;
+            
+            // Start with original data
+            const filteredData = {};
+            
+            Object.entries(data.categories).forEach(([categoryKey, category]) => {
+                let posts = [...category.posts];
+                
+                // Apply search filter
+                if (searchTerm) {
+                    posts = posts.filter(post => 
+                        post.title.toLowerCase().includes(searchTerm) ||
+                        post.selftext.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                // Apply minimum score filter
+                posts = posts.filter(post => post.score >= minScore);
+                
+                // Apply category filter
+                if (!categoryFilter || categoryKey === categoryFilter) {
+                    // Sort posts
+                    posts.sort((a, b) => {
+                        switch (sortBy) {
+                            case 'score':
+                                return b.score - a.score;
+                            case 'comments':
+                                return b.num_comments - a.num_comments;
+                            case 'date':
+                                return new Date(b.created_utc) - new Date(a.created_utc);
+                            case 'title':
+                                return a.title.localeCompare(b.title);
+                            default:
+                                return b.score - a.score;
+                        }
+                    });
+                    
+                    filteredData[categoryKey] = {
+                        ...category,
+                        posts: posts,
+                        count: posts.length,
+                        percentage: posts.length / data.summary.total_posts * 100
+                    };
+                }
+            });
+            
+            currentData = { ...data, categories: filteredData };
+            renderCategories(currentData.categories);
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        // Event listeners
+        document.getElementById('category-filter').addEventListener('change', applyFilters);
+        document.getElementById('sort-posts').addEventListener('change', applyFilters);
+        document.getElementById('search-posts').addEventListener('input', applyFilters);
+        document.getElementById('min-score').addEventListener('input', applyFilters);
+        
+        // Initialize
+        renderCategories(data.categories);
+        
+        // Expand all categories by default
+        Object.keys(data.categories).forEach(categoryKey => {
+            toggleCategory(categoryKey);
+        });
+    </script>
+</body>
+</html>

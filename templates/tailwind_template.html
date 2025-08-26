@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Reddit Analysis Report</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: {
+                            50: '#f0f4ff',
+                            500: '#667eea',
+                            600: '#5a6fd8',
+                            700: '#4c63d2'
+                        },
+                        secondary: {
+                            500: '#764ba2',
+                            600: '#6a4d8a'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <div class="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Header -->
+        <div class="bg-gradient-to-r from-primary-500 to-secondary-500 text-white p-8 rounded-xl mb-8 text-center shadow-lg">
+            <h1 class="text-3xl sm:text-4xl font-bold mb-3">🎯 Notion Reddit Analysis</h1>
+            <p class="text-lg opacity-90">Competitive Intelligence & User Research Dashboard</p>
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-shadow duration-200">
+                <h3 class="text-primary-500 text-sm font-semibold uppercase tracking-wide mb-2">Total Posts</h3>
+                <div class="text-3xl font-bold text-gray-800">{{summary.total_posts}}</div>
+            </div>
+            <div class="bg-white rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-shadow duration-200">
+                <h3 class="text-primary-500 text-sm font-semibold uppercase tracking-wide mb-2">Date Range</h3>
+                <div class="text-sm font-bold text-gray-800">{{summary.date_range_start}} to {{summary.date_range_end}}</div>
+            </div>
+            <div class="bg-white rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-shadow duration-200">
+                <h3 class="text-primary-500 text-sm font-semibold uppercase tracking-wide mb-2">Average Score</h3>
+                <div class="text-3xl font-bold text-gray-800">{{summary.avg_score}}</div>
+            </div>
+            <div class="bg-white rounded-xl p-6 text-center shadow-md hover:shadow-lg transition-shadow duration-200">
+                <h3 class="text-primary-500 text-sm font-semibold uppercase tracking-wide mb-2">Average Comments</h3>
+                <div class="text-3xl font-bold text-gray-800">{{summary.avg_comments}}</div>
+            </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="bg-white rounded-t-xl shadow-md">
+            <div class="flex border-b border-gray-200">
+                <button 
+                    class="flex-1 px-6 py-4 text-center font-semibold text-gray-600 hover:text-primary-500 hover:bg-gray-50 transition-colors duration-200 border-b-2 border-transparent hover:border-primary-200 tab-btn active"
+                    onclick="switchTab('analysis-tab', this)"
+                >
+                    📊 Analysis Report
+                </button>
+                <button 
+                    class="flex-1 px-6 py-4 text-center font-semibold text-gray-600 hover:text-primary-500 hover:bg-gray-50 transition-colors duration-200 border-b-2 border-transparent hover:border-primary-200 tab-btn"
+                    onclick="switchTab('posts-tab', this)"
+                >
+                    💬 Detailed Posts View
+                </button>
+            </div>
+        </div>
+        
+        <!-- Tab Content -->
+        <div class="bg-white rounded-b-xl shadow-md min-h-96">
+            <!-- Analysis Tab -->
+            <div id="analysis-tab" class="tab-content p-8">
+                <div class="comprehensive-report" id="comprehensive-section">
+                    <div class="flex justify-between items-center mb-6 pb-4 border-b border-gray-200">
+                        <h3 class="text-2xl font-bold text-gray-800">📋 Comprehensive Analysis Report</h3>
+                        <button 
+                            class="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors duration-200 text-sm font-medium"
+                            onclick="toggleSection('comprehensive-section')"
+                        >
+                            Hide Report
+                        </button>
+                    </div>
+                    <div class="report-content max-h-screen overflow-y-auto custom-scrollbar pr-4 text-sm leading-relaxed" id="comprehensive-content">
+                        <!-- Report content will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Posts Tab -->
+            <div id="posts-tab" class="tab-content p-8 hidden">
+                <!-- Controls -->
+                <div class="mb-8">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">📊 Filter & Search</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="space-y-2">
+                            <label for="category-filter" class="block text-sm font-medium text-primary-600">Category:</label>
+                            <select 
+                                id="category-filter" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            >
+                                <option value="">All Categories</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="sort-filter" class="block text-sm font-medium text-primary-600">Sort by:</label>
+                            <select 
+                                id="sort-filter" 
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            >
+                                <option value="score-desc">Score (High to Low)</option>
+                                <option value="score-asc">Score (Low to High)</option>
+                                <option value="comments-desc">Comments (High to Low)</option>
+                                <option value="comments-asc">Comments (Low to High)</option>
+                                <option value="date-desc">Date (Newest First)</option>
+                                <option value="date-asc">Date (Oldest First)</option>
+                            </select>
+                        </div>
+                        <div class="space-y-2">
+                            <label for="search-filter" class="block text-sm font-medium text-primary-600">Search:</label>
+                            <input 
+                                type="text" 
+                                id="search-filter" 
+                                placeholder="Search in titles..."
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                            >
+                        </div>
+                    </div>
+                </div>
+                
+                <div id="categories-container" class="space-y-6">
+                    <!-- Categories and posts will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../scripts/tailwind_report_functionality.js"></script>
+    <script>
+        // Data will be injected here
+        const data = {{data_json}};
+        
+        // Initialize the report
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeReport(data);
+        });
+    </script>
+</body>
+</html>

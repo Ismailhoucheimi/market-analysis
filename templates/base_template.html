@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Reddit Analysis Report</title>
+    <link rel="stylesheet" href="../styles/report_styles.css">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🎯 Notion Reddit Analysis</h1>
+            <p>Competitive Intelligence & User Research Dashboard</p>
+        </div>
+        
+        <!-- Summary Cards -->
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Posts</h3>
+                <div class="value">{{summary.total_posts}}</div>
+            </div>
+            <div class="summary-card">
+                <h3>Date Range</h3>
+                <div class="value">{{summary.date_range_start}} to {{summary.date_range_end}}</div>
+            </div>
+            <div class="summary-card">
+                <h3>Average Score</h3>
+                <div class="value">{{summary.avg_score}}</div>
+            </div>
+            <div class="summary-card">
+                <h3>Average Comments</h3>
+                <div class="value">{{summary.avg_comments}}</div>
+            </div>
+        </div>
+        
+        <!-- Tab Navigation -->
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('analysis-tab', this)">
+                📊 Analysis Report
+            </button>
+            <button class="tab-btn" onclick="switchTab('posts-tab', this)">
+                💬 Detailed Posts View
+            </button>
+        </div>
+        
+        <!-- Tab Content -->
+        <div id="analysis-tab" class="tab-content active">
+            <!-- Analysis content will go here -->
+            <div class="comprehensive-report" id="comprehensive-section">
+                <div class="section-header">
+                    <h3>📋 Comprehensive Analysis Report</h3>
+                    <button class="toggle-btn" onclick="toggleSection('comprehensive-section')">Hide Report</button>
+                </div>
+                <div class="report-content" id="comprehensive-content">
+                    <!-- Report content will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+        
+        <div id="posts-tab" class="tab-content">
+            <!-- Posts content will go here -->
+            <div class="controls">
+                <h3 style="margin-bottom: 15px;">📊 Filter & Search</h3>
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label for="category-filter">Category:</label>
+                        <select id="category-filter">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="sort-filter">Sort by:</label>
+                        <select id="sort-filter">
+                            <option value="score-desc">Score (High to Low)</option>
+                            <option value="score-asc">Score (Low to High)</option>
+                            <option value="comments-desc">Comments (High to Low)</option>
+                            <option value="comments-asc">Comments (Low to High)</option>
+                            <option value="date-desc">Date (Newest First)</option>
+                            <option value="date-asc">Date (Oldest First)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label for="search-filter">Search:</label>
+                        <input type="text" id="search-filter" placeholder="Search in titles...">
+                    </div>
+                </div>
+            </div>
+            
+            <div id="categories-container">
+                <!-- Categories and posts will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+    
+    <script src="../scripts/report_functionality.js"></script>
+    <script>
+        // Data will be injected here
+        const data = {{data_json}};
+        
+        // Initialize the report
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeReport(data);
+        });
+    </script>
+</body>
+</html>

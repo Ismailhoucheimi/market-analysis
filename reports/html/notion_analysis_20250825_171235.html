@@ -1,0 +1,2186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notion Reddit Analysis Report</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f9fa;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .summary-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .summary-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+        
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .controls {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-group label {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .category-section {
+            background: white;
+            margin-bottom: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .category-header {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s;
+        }
+        
+        .category-header:hover {
+            background: #5a67d8;
+        }
+        
+        .category-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        .category-stats {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .toggle-icon {
+            transition: transform 0.3s;
+        }
+        
+        .toggle-icon.rotated {
+            transform: rotate(180deg);
+        }
+        
+        .category-content {
+            display: none;
+            padding: 0;
+        }
+        
+        .category-content.active {
+            display: block;
+        }
+        
+        .post {
+            border-bottom: 1px solid #eee;
+            padding: 20px;
+            transition: background-color 0.3s;
+        }
+        
+        .post:last-child {
+            border-bottom: none;
+        }
+        
+        .post:hover {
+            background-color: #f8f9ff;
+        }
+        
+        .post-header {
+            display: flex;
+            justify-content: between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+            gap: 15px;
+        }
+        
+        .post-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #333;
+            flex: 1;
+            line-height: 1.4;
+        }
+        
+        .post-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .post-meta span {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .post-content {
+            margin-bottom: 15px;
+            line-height: 1.6;
+            color: #555;
+        }
+        
+        .post-content.collapsed {
+            max-height: 100px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .post-content.collapsed::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            background: linear-gradient(transparent, white);
+        }
+        
+        .expand-btn {
+            color: #667eea;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .expand-btn:hover {
+            text-decoration: underline;
+        }
+        
+        .post-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            padding: 5px 10px;
+            background: #f1f3f4;
+            border: none;
+            border-radius: 5px;
+            color: #667eea;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: background-color 0.3s;
+        }
+        
+        .action-btn:hover {
+            background: #e2e6ea;
+        }
+        
+        .score {
+            background: #4CAF50;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .comments {
+            background: #2196F3;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .flair {
+            background: #FF9800;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .sentiment {
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .sentiment.positive {
+            background: #4CAF50;
+            color: white;
+        }
+        
+        .sentiment.negative {
+            background: #F44336;
+            color: white;
+        }
+        
+        .sentiment.neutral {
+            background: #9E9E9E;
+            color: white;
+        }
+        
+        .urgency {
+            background: #FF5722;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .business-impact {
+            background: #9C27B0;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+        
+        .llm-insights {
+            background: #f8f9ff;
+            border-left: 4px solid #667eea;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        
+        .llm-insights h4 {
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+        }
+        
+        .no-posts {
+            padding: 40px;
+            text-align: center;
+            color: #666;
+            font-style: italic;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .post-header {
+                flex-direction: column;
+            }
+            
+            .post-meta {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Notion Reddit Analysis</h1>
+            <p>Competitive Intelligence from r/Notion</p>
+        </div>
+        
+        <div class="summary-grid">
+            <div class="summary-card">
+                <h3>Total Posts</h3>
+                <div class="value" id="total-posts">81</div>
+            </div>
+            <div class="summary-card">
+                <h3>Date Range</h3>
+                <div class="value" style="font-size: 1rem;">2024-09-29 to 2025-08-25</div>
+            </div>
+            <div class="summary-card">
+                <h3>Average Score</h3>
+                <div class="value">9.2</div>
+            </div>
+            <div class="summary-card">
+                <h3>Average Comments</h3>
+                <div class="value">6.3</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <h3 style="margin-bottom: 15px;">📊 Filter & Search</h3>
+            <div class="filter-controls">
+                <div class="filter-group">
+                    <label for="category-filter">Category:</label>
+                    <select id="category-filter">
+                        <option value="">All Categories</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="sort-posts">Sort by:</label>
+                    <select id="sort-posts">
+                        <option value="score">Score (High to Low)</option>
+                        <option value="comments">Comments (High to Low)</option>
+                        <option value="date">Date (Newest First)</option>
+                        <option value="title">Title (A-Z)</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-posts">Search:</label>
+                    <input type="text" id="search-posts" placeholder="Search in titles and content...">
+                </div>
+                <div class="filter-group">
+                    <label for="min-score">Min Score:</label>
+                    <input type="number" id="min-score" placeholder="0" min="0">
+                </div>
+            </div>
+        </div>
+        
+        <div id="categories-container">
+            <!-- Categories will be populated by JavaScript -->
+        </div>
+        
+        <div style="text-align: center; margin-top: 30px; padding: 20px; background: white; border-radius: 10px; color: #666;">
+            <p>📈 Generated on 2025-08-25 17:12:35 by Notion Reddit Analysis Pipeline</p>
+        </div>
+    </div>
+    
+    <script>
+        // Data will be injected here
+        const data = {
+  "summary": {
+    "total_posts": 81,
+    "date_range_start": "2024-09-29",
+    "date_range_end": "2025-08-25",
+    "avg_score": 9.2,
+    "avg_comments": 6.3,
+    "generated_at": "2025-08-25 17:12:35"
+  },
+  "categories": {
+    "help_support": {
+      "name": "Help/Support",
+      "count": 21,
+      "percentage": 25.925925925925924,
+      "avg_score": 3.4761904761904763,
+      "avg_comments": 4.0476190476190474,
+      "posts": [
+        {
+          "title": "Everyone has messy Notion workspaces :(",
+          "selftext": "I got tired of being lost in my own Notion workspace. Made something to fix it. Looking for 5 beta testers\n\nHey r/Notion,\n\nI've lurked here for months and see the same pain everywhere: \n\nWe build amazing systems in Notion, then can't figure out what we actually built.\n\nThe breaking point? I spent 3 hours last weekend trying to trace why deleting one rollup would break my entire finance tracker.\n\nWe need more than database views and filters. We need to see the big picture, \n\nhow everything connects, what depends on what, where our data actually flows.\n\nSo I built something: :)\n\na tool that scans your workspace and shows you the complete map of your database relationships.\n\nHere's what it found in my \"simple\" setup:\n\n- 14+ databases I forgot I had\n- Rollup chains 4 levels deep  \n- Formula dependencies I never realized existed\n\nThe graph shows clusters of related databases. Click any node to see what it connects to. \n\nFinally understand the monster you created.\n\nNow I'm looking for 5 people from this community to test it out and give feedback.\n\n Especially interested in:\n\n- Complex workspace owners (50 +  databases)\n- People who use lots of rollups/formulas\n- Anyone who's ever been scared to delete something\n\n----> Drop a comment if you're interested. Will DM the first few people.\n\n trying to build a solution :)\n",
+          "score": 49,
+          "num_comments": 41,
+          "author": "NeedleworkerFuzzy314",
+          "created_utc": "2025-08-24 18:52",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz415i/everyone_has_messy_notion_workspaces/",
+          "flair_text": "Community",
+          "upvote_ratio": 0.83,
+          "sentiment_score": 0.0,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Analysis failed",
+          "user_persona": "Unknown",
+          "competitive_intelligence": "Unable to analyze"
+        },
+        {
+          "title": "Any tips on how I can make a weekly self clearing planner?",
+          "selftext": "",
+          "score": 4,
+          "num_comments": 1,
+          "author": "Meme_Lord330",
+          "created_utc": "2025-08-24 14:39",
+          "permalink": "https://reddit.com/r/Notion/comments/1myxauw/any_tips_on_how_i_can_make_a_weekly_self_clearing/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.0,
+          "urgency_level": 3,
+          "business_impact": 2,
+          "key_insights": "Users are seeking help with creating complex planner workflows.; There's a need for more tutorials and guidance on building advanced database functionality within Notion.",
+          "user_persona": "Beginner/Intermediate User: Someone trying to build advanced workflows but struggling with the initial setup.",
+          "competitive_intelligence": "Indicates that Notion's learning curve for advanced features like self-clearing planners can be a barrier for new users. Competitors with easier workflow automation or simpler planning interfaces may attract users frustrated with Notion's complexity."
+        },
+        {
+          "title": "Checklist vs database",
+          "selftext": "I run a small architecture/interiors business with Notion to track and manage a lot of it. I\u2019ve developed our system slowly over the years and sometimes go back and forth between different approaches. One of these is when I need a full database vs a simple page and check boxes, things can get too complex and cumbersome then I have to simplify, or vice versa.\n\nI wondered if others had a guidelines/principles/rules of thumb they follow that helps them decide how and when to implement certain tools. ",
+          "score": 3,
+          "num_comments": 1,
+          "author": "raws31",
+          "created_utc": "2025-08-24 21:15",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz7qgw/checklist_vs_database/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.0,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Users struggle to decide between checklists and databases, indicating a need for clearer guidance.; Complex systems can become cumbersome, suggesting a need for simplification and modularity.; Guidance on organizing information is needed. (Checklist vs database)",
+          "user_persona": "Small business owner or team lead, trying to optimize their workflow and organization within Notion.",
+          "competitive_intelligence": "Demonstrates a potential usability challenge. Competitors with more intuitive organization features might have an advantage. Notion needs to improve user onboarding and provide better guidelines/examples."
+        },
+        {
+          "title": "Startup project management",
+          "selftext": "Need some advice on using Notion as our project management tool for my start. We are only a small team but already running into setup challenges. Not sure if this is poor setup or limitations of Notion, so advice would be really appreciated.\n\nWe have multiple Teamspaces to manage Marketing, Product, Finance and other areas. But as a small team, almost all pages are visible to all. \n\nI'm looking to manage tasks and then weekly sprints against those tasks for team members. \n\nWe run a weekly meeting that we track in a database with ai summarised actions but this then needs to be translated across to the tasks-project list. \n\nFor the next weekly meeting we need team members to be asked to turn up already having updated progress against tasks and deadlines.\n\nAny recommendations on how best to do this? \nOr recommended people to help make this process sing?",
+          "score": 2,
+          "num_comments": 0,
+          "author": "si1vrback",
+          "created_utc": "2025-08-25 14:32",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzs39x/startup_project_management/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.4,
+          "urgency_level": 4,
+          "business_impact": 4,
+          "key_insights": "Small teams are facing challenges in setting up Notion for project management, potentially due to complexity or lack of clear guidance.; Difficulty in translating meeting summaries to project tasks indicates a need for improved workflow automation or integration.; The user needs assistance with sprint planning within Notion, which suggests the project management features may not be intuitive for all use cases.",
+          "user_persona": "Team leader/project manager within a small startup, using Notion for project management but encountering setup and workflow challenges.",
+          "competitive_intelligence": "Competitors that offer more structured and intuitive project management features, or better onboarding for teams, may be more appealing. Notion is risking small teams migrating to simpler solutions."
+        },
+        {
+          "title": "Live Study Guide Pages into a New Database Page",
+          "selftext": "I make study guides to help other students at my college. I am reworking certain guides that have a lot of information and organizing the pages within each guide. The problem is that the pages are already live and I am unable to do any kind of dragging or dropping as they are not found on the left hand side. Even duplicating will still have them live and I will be unable to put them into a new database.\n\nI tried selecting the title but it gives nothing but an icon option.\n\nExample of one of the courses I am looking to place into a Database:\n\nhttps://yukietwilightnakama.notion.site/D315-Network-and-Security-Foundations-a09acf081d4b488c8f873be0bcdc2a6a?pvs=74",
+          "score": 2,
+          "num_comments": 8,
+          "author": "YukieNaka",
+          "created_utc": "2025-08-24 15:35",
+          "permalink": "https://reddit.com/r/Notion/comments/1myyrpe/live_study_guide_pages_into_a_new_database_page/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.1,
+          "urgency_level": 3,
+          "business_impact": 2,
+          "key_insights": "Users find it difficult to migrate existing live pages into databases, particularly when organizing information.; The drag-and-drop functionality within Notion has limitations when dealing with existing live pages.",
+          "user_persona": "Content Creator, Student, Information Organizer",
+          "competitive_intelligence": "This highlights a potential weakness in Notion's organization features. Lack of easy migration and organizing capabilities creates friction and can lead users to explore alternatives with better content migration features, like Obsidian or Roam Research."
+        },
+        {
+          "title": "Notion AI",
+          "selftext": "Can I add Notion AI to a free account? ",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Paranoid-Android84",
+          "created_utc": "2025-08-25 20:46",
+          "permalink": "https://reddit.com/r/Notion/comments/1n025jm/notion_ai/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.0,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users are unclear about the availability of Notion AI features within different subscription tiers.; There's a general interest in Notion AI and its potential benefits.; Clearer documentation is needed regarding feature availability and pricing for Notion AI.",
+          "user_persona": "Potential user or free user considering upgrading to access AI features.",
+          "competitive_intelligence": "This shows a need for more transparent communication about Notion AI's value proposition and accessibility across different plans. Competitors may be gaining traction by offering clearer AI feature access for free or lower-tier plans."
+        },
+        {
+          "title": "Need advice: Using Notion to support a product + SEO strategy",
+          "selftext": "Hi , I could use some advice.\nI\u2019m looking for tips specifically from people who work with marketing/SEO, have a product to sell, and use Notion in that process.\n\nI\u2019m everything but a Notion expert and that\u2019s exactly the point. I\u2019m currently working on something that needs this integration to store and organize info, but I couldn\u2019t find any ready-made template or formula for it.\nDo you have a setup, template, or system that you follow for marketing + SEO inside Notion? Would be super grateful for any insights.",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Slow-Device-1894",
+          "created_utc": "2025-08-25 18:34",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzyoo7/need_advice_using_notion_to_support_a_product_seo/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.1,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users in marketing/SEO roles are seeking guidance on using Notion for their workflows, indicating a need for specialized templates and best practices.; Lack of readily available templates and formulas for marketing/SEO is a barrier to adoption for this user segment.",
+          "user_persona": "Marketing professional or SEO specialist relatively new to Notion, looking for solutions tailored to their specific needs.",
+          "competitive_intelligence": "Competitors offering pre-built marketing/SEO templates and workflows within their platform could attract users struggling with Notion's general-purpose nature. Notion needs to improve marketing efforts towards this niche."
+        },
+        {
+          "title": "Notion for Counseling Students",
+          "selftext": "I am searching for a good, yet simplified template to act as a schedule and PKMS to keep articles, tips, etc. that I come across as I pursue my degree. Does anyone have good suggestions for a low-cost template?",
+          "score": 1,
+          "num_comments": 0,
+          "author": "thediaryofanika",
+          "created_utc": "2025-08-25 17:24",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzwslc/notion_for_counseling_students/",
+          "flair_text": "\ud83c\udf81 Free Templates",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.0,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Analysis failed",
+          "user_persona": "Unknown",
+          "competitive_intelligence": "Unable to analyze"
+        },
+        {
+          "title": "Is there a formula for this variable?",
+          "selftext": "\\[SOLVED!\\]   \nIn my notion libray I have a relation that conects my books to their respective sagas. I would like to know if there is a way to create a formula variable \\[in automation\\] so that when I change the saga's status to \"now\" all the books related to this saga that have their start dates empty will have their status changed?\n\nThis automation is in the saga's db.  \nI have the trigger in the automation as when series status is set to \"now\".  \nI am having this specif trouble because tou can't use formulas on the filters, so maybe the variables can help\n\nhttps://preview.redd.it/395rozo2t6lf1.png?width=811&format=png&auto=webp&s=3750f5c90b2c850cc1efc40233b02935a4ac1cd1",
+          "score": 1,
+          "num_comments": 10,
+          "author": "oliviaBrownkkh",
+          "created_utc": "2025-08-25 15:50",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzu7fy/is_there_a_formula_for_this_variable/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.0,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Analysis failed",
+          "user_persona": "Unknown",
+          "competitive_intelligence": "Unable to analyze"
+        },
+        {
+          "title": "possible to remove \"add comment\" blocks on feed?",
+          "selftext": "https://preview.redd.it/2p3u6b8uo6lf1.png?width=337&format=png&auto=webp&s=c45b8770d19fdbe72d77419d6fcb3874f256d629\n\ni have this little feed on the side of my home page that pulls from a photography database. it serves no purpose other than to make me happy to look at recent photos i've taken, and these \"add comment\" blocks are killing me. i've scoured all the database options and found nothing even mentioning comments, is it possible to remove the comment options or do i just have to live with it if i want to use the feed option? ",
+          "score": 1,
+          "num_comments": 3,
+          "author": "Simple-Can-3325",
+          "created_utc": "2025-08-25 15:31",
+          "permalink": "https://reddit.com/r/Notion/comments/1mztp1m/possible_to_remove_add_comment_blocks_on_feed/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.5,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Users want greater control over the appearance of database views.; The presence of unwanted elements, like comment blocks, can negatively impact the user experience.; Discoverability of settings and customization options can be improved.",
+          "user_persona": "Intermediate user, customization focused, visually oriented.",
+          "competitive_intelligence": "Points to an area where Notion could improve its UI/UX by providing more granular control over display settings. This directly relates to customizability, a key differentiator against simpler note-taking apps."
+        },
+        {
+          "title": "How to use offline mode?",
+          "selftext": "Eeek it's blocked at my school but it still works, but it got me wondering why I even need to load the page at all before opening it. Does offline mode work on existing pages, and make them already loaded? 3 dot menu doesn't show anything.",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Crazy-Anteater8810",
+          "created_utc": "2025-08-25 11:08",
+          "permalink": "https://reddit.com/r/Notion/comments/1mznj08/how_to_use_offline_mode/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.3,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Confusion surrounding offline mode functionality.; User experiencing access restrictions at school but still able to load the app.",
+          "user_persona": "Student using Notion under restrictive network conditions.",
+          "competitive_intelligence": "Highlights a potential need for clearer documentation and user education about offline mode, especially for users with limited or intermittent internet access. Competitors that have seamless offline experience may be more attractive to these users."
+        },
+        {
+          "title": "Beginner needs help",
+          "selftext": "I've just finished creating a Strategic Planning toolkit on Notion, which was a bit of a journey.\nI'm not trying to understand the selling part of it. I've put my template on gumroad, but im really confused with this whole process now. When I search gumroad I cant find my product, so I don't unswrstand how I can be approved by the marketplace if I need to make a sale.\nI've tried to sell on botion itself as creator but that may take a while.\nI would really appreciate any help guidance how to go about the selling part of things.",
+          "score": 1,
+          "num_comments": 2,
+          "author": "ImpressionProud7511",
+          "created_utc": "2025-08-25 02:41",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzf0pm/beginner_needs_help/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.99,
+          "sentiment_score": -0.2,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Lack of clear guidance/support for template creators on selling their templates, specifically on Gumroad integration and visibility.; Frustration with the onboarding process for selling templates within the Notion ecosystem.",
+          "user_persona": "Beginner template creator",
+          "competitive_intelligence": "Highlights potential gaps in Notion's creator support and marketplace infrastructure. Competitors with more streamlined creator monetization could attract talent."
+        },
+        {
+          "title": "How to track every customer interaction?",
+          "selftext": "I've been using the comments field to track each time a customer interacts with us for various needs and whenever we reach out to them for follow-up, etc. I'm not referring to full-blown meeting notes, but say whenever customer calls in to seek help on an issue. I log it down. \n\nExamples of what appears in the comment section of some cutomers:\n\n\"called in to ask for invoice to be reprinted\"\n\n\"called customer to follow-up but no response\"\n\nBut using the comments field does not allow me to tabulate various statistics like how many follow-up calls we tried to make in a week or how often we talked to the customer or how many times we reached out proactively to follow-up with customers. Is there a better way to do this?",
+          "score": 1,
+          "num_comments": 4,
+          "author": "mambo78",
+          "created_utc": "2025-08-25 02:40",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzf06v/how_to_track_every_customer_interaction/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.3,
+          "urgency_level": 4,
+          "business_impact": 4,
+          "key_insights": "Current comment functionality is insufficient for tracking customer interactions in a structured way.; Need for a dedicated CRM-like feature set within Notion to support sales or customer support workflows.",
+          "user_persona": "Small business owner/customer support representative",
+          "competitive_intelligence": "This highlights a potential gap in Notion's functionality compared to dedicated CRM tools. Customers may look to integrations, or other complete solutions."
+        },
+        {
+          "title": "Hiding pages in Notion",
+          "selftext": "Hey guys! I'm wondering if it's possible to hide a page in Notion. Essentially, I have some pages that I don't necessarily want to delete but that I don't access often and are distracting when I'm using Notion for tracking my classes or taking notes. Is there a sort of \"hidden\" pages feature where the pages won't show up in the sidebar but will show up if I search for them? Or will I have to just bite the bullet and delete the irrelevant stuff now? ",
+          "score": 1,
+          "num_comments": 3,
+          "author": "mushroom-patella",
+          "created_utc": "2025-08-25 00:25",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzc7hh/hiding_pages_in_notion/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.2,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users need better organization and filtering of pages within Notion.; Desire for a 'hidden' page feature indicates a need for better information architecture.",
+          "user_persona": "Student or general user who is overwhelmed by the number of pages in their workspace.",
+          "competitive_intelligence": "Competitors offering advanced filtering or archiving features have a potential advantage.  Need to evaluate whether Notion\u2019s architecture limits this ability."
+        },
+        {
+          "title": "Need help with Notion Formula",
+          "selftext": "I have a database inside a database, for simplicity I called it Database 1 and the nested database as Database 2. \n\nI'm trying to use database 2 as default values and will pull in user values from database 1 but the formula says \"no output.\n\nI have tried switching map to find, and find index. It always comes back as no output even when the syntax is accepted.\n\nId appreciate any help.\n\n[database 1](https://i.imgur.com/xWo31Ce.jpeg)\n\n[database 2](https://i.imgur.com/FNzl5Ie.jpeg)\n\n[formula](https://i.imgur.com/y67pZRj.jpeg)",
+          "score": 1,
+          "num_comments": 4,
+          "author": "Mizeov",
+          "created_utc": "2025-08-24 21:12",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz7ny7/need_help_with_notion_formula/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.5,
+          "urgency_level": 4,
+          "business_impact": 4,
+          "key_insights": "Formulas can be challenging to debug and understand for some users, especially when dealing with nested databases.; There's a need for better error messaging and debugging tools within Notion's formula editor.",
+          "user_persona": "Power User/Intermediate User: Someone trying to leverage advanced Notion features but struggling with formula syntax and debugging.",
+          "competitive_intelligence": "Demonstrates that Notion's formula system, while powerful, can be intimidating for non-technical users. Competitors with simpler, more intuitive automation features or visual workflow builders may have an advantage in attracting users who don't want to write code-like formulas."
+        },
+        {
+          "title": "Making an Hourly Scheduler In Notion With Repeat Database Entries",
+          "selftext": "Hey everyone, \n\nCurious if someone can offer their expertise on this. \n\nI'm creating a Notion page that I want to use to track my radio program. What I have so far is a database that holds entries for specific days (Monday's show, etc) that sets the daily date automatically. Then inside I'd like to have two columns, on where I can grab a page with a prepped break filled with information, and then move it over to the other side and drop it into a filtered linked view of the same database and it categorizes itself based off of the hour (say 6am) and the time during that hour/break number (break 1, break 2, etc). I have a system that works pretty good, but if I want to put the same break in say 6am - Break 1, as well as 7am - Break 3 I can't seem to find a way to do that without it messing up all the filters. I've tried having the \"break numbers\" in a multi select, but that doesn't seem to work.    \n  \nIf this makes sense and someone has some tips they could share I'd greatly appreciate it!  ",
+          "score": 1,
+          "num_comments": 1,
+          "author": "Covert_Capper",
+          "created_utc": "2025-08-24 19:48",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz5hfv/making_an_hourly_scheduler_in_notion_with_repeat/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.2,
+          "urgency_level": 4,
+          "business_impact": 3,
+          "key_insights": "Users struggle with complex relational database setups, particularly when trying to reuse data across multiple views and filters.; The current linking and filtering functionality in Notion can be limiting and counterintuitive for specific use cases.",
+          "user_persona": "Power User, Content Creator",
+          "competitive_intelligence": "The complexity of Notion's databases can be a barrier to entry for some users and a source of frustration even for experienced users. Competitors with simpler data management and filtering features may be more appealing for certain use cases. This highlights the need for improved database usability and clearer documentation."
+        },
+        {
+          "title": "Notion Timeline view HELP",
+          "selftext": "I don't know if anyone knows how to do this but I basically need a weekly rota... however, the way it's showing right now, its one person's name and the day's cascading... it really makes no sense to show it like this when I'm already grouping it by person... if they're different days and the same person, shouldn't it show in a line? Is there any way to do this??\n\nhttps://preview.redd.it/j7r8xmio50lf1.png?width=2544&format=png&auto=webp&s=5b70e190f6ba6f54d8c8f5f8f5cd48db16453868\n\nThanks guys",
+          "score": 1,
+          "num_comments": 2,
+          "author": "Adventurous_Stock582",
+          "created_utc": "2025-08-24 17:29",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz1sro/notion_timeline_view_help/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.3,
+          "urgency_level": 4,
+          "business_impact": 3,
+          "key_insights": "The Timeline view in Notion can be confusing for users attempting to create visual representations of recurring tasks or schedules.; Users are struggling to customize the display of data within the Timeline view to match their specific use cases, indicating a need for more intuitive customization options.",
+          "user_persona": "Potentially a team admin or project manager, intermediate user.",
+          "competitive_intelligence": "Competitors like Asana or Monday.com often have more visually intuitive timeline views, giving them an edge for project and task management. Focus on improving the UX of complex views."
+        },
+        {
+          "title": "Same page for different rows in the database",
+          "selftext": "I have recently downloaded College Planner from the internet, and I am having trouble adding courses to the timetable. \n\nIt is made of the database, and I want the courses that are scheduled on multiple days to appear on all relevant weekdays but still link to the same page. Right now, if I copy or create a new entry for another day, they become separate pages instead of one. How can I fix this?\n\nHere's the link to the timeline section of the planner: [https://www.notion.so/College-Planner-25966343db238077b75cdc38076ce551?source=copy\\_link](https://www.notion.so/College-Planner-25966343db238077b75cdc38076ce551?source=copy_link)\n\n(The original template link is [here](https://www.notion.so/marketplace/templates/will-ecollegeplanner), but it is in Korean)\n\n[internet](https://www.notion.so/marketplace/templates/will-ecollegeplanner)",
+          "score": 1,
+          "num_comments": 2,
+          "author": "Prestigious_Way_1113",
+          "created_utc": "2025-08-24 15:22",
+          "permalink": "https://reddit.com/r/Notion/comments/1myyf7y/same_page_for_different_rows_in_the_database/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.1,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Users struggle with database relationships and managing repeating events.; Template users need better guidance on customization and data handling.; Lack of translation in the core template store is a barrier for some users.",
+          "user_persona": "Beginner/Intermediate user struggling with database functionality.",
+          "competitive_intelligence": "Highlights the need for improved database features or educational tools to assist users in effectively implementing and customizing templates. Simpler relational database functionalities in competitor products could attract frustrated users."
+        },
+        {
+          "title": "Finally, a life planner that actually makes planning\u2026 enjoyable \ud83d\udd25",
+          "selftext": "Ever feel like most planners just end up as fancy notebooks on your desk? I\u2019ve been there.\n\nI designed a life planner that\u2019s simple, flexible, and actually helps you get things done. No fluff, no confusing layouts\u2014just a tool that helps you focus on what matters.\n\nI\u2019ve been using it for a while now, and honestly, my days feel clearer, and I get more done without the stress.\n\nCurious to see it in action? DM me and I\u2019ll send you the link. Would love to hear if it changes the way you plan your days.",
+          "score": 0,
+          "num_comments": 0,
+          "author": "Blazer0009",
+          "created_utc": "2025-08-25 17:49",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzxgo5/finally_a_life_planner_that_actually_makes/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.0,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Analysis failed",
+          "user_persona": "Unknown",
+          "competitive_intelligence": "Unable to analyze"
+        },
+        {
+          "title": "What 1 Feature would you like me to add in a Finance Tracker",
+          "selftext": "I'm currently building a **Finance OS (mobile optimized & super easy to use)** with these features:\n\n* Quick Adds (account, income, expense, budget, asset, liability, subscription, transfer)\n* Accounts, Income & Expense tracking\n* Transactions & Subscriptions\n* Budget & Goals management\n* Income Sources & Expense Categories\n* Asset & Liability tracker\n* Wealth Reports & Graphs\n* Investment OS\n* Currency Rates integration\n* Goals & Savings tracking\n\n\ud83d\udc49 With all this already included, what\u2019s the **#1 feature you think I should add next**?",
+          "score": 0,
+          "num_comments": 1,
+          "author": "organizeddashboard",
+          "created_utc": "2025-08-25 16:42",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzvn00/what_1_feature_would_you_like_me_to_add_in_a/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 0.4,
+          "sentiment_score": 0.0,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Analysis failed",
+          "user_persona": "Unknown",
+          "competitive_intelligence": "Unable to analyze"
+        },
+        {
+          "title": "Notion AI + Google Drive",
+          "selftext": "Been using Notion for around a year now and really like it.  Finally decided to pay for it and really lean into the Notion AI and other features to see what I can get out of it.  I tried connecting it to Google Drive, which I use extensively, and was disappointed that it's not working (screenshot below).  It's just a personal google account that I pay for extra storage on.  Do I *really* have to have a Google workspace to be able to connect Notion AI?  That would be a huge disappointment, honestly.\n\n  \nEdit: the same also seems to be true for the gmail connector too?\n\nhttps://preview.redd.it/2qydyecnh6lf1.png?width=824&format=png&auto=webp&s=20e874b8c298dad0873e0e94928f33a464e46ae5",
+          "score": 0,
+          "num_comments": 2,
+          "author": "Tetragrahamat0n",
+          "created_utc": "2025-08-25 14:49",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzsjcj/notion_ai_google_drive/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 0.5,
+          "sentiment_score": -0.6,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users expect seamless integration with common tools like Google Drive and Gmail.; Requiring a Google Workspace account for integrations limits the value proposition for individual users.; Clearer communication about integration requirements is needed.",
+          "user_persona": "New paying user, Google Suite user, individual/small business user.",
+          "competitive_intelligence": "Highlights a potential weakness in Notion's integration strategy by restricting functionality to Google Workspace. Competitors offering more flexible integration options may have an advantage."
+        }
+      ]
+    },
+    "template_sharing": {
+      "name": "Template Sharing",
+      "count": 20,
+      "percentage": 24.691358024691358,
+      "avg_score": 11.35,
+      "avg_comments": 4.15,
+      "posts": [
+        {
+          "title": "My Best Notion Template For Students",
+          "selftext": "**Made a Notion dashboard to survive the semester.**\n\n* Tracks all assignments, exams, and deadlines\n* Timetable setup for daily planning\n* Pomodoro timer + mini to-dos\n* Course-wise progress breakdown\n* Academic calendar auto-synced\n* Personal life: Wheel of Life, habit tracker, finance, daily journal, reflection diary\n* Future planning: internship tracking, resume, portfolio\n\nMinimal, clean, doesn\u2019t waste time.  \nAlso, not gonna lie, I literally use it regularly as I'm in my 5th semester of B-tech as well.\n\n\ud83d\udcc2 You can get it from link in comment section",
+          "score": 176,
+          "num_comments": 13,
+          "author": "organizeddashboard",
+          "created_utc": "2025-08-23 17:21",
+          "permalink": "https://reddit.com/r/Notion/comments/1my7buf/my_best_notion_template_for_students/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.9,
+          "sentiment_score": 0.9,
+          "urgency_level": 1,
+          "business_impact": 3,
+          "key_insights": "Pre-built templates addressing specific user needs (students) are highly valued.; Users actively seek templates that improve organization, productivity, and planning within Notion.",
+          "user_persona": "Student/Academic User: Someone looking to organize their studies and personal life within Notion.",
+          "competitive_intelligence": "Highlights the importance of the template ecosystem within Notion. Competitors lacking a strong template library or community-driven template sharing may struggle to attract users who value pre-built solutions."
+        },
+        {
+          "title": "I spent 50+ hours designing my dream Daily Planner in Notion. So excited to share the final result!",
+          "selftext": "",
+          "score": 20,
+          "num_comments": 13,
+          "author": "Deep-Dealer842",
+          "created_utc": "2025-08-24 16:01",
+          "permalink": "https://reddit.com/r/Notion/comments/1myzfo9/i_spent_50_hours_designing_my_dream_daily_planner/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.67,
+          "sentiment_score": 0.8,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "There's a market for pre-built Notion templates, specifically for productivity/daily planning.; Users are willing to invest significant time (50+ hours) in customizing Notion, indicating a strong user base.",
+          "user_persona": "Power User/Creator",
+          "competitive_intelligence": "Shows Notion's strength in enabling customization and template creation, which could be promoted as a unique selling proposition. However, the existence of paid templates also means users are seeking functionalities not readily available out-of-the-box."
+        },
+        {
+          "title": "Finally got my life together with this planner I made \u2013 sharing it here if it helps anyone else!",
+          "selftext": "https://preview.redd.it/4oydupb6yvkf1.png?width=1049&format=png&auto=webp&s=fe5c018cc4d4f1d989cceb40a74260cc7e430f04\n\nI\u2019ve always struggled with keeping my days organized \u2014 school, side projects, habits, and just remembering to take breaks. I ended up creating my own **Life Planner template** that combines:\n\n* \ud83d\uddd3\ufe0f Daily / weekly planning\n* \ud83c\udfaf Goal-tracking\n* \ud83d\udcca Habit & progress check-ins\n* \ud83e\udde0 Space for reflections\n\nIt\u2019s simple but it\u2019s been working so well for me that I thought maybe it could help others too.\n\n**You can grab it from comments section.**\n\nIf you try it out, I\u2019d love feedback or ideas on how to make it even better \ud83d\ude4c",
+          "score": 17,
+          "num_comments": 1,
+          "author": "Blazer0009",
+          "created_utc": "2025-08-24 03:18",
+          "permalink": "https://reddit.com/r/Notion/comments/1mykz50/finally_got_my_life_together_with_this_planner_i/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.88,
+          "sentiment_score": 0.8,
+          "urgency_level": 1,
+          "business_impact": 3,
+          "key_insights": "Users are actively creating and sharing templates to address specific needs, highlighting a gap in readily available, highly personalized solutions.; The life planner template caters to the holistic needs of users, including academics, projects, and well-being, which demonstrates a broader use case than pure task management.",
+          "user_persona": "Individual productivity enthusiast, potentially a student or freelancer.",
+          "competitive_intelligence": "Indicates a need for Notion to either curate and promote user-created templates more effectively or develop more highly customized templates themselves, possibly through a dedicated template marketplace or premium template options."
+        },
+        {
+          "title": "Minimal Habit Tracker Template",
+          "selftext": "Check out the template here: [https://locominder.com/templates/notion-habit-tracker-template](https://locominder.com/templates/notion-habit-tracker-template)",
+          "score": 7,
+          "num_comments": 2,
+          "author": "locomindernotion",
+          "created_utc": "2025-08-25 14:37",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzs7xh/minimal_habit_tracker_template/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.82,
+          "sentiment_score": 0.6,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "Habit trackers are a popular use case for Notion.; Monetization of Notion templates is a viable strategy.; The existence of paid templates indicates a demand for pre-built solutions and time-saving resources.",
+          "user_persona": "General user or someone new to Notion seeking pre-built templates.",
+          "competitive_intelligence": "The template market within Notion indicates an ecosystem that competitors may struggle to replicate easily. Shows a trend towards users paying for value-added resources, a potential revenue stream for Notion to explore more actively."
+        },
+        {
+          "title": "Need a template for college and professional course",
+          "selftext": "Hello , so I am pretty much new to notion . I am a college student and pursuing a professional course along with college. I need an easy and beginner's friendly template so I can sort both of them easily and without any hassles. \nThank you in advance!",
+          "score": 3,
+          "num_comments": 4,
+          "author": "ghost_senpai_69",
+          "created_utc": "2025-08-24 14:14",
+          "permalink": "https://reddit.com/r/Notion/comments/1mywoox/need_a_template_for_college_and_professional/",
+          "flair_text": "\ud83c\udf81 Free Templates",
+          "upvote_ratio": 0.8,
+          "sentiment_score": 0.7,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "New users are actively seeking simple, beginner-friendly templates to manage their academic and professional lives.; Clear onboarding and readily available templates are crucial for user adoption and retention.",
+          "user_persona": "Beginner, Student",
+          "competitive_intelligence": "Highlights the importance of template libraries in onboarding new users.  Competitors with more user-friendly and comprehensive template galleries have an advantage. Notion needs to improve the discoverability and quality of its beginner templates."
+        },
+        {
+          "title": "I created a pretty trip planner template for collaborative planning!",
+          "selftext": "I have planned all of my vacations with my sister on Notion, so I decided to make my template available. I love using vintage photos that are available on the Creative Commons open-source database to decorate my pages.\n\nWhen I plan a trip with someone else, I like us to be able to vote on things like hotels and budgets. I also like to visually see our daily schedule so we can move activities around from day to day if we don't get to something. Using a Notion database for a schedule is a great way to do this!\n\nThis template includes a page for planning budgets and a spending tracker, a logistics page to track confirmation numbers and flight/train info, and a daily schedule. I based this off of my own trip to Spain, which was one of the best trips I've ever taken, so feel free to copy everything we did!\n\nCheck it out here: https://www.notion.so/marketplace/templates/c",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Type_A_B",
+          "created_utc": "2025-08-25 15:36",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzttcm/i_created_a_pretty_trip_planner_template_for/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.8,
+          "urgency_level": 1,
+          "business_impact": 3,
+          "key_insights": "Users are willing to pay for well-designed and useful templates.; Collaboration features, specifically voting, are valuable for trip planning.; Visual presentation and organization are key to successful trip planning.",
+          "user_persona": "Power user, template creator, travel enthusiast.",
+          "competitive_intelligence": "Demonstrates the strength of Notion's template marketplace and the demand for pre-built solutions. Highlights opportunity to curate templates based on specific use-cases like travel planning."
+        },
+        {
+          "title": "I Created a Lesson Planner For All Seasons!! - Seasonal Lesson Planner",
+          "selftext": "\ud83c\udf42\ud83d\udcda Staying organized as a teacher can get overwhelming, especially with shifting schedules, grading, and planning lessons every season. That\u2019s why I created the **Seasonal Lesson Planner** in Notion \u2014 a **digital teacher planner** designed to help with **lesson planning, academic calendars, scheduling, and classroom organization** year-round.\n\nThis template breaks down lessons by **season + subject**, making it easier to stay on top of teaching goals, deadlines, and assignments. It\u2019s perfect for **teachers, homeschool parents, and tutors** who want a clean, aesthetic, and stress-free way to organize their academic year. \ud83c\udf3f\n\nIf you\u2019re looking for a **flexible teacher planner, homeschool calendar, or academic lesson tracker**, this might be just what you need. \u2728\n\nLink: [https://organizedlifebymalan.etsy.com/listing/1798215054/seasonal-planner-lesson-planner-template](https://organizedlifebymalan.etsy.com/listing/1798215054/seasonal-planner-lesson-planner-template)",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Alarming-One-1689",
+          "created_utc": "2025-08-25 11:55",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzoffn/i_created_a_lesson_planner_for_all_seasons/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.6,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "Demand exists for specialized Notion templates, such as lesson planners for teachers.; Templates are being marketed with specific aesthetic styles.",
+          "user_persona": "Teacher/Educator seeking organizational tools.",
+          "competitive_intelligence": "Illustrates the fragmentation of the template market. Notion should consider curating and promoting higher-quality, specialized templates within its own platform to maintain control and quality."
+        },
+        {
+          "title": "Feedback on a tracker system for part-time entrepreneurs",
+          "selftext": "Hello everyone!  \n  \nMy template is to help part-time entrepreneurs turn chaotic side hustles into organized, guilt-free operation that actually makes progress\u2014even with limited time.\n\n\n\nPart-time entrepreneurs often face challenges, including:\n\n* Scattered notes everywhere\n* Forgetting important tasks\n* Feeling guilty about slow progress\n* Not knowing what to work on next\n* Starting and stopping repeatedly\n\n\n\nI created a Notion template to help them overcome those issues.  \n  \nThe goal is to help them achieve:\n\n* Centralized place for everything important\n* Clear priority system (what's urgent vs. what makes money)\n* Built-in mental hacks that actually work\n\n\n\nCould you please review and give me feedback on what works well and what needs to be improved? If you are a potential customer, would you consider purchasing it? Your feedback is greatly appreciated! Thanks a lot!!  \n  \nNotion: [https://www.notion.so/Hustle-to-Flow-System-251b8d8c88ee807d8929ed3bde61616f?source=copy\\_link](https://www.notion.so/Hustle-to-Flow-System-251b8d8c88ee807d8929ed3bde61616f?source=copy_link)",
+          "score": 1,
+          "num_comments": 0,
+          "author": "delicious-garden3306",
+          "created_utc": "2025-08-25 07:35",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzk42i/feedback_on_a_tracker_system_for_parttime/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.6,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "The 'part-time entrepreneur' niche is actively using Notion for organization and productivity.; Template creators are seeking feedback and validation, indicating a potential avenue for Notion to engage with and support its community.; Users are creating templates to solve specific pain points related to productivity and workflow, showing a need for more focused features in Notion itself.",
+          "user_persona": "Small Business Owner/Entrepreneur",
+          "competitive_intelligence": "Demonstrates Notion's applicability to specific niche markets and highlights a need for better out-of-the-box solutions for common business challenges. Competitors can target these niches with more tailored solutions."
+        },
+        {
+          "title": "I worked for weeks on Notion templates for procrastination and forgetfulness in ADHD people \u2013 I'm offering the first 5 in exchange for real feedback",
+          "selftext": "Hello everyone,\n\nI've been struggling for a while to find an organization that will last over time. I tried lots of systems, and over time, I ended up building my own templates on Notion specifically for ADHD and forgetfulness/procrastination \n\nThe thing is, I don\u2019t just want to \u201csell templates to sell\u201d. This project takes me time because I really want to create systems that are useful in real life and not just beautiful pages that we don't use after 3 days.\n\nFor now I'm sharing them on my profile, but before going any further I need real feedback. So, I'm offering the template for free to the first 5 people interested, in exchange for an honest opinion (what works, what sucks, what's missing).\n\nIf you\u2019re interested, send me a DM or reply here \ud83d\ude4c\nAnd if you already use Notion: what frustrates you most with your current systems?",
+          "score": 1,
+          "num_comments": 6,
+          "author": "Visual-Low-7004",
+          "created_utc": "2025-08-24 08:29",
+          "permalink": "https://reddit.com/r/Notion/comments/1myq6jz/i_worked_for_weeks_on_notion_templates_for/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.67,
+          "sentiment_score": 0.7,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "There's a strong demand for Notion templates tailored to specific needs, such as ADHD management.; Users are frustrated with existing systems that are not sustainable or practical.; Feedback is crucial for template creators to improve their offerings.",
+          "user_persona": "Template creator focused on specific user needs (ADHD), seeks feedback.",
+          "competitive_intelligence": "Highlights a market gap for specialized Notion templates. Competitors focusing on specific niches could gain traction. Notion should consider partnering with creators or offering a marketplace for specialized templates, or creating its own templates."
+        },
+        {
+          "title": "Experimenting with a Notion dashboard I\u2019ll actually stick to",
+          "selftext": "Hey everyone,  \nOver the past few weeks, I\u2019ve been building and refining my own **Notion dashboard** \u2014 something simple, aesthetic, and powerful enough to actually use every day (instead of becoming a database graveyard \ud83d\ude05).\n\nAfter some feedback and polish, I\u2019m finally ready to **share the template** with you all! \ud83c\udf89\n\nIt\u2019s got everything I need in one place:\n\n* Academic courses + notes\n* Reminders & events (because I always forget stuff lol)\n* Journal + quick notes\n* A little \u201cto revise\u201d area for study vibes\n\nWould love to hear what you think \ud83d\udda4\n\nhttps://preview.redd.it/nl7wo08234lf1.png?width=1920&format=png&auto=webp&s=d2c0fe859de6fe3a10554841b644bfa14b0ee568\n\n",
+          "score": 0,
+          "num_comments": 1,
+          "author": "Old-Consequence-2568",
+          "created_utc": "2025-08-25 06:41",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzj98e/experimenting_with_a_notion_dashboard_ill/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.7,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "Users struggle with consistently using Notion dashboards, often leading to unused databases.; Simplicity and aesthetics are crucial for user adoption and daily usage.",
+          "user_persona": "Student/Personal User",
+          "competitive_intelligence": "Reveals a challenge for Notion: user retention on dashboards. Competitors offering simpler, more visually appealing interfaces could attract users seeking ease of use. Notion needs to focus on improving user onboarding and dashboard usability."
+        },
+        {
+          "title": "I will try to sell you my digital habit tracker!",
+          "selftext": "Hello guys,\n\nFirst of all please don't be rush on me. I am new at this kind of things, and I don't know how to promote my hard worked product well since I don't have a good social media account as well. You don't have to buy to support me, your constructive feedback or any recommendation will be as valuable, and will be appreciated.\n\nSo, I am here to give it a shot and promote you the habit tracker I created in about a week, without copying anyone's work or AI's work (except for the formula and script). Here are the features I placed in my habit tracker:\n________\nFor Google Sheets --> So you need only a Google account. Compatible with all devices and operation systems. NOT FOR NOTION!\n\nSmart setup --> just enter your month, year, age, and gender. The calendar auto-adjusts to the right number of days, highlights today and show the day names as a real calendar.\nSleep & hydration goals are auto-calculated using WHO recommendations according to your age and gender. I believe it is a unique feature.\n\nDefine up to 30 habits --> each with custom goals & 11 categories to choose from.\n\nCategory tracking --> you can track the progress of the categories in addition to the habits with progress bars and donut pie. I didn't see other trackers do it like that so far. \n\nInstant progress tracking --> daily check-ins with color-coded bars for habits as well as for days. Auto percentages & progress bars update as you go. They also adapt to your goal and number of habits.\n\nGamified medals system --> earn bronze, silver, gold medals for each habit and also for each day. Daily medals check your consistency consistency based on how many habits you completed in a day.\n\nSleep & Hydration Tracker --> auto-goals based on your age & gender. Color-coded daily entries + monthly line graph for trends.\n\nOne-click PDF export --> have monthly reports automatically with the right month/year in the filename.\n\nEasy reset button --> cears all checkboxes with a safety check, so you don't accidentally clear your progress.\n\nEverything in one tab --> people promote as more than is better, but I think it is the reverse for simplification. No need to click around multiple sheets in my tracker.\n\nReusable forever --> just change the month/year, reset, and you\u2019re ready to go again. \n________\n\nAlright this what I have for you. I believe it has some unique features that other habit trackers don't have like easy cleaning, printing to PDF, auto wellness goals and category tracking instead of only habits. I might be wrong but this is what I saw so far. Gamification is also not very common, and I think it makes it more fun to develop habit or routines \ud83d\ude00\n\nI sell it with 50% discount on Etsy now as a kick off. (Anywhere else as a recommendation?) Don't be scared when you see my store with no comment or stars. I opened my account 12 years ago, tried selling some other stuff 2 times but couldnt do well. So, I am trying again with my own product now. Here is the link to check it out. The only sell I have is from my wife, yet! :)\n\nhttps://creativefolios.etsy.com/listing/4357789171\n\nComment if you have questions or DM me. Thanks in advance for buying my tracker or giving me a feedback! Appreciate it both.",
+          "score": 0,
+          "num_comments": 0,
+          "author": "AdSmall1153",
+          "created_utc": "2025-08-25 12:55",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzpprz/i_will_try_to_sell_you_my_digital_habit_tracker/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.13,
+          "sentiment_score": 0.3,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "There's a market for habit trackers, but this one is for Google Sheets, indicating a potential gap Notion could address more effectively.; The seller lacks marketing expertise, suggesting an opportunity for Notion to support creators with marketing resources/marketplace.",
+          "user_persona": "Individual user, potentially new to digital habit tracking and lacking marketing skills.",
+          "competitive_intelligence": "Highlights a specific segment preferring Google Sheets for habit tracking, possibly due to simplicity or offline access. Notion's habit tracking features should be competitive on ease of use and accessibility."
+        },
+        {
+          "title": "Struggling to stay organized? This Life Planner changed how I manage my days",
+          "selftext": "I used to waste so much time jumping between random apps and sticky notes\u2026 until I built a simple Life Planner that actually works.\n\nIt helps me:\n\u2705 Break big goals into daily steps\n\u2705 Stay consistent with habits\n\u2705 Balance school, work, and personal time\n\u2705 Keep everything in one place (no more scattered notes)\n\nI\u2019ve been sharing it with friends, and they keep telling me it\u2019s a game-changer.\nIf anyone here wants to check it out, just shoot me a quick DM and I\u2019ll send you the link \ud83d\udc8c",
+          "score": 0,
+          "num_comments": 10,
+          "author": "Blazer0009",
+          "created_utc": "2025-08-25 09:05",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzlgm2/struggling_to_stay_organized_this_life_planner/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.17,
+          "sentiment_score": 0.6,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "The need for a central life planner within Notion is evident.; Users are drawn to solutions that reduce app switching and consolidate information.; External apps/integrations are required to track certain tasks (school, work, personal time)",
+          "user_persona": "Student, young professional, or individual seeking to improve their personal organization and productivity.",
+          "competitive_intelligence": "Reveals the market demand for comprehensive life management tools. Notion could benefit from building more robust planning templates and potentially expanding its task management capabilities."
+        },
+        {
+          "title": "Anyone else doing a mid-year reflection? Here\u2019s how I\u2019m tracking mine (Notion template)",
+          "selftext": "Hey r/Notion!\n\nI\u2019ve been building a template called **Playback 2025**, originally designed for personal year-end reflections. But now that we\u2019re halfway through the year, I think it could also be great for a **mid-year review** or even as a way to keep an ongoing log throughout the year.\n\nHere\u2019s the link if you\u2019d like to take a look: [back 2025: A Personal Year-End Log](https://www.notion.com/templates/playback-2025-a-personal-year-end-log)\n\nI\u2019d love to hear your thoughts\u2014what do you usually include in your own reflections? Anything you think would make this template more useful?",
+          "score": 0,
+          "num_comments": 1,
+          "author": "Medical_Maximum7363",
+          "created_utc": "2025-08-25 06:35",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzj5rg/anyone_else_doing_a_midyear_reflection_heres_how/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.25,
+          "sentiment_score": 0.4,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Users actively engage in reflection and seek tools to facilitate the process.; There is a demand for templates that support year-end and mid-year reviews.; There's an element of community collaboration as they ask for suggestions for the template.",
+          "user_persona": "Goal-oriented individual, focused on personal growth and self-improvement, actively tracking progress.",
+          "competitive_intelligence": "Highlights the importance of reflective planning and the need for templates catering to this. Notion could expand its template library with more structured reflection guides."
+        },
+        {
+          "title": "Biggest Giveaway: Get Notion CRM System Free ,Never Lose a Lead Again!",
+          "selftext": "I used to forget follow-ups, lose track of client info, and scramble to remember who I spoke to last. Everything was scattered across notes, spreadsheets.\n\nSo I built a simple CRM System in Notion to keep everything in one place and easy to use. organized, trackable,\n\nHere's what it helps you do:\n\nOne-Click Lead Capture - Add new leads or clients instantly with a clean, pre-set form.\n\nAll Client Info in One Place - Contact details, deal notes, and status updates, neatly in one dashboard.\n\nPipeline View - Track your entire sales flow from New, In Progress, Closed.\n\nTags & Filters - Sort by project, priority, or deal stage so nothing slips through the cracks.\n\nWhether you're a freelancer, business owner, or just starting out - this system will help you stay on top of every client and lead.\n\nComment \"CRM\" below and I'll send it you",
+          "score": 0,
+          "num_comments": 28,
+          "author": "adn_notion",
+          "created_utc": "2025-08-25 11:09",
+          "permalink": "https://reddit.com/r/Notion/comments/1mznjm4/biggest_giveaway_get_notion_crm_system_free_never/",
+          "flair_text": "\ud83c\udf81 Free Templates",
+          "upvote_ratio": 0.42,
+          "sentiment_score": 0.7,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Strong user demand for CRM-like functionalities within Notion.; Users are actively creating and sharing CRM templates, demonstrating a DIY workaround for a missing feature.",
+          "user_persona": "Freelancer/Small business owner",
+          "competitive_intelligence": "This shows the demand for CRM functionality within Notion and indicates potential partnerships or feature development opportunities. Standalone CRMs are a direct competitor for these use cases."
+        },
+        {
+          "title": "I Got Tired of Complicated Notion Setups, So I Made My Own Simple Planner",
+          "selftext": "So, I just finished building my\u00a0**first Notion planner**, and honestly, I made it\u00a0**as simple as possible**. You don\u2019t need to know much about Notion at all - you can just open it and start using it. No complicated setup, no long guides, nothing.\n\nI made this planner because I know how frustrating it can be to deal with overly complicated templates. This one\u2019s for anyone who just wants\u00a0**to plan their life without stress**.\n\nI hope u guys like this\ud83d\ude0a.\n\n***If anyone\u2019s interested, I\u2019ll drop the link in the comments.***\n\nhttps://preview.redd.it/qbtbjjmfj3lf1.png?width=1920&format=png&auto=webp&s=d2667d82e99260a83488f98db3f9cbc9807dbfa5",
+          "score": 0,
+          "num_comments": 1,
+          "author": "Old-Consequence-2568",
+          "created_utc": "2025-08-25 04:53",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzhhjf/i_got_tired_of_complicated_notion_setups_so_i/",
+          "flair_text": "\ud83d\udcc6 Notion Calendar",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.8,
+          "urgency_level": 1,
+          "business_impact": 3,
+          "key_insights": "There's a demand for simple, easy-to-use Notion templates that don't require extensive setup.; The user is explicitly marketing ease-of-use as a key differentiator for their template, highlighting a pain point with other available options.",
+          "user_persona": "New Notion user or someone who is intimidated by complex setups and looking for a straightforward solution for planning.",
+          "competitive_intelligence": "The popularity of simple templates suggests an opportunity for Notion to improve the onboarding experience and provide simpler starter templates that address common use cases. Notion should analyze successful templates to identify design patterns for ease of use."
+        },
+        {
+          "title": "ADHD Planner \u2014 Free & Paid Version",
+          "selftext": "I made this planner for people like me. The days where you try your best but barely get anything done, and then just end up feeling guilty, mad, or drained. (I go through that a lot, and it\u2019s exactly why I built this template.)  \n  \nIt\u2019s designed with ADHD in mind and to make things feel lighter.  \nThere\u2019s a\u00a0**free version**\u00a0you can grab right away:\n\nhttps://preview.redd.it/r5hr7lpgaykf1.png?width=1280&format=png&auto=webp&s=a06d1b897c2ff5c0cee11d18c563fb9fa8c0f4e0\n\n\n\nand a\u00a0**paid version**\u00a0(currently\u00a0**65% off for the first 50 people**\n\nhttps://preview.redd.it/i6opqmksaykf1.png?width=1280&format=png&auto=webp&s=0666cf02a40dc2b1f363435e778fe0d025af7df6\n\n\ud83d\udc9c Hope it helps anyone who\u2019s been feeling the same way.",
+          "score": 0,
+          "num_comments": 0,
+          "author": "One_Wolverine_2418",
+          "created_utc": "2025-08-24 11:15",
+          "permalink": "https://reddit.com/r/Notion/comments/1myswdg/adhd_planner_free_paid_version/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.8,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "There's a growing demand for specialized templates, especially those catering to specific needs like ADHD.; Template creators are leveraging Notion's platform to offer both free and paid resources.; Template authors are using pain points as their marketing leverage (guilt, feeling drained).",
+          "user_persona": "Template creator and/or user with ADHD.",
+          "competitive_intelligence": "Template marketplaces are becoming increasingly valuable. Notion should ensure discoverability and quality control to compete with other platforms hosting productivity templates."
+        },
+        {
+          "title": "Any notion template for surgical trainees",
+          "selftext": "I\u2019m a neurosurgical trainee , my country mostly follows uk based system and curriculum? I have my mrcs part b coming up? Any template for this? ",
+          "score": 0,
+          "num_comments": 1,
+          "author": "Young-Affectionate",
+          "created_utc": "2025-08-24 09:54",
+          "permalink": "https://reddit.com/r/Notion/comments/1myrj4m/any_notion_template_for_surgical_trainees/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 0.5,
+          "sentiment_score": 0.0,
+          "urgency_level": 3,
+          "business_impact": 2,
+          "key_insights": "Specific professional groups (surgical trainees) are seeking tailored Notion templates, demonstrating a need for specialized workflows.; The request for a UK-based curriculum template highlights the importance of localization and catering to specific regional needs.",
+          "user_persona": "Professional (surgical trainee), potentially new to Notion templates",
+          "competitive_intelligence": "This shows a demand for niche templates that cater to specific professions and regions. Competitors who offer more diverse and customizable templates may attract users in these underserved segments. Notion could partner with subject matter experts to create and market such templates."
+        },
+        {
+          "title": "\ud835\uddb8\ud835\uddc8\ud835\uddce \ud835\uddcd\ud835\uddc1\ud835\uddc2\ud835\uddc7\ud835\uddc4 \ud835\uddd2\ud835\uddc8\ud835\uddce \ud835\uddc4\ud835\uddc7\ud835\uddc8\ud835\uddd0 \ud835\uddad\ud835\uddc8\ud835\uddcd\ud835\uddc2\ud835\uddc8\ud835\uddc7? \ud835\uddb8\ud835\uddc8\ud835\uddce \ud835\uddc1\ud835\uddba\ud835\uddcf\ud835\uddbe\ud835\uddc7\u2019\ud835\uddcd \ud835\uddcc\ud835\uddbe\ud835\uddbe\ud835\uddc7 \ud835\uddcd\ud835\uddc1\ud835\uddc2\ud835\uddcc.",
+          "selftext": "\ud835\udda0 \ud835\uddbc\ud835\uddc8\ud835\uddc6\ud835\uddc9\ud835\uddc5\ud835\uddbe\ud835\uddcd\ud835\uddbe \ud835\uddc8\ud835\uddc9\ud835\uddbe\ud835\uddcb\ud835\uddba\ud835\uddcd\ud835\uddc2\ud835\uddc7\ud835\uddc0 \ud835\uddcc\ud835\uddd2\ud835\uddcc\ud835\uddcd\ud835\uddbe\ud835\uddc6 \ud835\uddc2\ud835\uddc7\ud835\uddcc\ud835\uddc2\ud835\uddbd\ud835\uddbe \ud835\uddad\ud835\uddc8\ud835\uddcd\ud835\uddc2\ud835\uddc8\ud835\uddc7. \ud835\udda5\ud835\uddc8\ud835\uddbc\ud835\uddce\ud835\uddcc, \ud835\uddc1\ud835\uddbe\ud835\uddba\ud835\uddc5\ud835\uddcd\ud835\uddc1, \ud835\uddbf\ud835\uddc2\ud835\uddc7\ud835\uddba\ud835\uddc7\ud835\uddbc\ud835\uddbe, \ud835\uddc0\ud835\uddcb\ud835\uddc8\ud835\uddd0\ud835\uddcd\ud835\uddc1 \u2014 \ud835\uddcb\ud835\uddbe\ud835\uddc2\ud835\uddc7\ud835\uddcf\ud835\uddbe\ud835\uddc7\ud835\uddcd\ud835\uddbe\ud835\uddbd \ud835\uddd0\ud835\uddc2\ud835\uddcd\ud835\uddc1 \ud835\udda0\ud835\udda8 \ud835\uddc2\ud835\uddc7\ud835\uddcd\ud835\uddbe\ud835\uddc0\ud835\uddcb\ud835\uddba\ud835\uddcd\ud835\uddc2\ud835\uddc8\ud835\uddc7, \ud835\udfe3,\ud835\udfe7\ud835\udfe2\ud835\udfe2+ \ud835\uddcf\ud835\uddc2\ud835\uddcc\ud835\uddce\ud835\uddba\ud835\uddc5\ud835\uddcc, \ud835\uddba\ud835\uddc7\ud835\uddbd \ud835\uddcd\ud835\uddc1\ud835\uddbe \ud835\uddbc\ud835\uddc5\ud835\uddbe\ud835\uddba\ud835\uddc7 \ud835\uddba\ud835\uddbe\ud835\uddcc\ud835\uddcd\ud835\uddc1\ud835\uddbe\ud835\uddcd\ud835\uddc2\ud835\uddbc \ud835\uddc8\ud835\uddbf \ud835\uddba\ud835\uddc7 \ud835\udda0\ud835\uddc9\ud835\uddc9\ud835\uddc5\ud835\uddbe \ud835\uddc9\ud835\uddcb\ud835\uddc8\ud835\uddbd\ud835\uddce\ud835\uddbc\ud835\uddcd.\n\n\ud835\udda4\ud835\uddd1\ud835\uddc9\ud835\uddc5\ud835\uddc8\ud835\uddcb\ud835\uddbe \ud835\uddcd\ud835\uddc1\ud835\uddbe \ud835\uddc7\ud835\uddbe\ud835\uddd1\ud835\uddcd \ud835\uddc5\ud835\uddbe\ud835\uddcf\ud835\uddbe\ud835\uddc5 \u2192 https://linktr.ee/TastyStudios",
+          "score": 0,
+          "num_comments": 1,
+          "author": "TastyStudioOne",
+          "created_utc": "2025-08-24 18:18",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz34al/\ud835\uddb8\ud835\uddc8\ud835\uddce_\ud835\uddcd\ud835\uddc1\ud835\uddc2\ud835\uddc7\ud835\uddc4_\ud835\uddd2\ud835\uddc8\ud835\uddce_\ud835\uddc4\ud835\uddc7\ud835\uddc8\ud835\uddd0_\ud835\uddad\ud835\uddc8\ud835\uddcd\ud835\uddc2\ud835\uddc8\ud835\uddc7_\ud835\uddb8\ud835\uddc8\ud835\uddce_\ud835\uddc1\ud835\uddba\ud835\uddcf\ud835\uddbe\ud835\uddc7\ud835\uddcd_\ud835\uddcc\ud835\uddbe\ud835\uddbe\ud835\uddc7_\ud835\uddcd\ud835\uddc1\ud835\uddc2\ud835\uddcc/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.2,
+          "sentiment_score": 0.3,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "Authors are creating elaborate 'operating systems' within Notion, showcasing its flexibility.; AI integration is becoming a selling point for Notion templates.; The focus is shifting towards all-in-one life management solutions.",
+          "user_persona": "Creator/marketer focused on selling Notion templates, likely a power user.",
+          "competitive_intelligence": "Reveals a market for comprehensive Notion templates. Competitors who offer similar all-in-one solutions could pose a threat. Notion should consider creating its own official, robust templates to compete."
+        },
+        {
+          "title": "How I Finally Got My Days Under Control (and Made a Planner That Actually Works)",
+          "selftext": "https://preview.redd.it/y10h9z922xkf1.png?width=1338&format=png&auto=webp&s=0bfd59252ddd09f7331c4903fbd01d4d7f1fc268\n\nI used to feel like my days just ran away from me \u2014 school, projects, habits, and somehow forgetting to breathe in between \ud83d\ude05. That\u2019s why I built my **Life Planner template**.\n\nIt combines everything I need in one place:\n\n\ud83d\uddd3\ufe0f Plan my day and week without feeling overwhelmed  \n\ud83c\udfaf Track my goals so I actually make progress  \n\ud83d\udcca Check my habits and see what\u2019s working  \n\ud83e\udde0 Reflect on wins and lessons each day\n\nIt\u2019s simple, but it keeps me focused and stress-free. I figured someone else might find it useful too!\n\nYou can grab it from the **comments section**.\n\nIf you try it, I\u2019d love to hear what works for you or any ideas to improve it \ud83d\ude4c",
+          "score": 0,
+          "num_comments": 1,
+          "author": "Blazer0009",
+          "created_utc": "2025-08-24 06:44",
+          "permalink": "https://reddit.com/r/Notion/comments/1myoj17/how_i_finally_got_my_days_under_control_and_made/",
+          "flair_text": "\ud83d\udcb0 Paid Templates",
+          "upvote_ratio": 0.4,
+          "sentiment_score": 0.8,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users are seeking simple and effective planning solutions within Notion.; Integration of daily planning, goal tracking, and habit tracking is highly valued.; Visual presentation is important for user engagement.",
+          "user_persona": "User seeking personal productivity, potentially a student or young professional.",
+          "competitive_intelligence": "Demonstrates the ongoing need for task management and productivity templates. Competitors with strong task management features could be perceived as better alternatives. Notion needs to improve its out-of-the-box planning capabilities."
+        },
+        {
+          "title": "Free Template for Personal Finances",
+          "selftext": "I had a lot fun designing this template a while back. Hope it can be of use to some of you guys.\n\n[Download Template](https://www.notion.so/marketplace/templates/finanzas-en-control)",
+          "score": 0,
+          "num_comments": 0,
+          "author": "Haiato-Dan",
+          "created_utc": "2025-08-24 05:58",
+          "permalink": "https://reddit.com/r/Notion/comments/1myns38/free_template_for_personal_finances/",
+          "flair_text": "\ud83c\udf81 Free Templates",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.7,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "Users are actively creating and sharing templates, indicating a strong community and ecosystem.; Personal finance is a popular use case for Notion.; Template sharing fosters user engagement and can drive adoption.",
+          "user_persona": "Beginner to intermediate user who is interested in personal finance management and seeking a pre-built solution.",
+          "competitive_intelligence": "Highlights Notion's strength in enabling user-generated content, a differentiator against competitors like dedicated finance apps or simpler note-taking tools. The availability of free, high-quality templates reduces the barrier to entry for new users."
+        }
+      ]
+    },
+    "integration_request": {
+      "name": "Integration Requests",
+      "count": 10,
+      "percentage": 12.345679012345679,
+      "avg_score": 1.4,
+      "avg_comments": 1.6,
+      "posts": [
+        {
+          "title": "Just launched To-Do widget for Android",
+          "selftext": "I was frustrated by the lack of an Android widget for my to-do lists, so I made one.  It's completely free and I don't have access to any of your Notion data.  Everything is kept on your device.\n\nYou can [download it here from the Play Store](https://play.google.com/store/apps/details?id=com.radiantmaple.whim).\n\nThank you to all of my beta testers who helped identify all the bugs so I could fix them.  Whim is now released in production!\n\n**How it works**\n\nIt connects to your Notion account on first launch.  After you're connected, add a widget to your home-screen and it will ask which database you want to show.  You can choose any database that has a checkbox and a text column.  The widget will show all of your unchecked tasks as well as your ten most recent checked tasks.  You can check and uncheck tasks from the widget and it will sync with Notion.  The widget supports both light and dark mode.\n\nHere's a [short video of it working](https://www.youtube.com/watch?v=1Il9XPrCpzY) and here's a quick screenshot of the widget\n\nhttps://preview.redd.it/sv2f0e5tfzkf1.jpg?width=1080&format=pjpg&auto=webp&s=1ebb647c94b4f9f7cfa5f72ebb2255f770dda4a4\n\n",
+          "score": 4,
+          "num_comments": 0,
+          "author": "cryptyk",
+          "created_utc": "2025-08-24 15:05",
+          "permalink": "https://reddit.com/r/Notion/comments/1myxzoc/just_launched_todo_widget_for_android/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 0.83,
+          "sentiment_score": 0.9,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "The demand for Android widgets for Notion is high enough that users are developing their own solutions, highlighting a significant gap in Notion's native mobile offering.; Users value quick access to their to-do lists and task management directly from their home screens.",
+          "user_persona": "Task-oriented User, Mobile User, Developer",
+          "competitive_intelligence": "Lack of robust mobile widgets creates an opening for third-party developers and could drive users towards other task management apps with better mobile integration. Notion should prioritize enhancing its mobile widget support on both Android and iOS."
+        },
+        {
+          "title": "Wopa \u2013 Write Once, Publish Anywhere for Notion Users",
+          "selftext": "\ud83d\udc40 Here\u2019s a quick demo of what I\u2019ve been building!  \nTrying to make \\[app purpose, e.g. \u201ccross-posting from Notion to Medium\u201d\\] easier.  \nCheck it out \u2192 [https://www.loom.com/share/1fe1d5a0161640f5869a4296349acddc?sid=449a50c5-10a7-49a8-8083-1d2add1a5cbe](https://www.loom.com/share/1fe1d5a0161640f5869a4296349acddc?sid=449a50c5-10a7-49a8-8083-1d2add1a5cbe)\n\nWhat do you think? \ud83d\udd25",
+          "score": 3,
+          "num_comments": 1,
+          "author": "justgetting-started",
+          "created_utc": "2025-08-24 21:21",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz7w8f/wopa_write_once_publish_anywhere_for_notion_users/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.7,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users seek seamless integration with other platforms like Medium for content repurposing.; There is demand for tools that simplify the \"write once, publish anywhere\" workflow.; The high score of this post indicates this is a desired feature.",
+          "user_persona": "Content creator, blogger, or marketer seeking efficiency and content distribution across multiple platforms.",
+          "competitive_intelligence": "Highlights the need for stronger content publishing integrations. Notion should prioritize expanding its API and partnerships to facilitate broader content distribution capabilities."
+        },
+        {
+          "title": "Built This for Notion Users: Wopa (MVP) Makes Multi-Platform Publishing Simple",
+          "selftext": "https://preview.redd.it/caoyxxgsf0lf1.png?width=1840&format=png&auto=webp&s=fa0e5df779d6bed27b8bce02221adc598ce1333f\n\n[Wopa \u2013 Write Once, Publish Anywhere](https://wope-seven.vercel.app/)",
+          "score": 2,
+          "num_comments": 0,
+          "author": "justgetting-started",
+          "created_utc": "2025-08-24 18:28",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz3e0t/built_this_for_notion_users_wopa_mvp_makes/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.8,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users are seeking simplified multi-platform publishing from Notion.; There's a market for tools extending Notion's reach beyond its native environment.",
+          "user_persona": "Developer/Maker: Someone creating tools to enhance Notion's functionality for other users.",
+          "competitive_intelligence": "Highlights a market gap: Notion lacks robust native multi-platform publishing features, creating opportunities for third-party tools. Notion needs to consider building native publishing functionality or improving its API to encourage integrations."
+        },
+        {
+          "title": "Stock Tracker",
+          "selftext": "I\u2019ve been trying to make a stock tracker in Notion so I can get live stock prices. I thought that the best way to do it, was to make a google sheet with  tickers and using the google finance function to get the current prices and then update my databas in notion via Make. But I just can\u2019t seem to figure out the workflow. \n\nDoes anyone have an idea for how I can set it up?\n\nThanks in advance!\n",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Ok_Pin_6765",
+          "created_utc": "2025-08-25 18:42",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzywma/stock_tracker/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.2,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Users are seeking ways to integrate live data (stock prices) into Notion, indicating a need for dynamic data integration.; The user is having difficulty setting up a workflow using Make (formerly Integromat) and Google Sheets, highlighting a barrier to entry for complex integrations.",
+          "user_persona": "Power user attempting to leverage external data sources within Notion; potentially involved in finance or investment tracking.",
+          "competitive_intelligence": "Highlights a gap in Notion's native capabilities for handling real-time data. Competitors with robust API integration or native support for data feeds could attract users with these needs."
+        },
+        {
+          "title": "Importing Repeated from Google Calendar into Tasks",
+          "selftext": "Hey everyone! I recently switched over to Notion to better share my plans and habits with my accountability partner, and so far it's been great, but I\u2019ve run into one major issue.\n\nI use two Gmail accounts: one for personal stuff like doctor\u2019s appointments, and another for work and interviews. Most of my meetings are scheduled through Google Calendar and often include meeting links and recurring events.\n\nI\u2019m trying to pull these calendar events into Notion, but it looks like Notion has trouble syncing recurring events from Google Calendar. On the flip side, I\u00a0can\u00a0create recurring tasks directly in Notion, and they do show up in Notion Calendar, which I\u2019m planning to use as my main calendar moving forward.\n\nJust wondering if anyone\u2019s found a good workaround for importing events? I would think that there should be a way to have the Google Calendar events imported directly into the Notion Database, but can't seem to find the settings. Would love to hear how others are handling it.\n\nEdit: Quick note, looking for a solution that doesn't involve subscribing. Currently unemployed recent graduate so I don't have the funds for that.",
+          "score": 1,
+          "num_comments": 3,
+          "author": "ObamaEatsPant",
+          "created_utc": "2025-08-24 23:41",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzb8ga/importing_repeated_from_google_calendar_into_tasks/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.3,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Google Calendar integration has limitations, specifically with recurring events and multiple accounts.; User is experiencing friction when attempting to unify their workflow with Notion and Google Calendar.",
+          "user_persona": "Productivity-focused user heavily reliant on Google Calendar for scheduling, potentially a professional or student.",
+          "competitive_intelligence": "Competitors with superior calendar integrations or more robust API access to Google Calendar have a competitive edge. Notion needs to prioritize deeper integrations with core productivity tools to prevent user churn."
+        },
+        {
+          "title": "How can I set up a Discord bot to show upcoming assignments from my Notion database with commands like !assignments upcoming",
+          "selftext": "Hi everyone, I have a database in Notion where I track all my assignments. I also use Discord a lot for communication. I want to set things up so that when I type a command like\u00a0`!assignments upcoming`\u00a0in Discord, a bot fetches and shows the list of my upcoming assignments directly in the server.\n\nI heard that I can connect Notion and Discord using tools like Zapier, but I\u2019m not sure if Zapier supports interactive commands like this. Do I need a custom-coded Discord bot to achieve this, or is there a no-code way to do it? Also, does this kind of integration require paid services?\n\nAny advice on how to build this setup, what tools to use, or example tutorials would be really appreciated!\n\nThanks!",
+          "score": 1,
+          "num_comments": 1,
+          "author": "Impressive-Shock-550",
+          "created_utc": "2025-08-24 17:21",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz1lj2/how_can_i_set_up_a_discord_bot_to_show_upcoming/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.2,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users are seeking deeper integration between Notion and Discord to streamline information flow and task management.; The lack of straightforward, no-code solutions for interactive integrations is a barrier to adoption for non-technical users.",
+          "user_persona": "Tech-savvy student or project manager, interested in automation and workflow optimization.",
+          "competitive_intelligence": "Competitors that offer native integrations with popular communication platforms (e.g., ClickUp with Slack) have a significant advantage. Notion should prioritize building more robust integration capabilities, perhaps through a dedicated API or partnership program."
+        },
+        {
+          "title": "Akiflow -> Notion Workflow: is it possibile to create tasks in a Notion database from Akiflow?",
+          "selftext": "",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Accomplished_Dirt763",
+          "created_utc": "2025-08-24 11:46",
+          "permalink": "https://reddit.com/r/Notion/comments/1mytgqn/akiflow_notion_workflow_is_it_possibile_to_create/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.0,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Users are seeking tighter integrations with task management tools like Akiflow.; Integration requests indicate a desire to streamline workflows across multiple platforms.",
+          "user_persona": "Intermediate user relying on multiple productivity apps.",
+          "competitive_intelligence": "Illustrates the need for a robust API and seamless integrations with other popular productivity tools. Lack of integrations can be a reason for users to switch to a more flexible competitor."
+        },
+        {
+          "title": "Extract email body text to Notion",
+          "selftext": "Hi all, \nI've been using Notion for a while and I love it! Il wondering if there is a way, an automation/integration, anything, that can extract the body text of an email and put it into a predefined page of my choice. \nBasically the idea behind that is that I often send myself emails with tasks, stuff I need to do, and I would like to gather all the tasks I'm sending myself into one place. \nI'm open to other suggestions if someone use a similar system.\nThank you so much!!",
+          "score": 1,
+          "num_comments": 5,
+          "author": "CricketInfamous246",
+          "created_utc": "2025-08-24 10:37",
+          "permalink": "https://reddit.com/r/Notion/comments/1mys8jg/extract_email_body_text_to_notion/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.6,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users are looking for seamless integration with email to capture and organize tasks, which indicates a key workflow missing or not easily implemented within Notion.; The user is seeking a specific solution for a common productivity problem (task management from email), highlighting a high-value use case for Notion.",
+          "user_persona": "Productivity-focused individual user, moderate Notion experience",
+          "competitive_intelligence": "This demonstrates a potential weakness in Notion's integration capabilities with email, giving competitors who offer better email integration an advantage. It's also an opportunity for Notion to improve its API and automation capabilities to enable this workflow."
+        },
+        {
+          "title": "Is it possible to add another AI to a Notion workspace?",
+          "selftext": "Is it possible to integrate another AI into a Notion workspace?\n\nI've tried a few things, but they haven't worked, mostly because I was trying to use commands like Notion AI's \"\\\\command,\" etc.\n",
+          "score": 0,
+          "num_comments": 2,
+          "author": "pemapi",
+          "created_utc": "2025-08-25 18:39",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzytrs/is_it_possible_to_add_another_ai_to_a_notion/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 0.5,
+          "sentiment_score": 0.0,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Users are interested in expanding Notion's AI capabilities by integrating alternative AI models.; Current implementation limits integration to Notion AI using proprietary commands, suggesting a need for a more open AI integration framework.",
+          "user_persona": "Early adopter/power user exploring AI integration within Notion and potentially familiar with different AI models.",
+          "competitive_intelligence": "This highlights potential limitations with Notion AI and a desire from users for more flexibility and options in their AI tools. Competitors offering broader AI integrations could be attractive."
+        },
+        {
+          "title": "I stopped spending 30 minutes every morning copying emails into Notion.",
+          "selftext": "Did the math: \\~15\u201320 emails/day \u00d7 1\u20132 min each = \\~5\u201310 hrs/month lost.\n\nI built a 10-sec Email\u2192Notion flow: forward \u2192 AI pulls tasks/dates/priorities \u2192 task appears.\n\nListens on Gmail. Works with Outlook/iCloud/Yahoo via forwarding to a Gmail alias.\n\nHere\u2019s a 48-sec demo: [https://www.youtube.com/watch?v=is7OCxfTgUc](https://www.youtube.com/watch?v=is7OCxfTgUc)\n\nIf anyone wants the template + setup video, I can share details in the comments.",
+          "score": 0,
+          "num_comments": 4,
+          "author": "SeaZookeepergame9121",
+          "created_utc": "2025-08-25 10:49",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzn64k/i_stopped_spending_30_minutes_every_morning/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 0.13,
+          "sentiment_score": 0.8,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Email integration is a high-value use case, streamlining workflows and saving time.; Demand for automation and AI-powered features to process and organize information from external sources (e.g., email).",
+          "user_persona": "Power user/knowledge worker",
+          "competitive_intelligence": "Highlights the need for strong API and integration capabilities. Competitors with seamless email integration or AI features have a distinct advantage."
+        }
+      ]
+    },
+    "feature_request": {
+      "name": "Feature Requests",
+      "count": 7,
+      "percentage": 8.641975308641975,
+      "avg_score": 27.0,
+      "avg_comments": 24.714285714285715,
+      "posts": [
+        {
+          "title": "Notion really needs a \u201cUser Mode\u201d (separate from Edit Mode)",
+          "selftext": "Hey Notion community,\n\nI wanted to share a feature idea that I think could make Notion vastly more usable for everyday workflows. The problem is: **there is no way to separate \u201ccreator mode\u201d from \u201cuser mode.\u201d**\n\nRight now, everything in Notion is always editable, which is great for building, but becomes distracting when you just want to use your tables, databases, or dashboards. Every interaction invites you to tweak properties, formulas, and layouts. For people trying to focus, this constant temptation can make task management stressful or inefficient.\n\nThe solution is simple but powerful: **Notion should have a \u201cUser Mode\u201d or \u201cInteraction Mode.\u201d**\n\nHere\u2019s what it could look like:\n\n* Enter **Edit/Creator Mode** to configure databases, properties, formulas, views, and automations.\n* Exit Creator Mode to simplify the interface: only elements you want interactive remain so (checkboxes, buttons, links, etc.). All other editing controls stay hidden unless you switch back.\n* Users decide which parts of their setup stay interactive and which are locked.\n\nThis would effectively turn complex Notion setups into clean, usable apps for daily work, while keeping all the customization power intact. It\u2019s like giving creators and users two separate experiences in the same workspace.\n\nNo other tool currently combines:\n\n* Deep customization and flexibility\n* Clean, distraction-free interaction\n* The ability to selectively lock or hide editing controls\n\nIf implemented, this could make Notion **the ultimate productivity tool** for personal and team use. I hope the Notion team considers this\u2014having a \u201cUser Mode\u201d would be a game-changer.\n\n  \nWhat do you think?",
+          "score": 163,
+          "num_comments": 33,
+          "author": "Nshx-",
+          "created_utc": "2025-08-24 18:12",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz2z1n/notion_really_needs_a_user_mode_separate_from/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.97,
+          "sentiment_score": 0.7,
+          "urgency_level": 4,
+          "business_impact": 5,
+          "key_insights": "The lack of a distinct 'user mode' vs. 'edit mode' is a significant pain point for many users, impacting productivity and focus.; Users find the constant editability distracting and overwhelming, especially when interacting with databases and dashboards.; A dedicated 'user mode' is seen as a way to simplify the interface and improve the overall user experience.",
+          "user_persona": "Power user, project manager, or anyone who uses Notion extensively for task management and database interaction.",
+          "competitive_intelligence": "This is a crucial competitive insight.  If implemented, a 'user mode' could be a major differentiator for Notion, addressing a core usability issue. Competitors who offer a cleaner 'read-only' or 'interaction' mode already have a significant advantage."
+        },
+        {
+          "title": "\ud83d\uddf3\ufe0f Product Feedback for Notion \ud83d\udece\ufe0f",
+          "selftext": "Leave a comment on this post if you have any of the following types of feedback that you would like to reach the Notion Team:\n\n* **\ud83d\udca1 Feature Request**\n* **\ud83d\uddf3\ufe0f Product Feedback**\n\n\nPlease begin your message with the indicating category above for greater clarity.  \ne.g.: `\ud83d\udca1 Feature Request \u2014 I would like this feature`.\nPlease aim to list a singular feature request or bit of feedback, so that upvotes can clearly represent which features users wish to upvote.\n\nThe goal is to consolidate meaningful feedback making it easier for the Notion team to hear the voices of the r/Notion subreddit community. This post will refresh once every two weeks (on a Monday).\n\n**Please upvote comments that you agree with &/or have experienced! Reply with added context if you can.** The more voices heard, the greater chance that the Notion team can understand the need to address it!\n\n>\u2757If you need timely customer support regarding any BUGS, urgent or unexpected happenings in your workspace do not post here, email: **team@makenotion.com** \u2014 this will get you the fastest results.\u2757\n\nPlease do not make venting posts about the product when you haven't even reached out to customer support about the situation yet. (*Feel free to talk about it after the fact though, but do your own due diligence to actually resolve your own situation before publicly venting.*)",
+          "score": 17,
+          "num_comments": 125,
+          "author": "AutoModerator",
+          "created_utc": "2025-05-05 13:30",
+          "permalink": "https://reddit.com/r/Notion/comments/1kfbodt/product_feedback_for_notion/",
+          "flair_text": "\ud83d\uddf3\ufe0f Product Feedback",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.6,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users actively want to influence Notion's development.; Upvoting mechanism allows for easy prioritization.; Designated feedback channels improve communication and reduce support load.",
+          "user_persona": "General Notion user, willing to contribute to product improvement.",
+          "competitive_intelligence": "Shows Notion is actively soliciting and prioritizing user feedback, a key differentiator for user-centric product development compared to less responsive competitors."
+        },
+        {
+          "title": "Updating an Initiative Tracker database to take advantage of buttons, conditional formatting, or feedback.",
+          "selftext": "Some years ago I made an initiative tracker for my D&D campaign. It showed stat blocks from a separate database of monsters, tracked their AC, Health, and a manual input for dmg. Defeated enemies would be auto-filtered out. \n\nIt worked but I opted for other programs. However, I'd like to dust this tracker off and try to take advantage of the new buttons, conditional formatting and any improvements I could include. \n\nDo folks have ideas on how this tracker could be improved or streamlined? I tried to do conditional formatting if the number in the damage column matched the monster's max HP but this didn't work. Buttons that do different things would be great like dice rolling if possible. \n\nAnyway, I'm looking to take advantage of new data see features to try and improve this. Thanks so much! ",
+          "score": 3,
+          "num_comments": 0,
+          "author": "TheInsaneDump",
+          "created_utc": "2025-08-24 03:50",
+          "permalink": "https://reddit.com/r/Notion/comments/1mylk10/updating_an_initiative_tracker_database_to_take/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.5,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users are trying to extend Notion's database capabilities for complex, dynamic use cases (D&D campaign tracker).; There's a desire for more advanced conditional formatting options.; Integration with dice rolling or similar game mechanics via buttons is a potential area for expansion.",
+          "user_persona": "Power user, potentially with technical skills, looking to leverage Notion for personal projects.",
+          "competitive_intelligence": "Highlights a niche use case where Notion's current functionality falls short. Competitors with strong data visualization or formula capabilities might be better suited for this type of application."
+        },
+        {
+          "title": "How Do You Handle Backup and Restore in Notion? Seeking Your Experience & Feedback for a New Tool Idea",
+          "selftext": "I\u2019m exploring the idea of building a SaaS tool that helps automate backup and restore for Notion workspaces. Since Notion\u2019s native backup and restore options can sometimes feel limited or incomplete, I\u2019d love to hear directly from you about your experiences.\n\nHere are a few questions to get the discussion started:\n\nHow do you currently back up your Notion data? (manual exports, duplications, other tools, etc.)\n\nHave you ever faced issues with restoring data from backups or recovering lost pages?\n\nWhat would a perfect backup and restore solution look like for you? Any must-have features or deal breakers?\n\nHow important is automated daily backup and granular restore (like restoring individual pages or databases) to you?\n\nPlease share any stories, frustrations, or suggestions you have. If you\u2019d be interested in trying out an early version of such a tool, let me know!\n\nThanks for your help \u2014 your input will be super valuable in shaping something that really helps the Notion community.",
+          "score": 2,
+          "num_comments": 7,
+          "author": "VeeAey",
+          "created_utc": "2025-08-25 09:23",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzlqi3/how_do_you_handle_backup_and_restore_in_notion/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.1,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users perceive Notion's native backup and restore functionality as limited or incomplete.; There's a demand for automated, granular backup and restore solutions, including individual page/database recovery.",
+          "user_persona": "Power User/Small Business Owner relying heavily on Notion for critical information.",
+          "competitive_intelligence": "Identifies a potential weakness in Notion's core feature set that third-party SaaS tools are looking to exploit. This highlights an opportunity for Notion to improve its backup/restore offering and potentially acquire a startup in this space."
+        },
+        {
+          "title": "Is it possible to create a centralized database of tags (colored ones, not @mentions) to reuse across multiple tables?",
+          "selftext": "Hey everyone,\n\nI\u2019m working with tables and I noticed that tags (the colored ones like in the screenshot below, not the\u00a0`@`\u00a0mention tags) seem to be defined per table.\n\nWhat I\u2019d love to know is:  \n\ud83d\udc49 Is there a way to create a\u00a0**centralized database of tags**\u00a0so I can manage them in one place and then reuse the same tag set across multiple tables?\n\nRight now, if I want consistency between tables, I have to manually recreate the same tags/colors in each one.\n\nHas anyone found a workaround, or is this just not possible at the moment?\n\nThanks!\n\nhttps://preview.redd.it/5q8bzn0s0ykf1.png?width=141&format=png&auto=webp&s=9ad8eb9982fd7d27e453c77e17cc810f3ac1436f\n\n",
+          "score": 2,
+          "num_comments": 4,
+          "author": "acidbahia",
+          "created_utc": "2025-08-24 10:18",
+          "permalink": "https://reddit.com/r/Notion/comments/1myrx5u/is_it_possible_to_create_a_centralized_database/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.0,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Centralized tag management is a highly desired feature for maintaining consistency across workspaces.; The current implementation of tags is perceived as inefficient for users managing multiple tables.",
+          "user_persona": "Intermediate/Power user managing complex workflows.",
+          "competitive_intelligence": "This is a UI/UX issue that could be a point of comparison with other productivity tools with robust tag management features."
+        },
+        {
+          "title": "What if Notion could generate flowcharts and diagrams automatically?",
+          "selftext": "Been thinking about improving Notion\u2019s flow feature\u2026 and I decided to turn it into a little project  \nHere\u2019s a sneak peek of what I\u2019m working on, Check it out;\n\n[https://x.com/Kolapo\\_Olubanjo/status/1959964195404853303](https://x.com/Kolapo_Olubanjo/status/1959964195404853303)",
+          "score": 1,
+          "num_comments": 0,
+          "author": "No-Area-8411",
+          "created_utc": "2025-08-25 13:19",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzqarp/what_if_notion_could_generate_flowcharts_and/",
+          "flair_text": "\ud83e\udde0 Notion AI",
+          "upvote_ratio": 0.6,
+          "sentiment_score": 0.6,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Users desire more advanced diagramming capabilities within Notion.; Automated flowchart and diagram generation would save time and improve efficiency.; Leveraging AI for visual content creation is a promising direction.",
+          "user_persona": "Power user, visual thinker, process-oriented.",
+          "competitive_intelligence": "Highlights a potential feature gap compared to dedicated diagramming tools like Miro or Lucidchart. This could be addressed through native features or deeper integrations."
+        },
+        {
+          "title": "Notion database power users: what are your most critical and annoying problems?",
+          "selftext": "I have been a heavy user of Notion's tables and databases for various tasks (eg. ticket management for teams, CRM, personal todo lists, storing various tables of non-critical/sensitive data). To my fellow power users of Notion's table and database feature: what are your most critical problems that you face on a near-daily basis that seriously frustrate your day-to-day work? \n\n",
+          "score": 1,
+          "num_comments": 4,
+          "author": "ExoticAccountant",
+          "created_utc": "2025-08-25 10:58",
+          "permalink": "https://reddit.com/r/Notion/comments/1mznbtl/notion_database_power_users_what_are_your_most/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.3,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Power users are likely facing significant pain points with Notion's database features.; The issues are critical and encountered on a near-daily basis, causing frustration.",
+          "user_persona": "Power User/Team Admin",
+          "competitive_intelligence": "Highlights an opportunity for competitors to address specific database limitations and offer a more seamless experience for power users. Notion's database complexity may be a weakness."
+        }
+      ]
+    },
+    "workflow_showcase": {
+      "name": "Workflow Showcase",
+      "count": 6,
+      "percentage": 7.4074074074074066,
+      "avg_score": 6.166666666666667,
+      "avg_comments": 3.1666666666666665,
+      "posts": [
+        {
+          "title": "Automate project status updates based on related tasks statuses with Notion Automations",
+          "selftext": "I've made a [video tutorial](https://www.youtube.com/watch?v=b4zPcBVjLhQ) on setting up a Notion automation that automatically updates the status of a project based on the status of its related tasks.\n\nIt's not the most straightforward process, as you have to define a variable as part of the automation in order to be able to precisely target the right project within the edit property action.\n\nThis automation setup and logic can be applied to many different use cases and database setups, so getting the hang of it once is really going to be worth it.\n\nI've been asked how to set this up multiple times, so I decided to make a video about it and to share it here since it might be helpful for others too.",
+          "score": 24,
+          "num_comments": 1,
+          "author": "consistentbenny",
+          "created_utc": "2025-08-25 10:22",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzmpnp/automate_project_status_updates_based_on_related/",
+          "flair_text": "Databases",
+          "upvote_ratio": 0.92,
+          "sentiment_score": 0.8,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users are actively seeking and creating complex automation workflows within Notion.; The video tutorial format is a popular method for sharing and learning about these complex workflows.; Automations, while powerful, can be complicated to set up and require a deep understanding of database relationships.",
+          "user_persona": "Power user, likely comfortable with databases and automation principles.",
+          "competitive_intelligence": "Highlights a growing need and demand for robust automation capabilities, which could be a differentiator against simpler note-taking apps. Shows a need to simplify complex automation setups."
+        },
+        {
+          "title": "A Deep Dive into the \"Spaghetti Problem\" of Complex Notion Workspaces",
+          "selftext": "Hello r/Notion,\n\nLike many of you, I use Notion as a \"second brain.\" But as my system grew with dozens of interconnected databases, I realized I had accidentally created a \"spaghetti mess.\" I could feel the connections through relations and rollups, but I couldn't *see* the architecture. It was a black box.\n\nThis isn't just about aesthetics; it has real consequences:\n\n* **Onboarding is difficult:** How do you explain a complex system to a new team member?\n* **Hidden Dependencies:** A small change in one database can unknowingly break a workflow somewhere else.\n* **Information Silos:** Databases become \"orphaned\" and forgotten, leading to outdated knowledge.\n\n**My Approach to a Solution: Systems Thinking**\n\nI decided to tackle this not as a software problem, but as a *systems problem*. The goal wasn't just to plot databases on a screen, but to create a visualization that was genuinely useful and intelligent.\n\nMy philosophy was based on two principles:\n\n1. **Intelligent Layout:** The graph shouldn't be a random cloud of nodes. I developed a custom layout engine that uses algorithms inspired by graph theory (like simulated annealing) to actively untangle the connections, minimize line crossings, and reveal the underlying structure.\n2. **Connection Analysis:** Not all relations are equal. The system also needed to analyze the *strength* of connections to identify which databases are true \"hubs\" in the workspace and which are merely satellites.\n\nHere is a look at the dashboard I've been building based on these principles.\n\nAs you can see, the goal is to provide a clean overview of the system's architecture. But a static map isn't enough. The tool is interactive and built for deep analysis. For example, you can:\n\n* **Search and Filter:** Instantly find specific databases by name or property, allowing you to focus only on the parts of the system you need to see.\n* **Isolate \"Orphaned\" Databases:** A key feature is the ability to quickly identify and isolate databases that are not being interconnected, helping you find valuable knowledge that has lost its connection to your system.\n* **Export Your Architecture:** Export the visual map of your workspace to different formats (like PNG or SVG) to include in documentation, presentations, or team reviews.\n\nI'm sharing this deep dive because I'd love to get feedback from other power users on this *approach* to solving the problem. Do these principles resonate with the issues you face?",
+          "score": 12,
+          "num_comments": 7,
+          "author": "One-Engine-1287",
+          "created_utc": "2025-08-25 14:30",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzs1me/a_deep_dive_into_the_spaghetti_problem_of_complex/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 0.83,
+          "sentiment_score": 0.2,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Complex Notion setups can become difficult to manage ('spaghetti mess').; Visualizing and understanding the system architecture is crucial.; Systems thinking approach can improve workflow design.",
+          "user_persona": "Power user, using Notion as a 'second brain' and managing complex databases.",
+          "competitive_intelligence": "This highlights a potential market need for tools that help users visualize and manage complex workflows within Notion, possibly even integrated with an API. This showcases the depth of integration expected by power users."
+        },
+        {
+          "title": "I'm currently looking for a tester",
+          "selftext": "# Plan of the Day \u2013 Email from Notion\n\n\ud83d\udce9 Every morning at 7:00, you receive a clear email with your Notion tasks for the day.  \n\u2705 Pulled straight from your Notion database  \n\u2705 Nicely formatted, ready to go  \nPerfect for freelancers and teams who want a daily overview without opening Notion first thing.",
+          "score": 1,
+          "num_comments": 3,
+          "author": "coff_au",
+          "created_utc": "2025-08-24 16:55",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz0vwk/im_currently_looking_for_a_tester/",
+          "flair_text": "\ud83c\udf81 Free Templates",
+          "upvote_ratio": 0.67,
+          "sentiment_score": 0.6,
+          "urgency_level": 1,
+          "business_impact": 3,
+          "key_insights": "Automated email summaries of Notion tasks are valuable for users who prefer a daily overview without directly opening the application.; The template targets freelancers and teams, indicating a need for Notion to better cater to these user segments with tailored features and workflows.",
+          "user_persona": "Freelancer or team member, focused on efficient task management and daily planning.",
+          "competitive_intelligence": "Highlights a potential market gap for automated summaries and daily briefings directly integrated into Notion. Competitors like Todoist and TickTick already offer similar functionalities."
+        },
+        {
+          "title": "Is this a common use for Notion?",
+          "selftext": "Is Notion used as a source of creating learning products that leverage the strength of this tool in creating dashboards. I've created a Strategic Planning Toolkit that has attached learning documents that a user then can input into their goal template etc of choice. So my contribution is less around the skills of Notion itself but providing knowledge on building strategic frameworks that people can then use notion to apply. I'm wondering is is type of use or selling on Notion common?",
+          "score": 0,
+          "num_comments": 2,
+          "author": "ImpressionProud7511",
+          "created_utc": "2025-08-25 03:04",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzfh8q/is_this_a_common_use_for_notion/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 0.29,
+          "sentiment_score": 0.6,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users are leveraging Notion to build and sell learning products and toolkits, suggesting a business opportunity for Notion to support and enable these creators.; Users are building strategic frameworks within Notion, indicating a desire for more robust project management and strategic planning capabilities.",
+          "user_persona": "Consultant/Educator, Power User",
+          "competitive_intelligence": "Demonstrates that Notion is being used for use-cases it might not explicitly target, revealing an opportunity to expand its marketing efforts and product development to cater to educators and consultants offering learning products within the Notion environment. This also opens the door to competition from services specializing in course building."
+        },
+        {
+          "title": "Custom automations, save time & boost productivity",
+          "selftext": "Looking to automate repetitive tasks, integrate your apps, or streamline workflows without complex coding? \n\nI design custom workflows tailored to your business needs.\n\n\u2705 Automate email campaigns, notifications, data transfers, and more  \n\u2705 Connect multiple apps seamlessly  \n\u2705 Quick setup and easy to maintain  \n\u2705 Optimized for efficiency and reliability\n\nPerfect for startups, small businesses, or anyone who wants to save time and reduce manual work.",
+          "score": 0,
+          "num_comments": 0,
+          "author": "ghustlin",
+          "created_utc": "2025-08-24 11:14",
+          "permalink": "https://reddit.com/r/Notion/comments/1mysvm5/custom_automations_save_time_boost_productivity/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.8,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Demand exists for custom Notion automation services, indicating a potential gap in Notion's built-in automation capabilities.; The focus on startups and small businesses suggests a target market segment where Notion's automation features might be insufficient.",
+          "user_persona": "Small business owner/startup founder, potentially non-technical",
+          "competitive_intelligence": "Highlights a market opportunity for Notion to enhance its automation features or partner with automation service providers. This is a signal that competitors who offer more robust and user-friendly automation may gain a competitive edge."
+        },
+        {
+          "title": "Do we underestimate how far Notion can go when pushed to its limits?",
+          "selftext": "Hey everyone,\n\nI\u2019ve been obsessed with pushing Notion beyond what it was designed for. Over the past months I poured more than 900 hours into building a system that doesn\u2019t feel like a template anymore \u2013 more like a complete operating system for life and work.\n\nIt\u2019s fully modular, has 4 core hubs (Focus, Health, Finance, Growth), 20+ embedded AI prompts, and more than 1,500 curated visuals to make it actually feel like a designed product. I wanted it to have the clarity and elegance of something you\u2019d expect from an Apple launch, but inside Notion.\n\nThe result is a space where everything connects: projects, habits, meals, workouts, finances, networks, even travel. It\u2019s not about stacking databases, it\u2019s about having one consistent architecture where life just makes sense.\n\nI\u2019m super curious what you all think:\n\u2013 Has anyone else here tried to build something that ambitious in Notion?\n\u2013 Do you think there\u2019s a future where Notion becomes more of a platform for full ecosystems rather than just templates?\n\nHappy to share a look behind the scenes if there\u2019s interest. \ud83d\ude80\n\nhttps://linktr.ee/TastyStudios",
+          "score": 0,
+          "num_comments": 6,
+          "author": "TastyStudioOne",
+          "created_utc": "2025-08-24 18:13",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz2znv/do_we_underestimate_how_far_notion_can_go_when/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.4,
+          "urgency_level": 1,
+          "business_impact": 2,
+          "key_insights": "Users are willing to invest significant time (900+ hours) to customize Notion to their needs.; There's a desire for a more integrated and visually appealing experience within Notion.; AI integration is highly sought after and being explored by users.",
+          "user_persona": "Power user, potentially a creator, with a strong desire for customization and integration.",
+          "competitive_intelligence": "Indicates a strong user base willing to push Notion to its limits, which is a competitive advantage. However, it also highlights potential usability gaps that could be addressed to make it easier for average users to achieve similar results. Notion could better curate AI templates or enable native support. Competitors with better UX, faster template deployment, or native AI will likely be more desirable."
+        }
+      ]
+    },
+    "bug_report": {
+      "name": "Bug Reports",
+      "count": 5,
+      "percentage": 6.172839506172839,
+      "avg_score": 0.8,
+      "avg_comments": 3.2,
+      "posts": [
+        {
+          "title": "Conditional formatting on iPhone",
+          "selftext": "Hi, I created a view with a conditional formatting to match the background color with priority e.g. high priority to have red background. \nIt works fine in my laptop, but when I look into my iPhone, sometimes the app doesn\u2019t show the background color at all. It\u2019s just white. \nHowever, from time to time, my iPhone app shows correct background color of red. \n\nI don\u2019t know when it does versus when it doesn\u2019t. Do you know what\u2019s making the difference? Thanks",
+          "score": 1,
+          "num_comments": 0,
+          "author": "Straight-Nerve-6464",
+          "created_utc": "2025-08-25 20:36",
+          "permalink": "https://reddit.com/r/Notion/comments/1n01wuq/conditional_formatting_on_iphone/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.3,
+          "urgency_level": 3,
+          "business_impact": 3,
+          "key_insights": "Inconsistency in conditional formatting rendering on the iOS app impacts user experience.; Potentially a bug related to how Notion handles conditional formatting on mobile devices, or perhaps a caching issue.",
+          "user_persona": "General Notion user who utilizes conditional formatting features and relies on the mobile app for accessibility.",
+          "competitive_intelligence": "Demonstrates a potential weakness in cross-platform consistency. Competitors with more reliable mobile experiences might be preferred. Performance and reliability across devices is key to retaining users."
+        },
+        {
+          "title": "Recurring tasks nightmare - what am I doing wrong?",
+          "selftext": "I have created a database where I have create recurring templates. These are set to repeat every one month on the 25th of the month. They are categorised as admin, but do not show up in my admin category.\n\nI have my board view grouped by Category and it goes:  \nAdmin  \nMarket research  \nEmail\n\nand so on.\n\nI have added these recurring tasks into the Admin category, but they are not showing there. They are however showing, when I view the tasks by status.\n\nWHY :'(\n\nUpdate: I have now updated the time to show \"At 2pm\" to see if this works, but then what happens, it shows at 2pm for one minute? What's the point in that? In this instance, the task will only show at midnight until 3am, for what? Arrghhghgh.\n\nUpdate: Even at 2pm, nothing showed :|\n\nhttps://preview.redd.it/c12tu415y5lf1.png?width=472&format=png&auto=webp&s=acb6b8063ee66eb475e9f8a623b2201f9e3106c3\n\nlinked example: [https://www.notion.so/25aaa709d76080b59cbfcdca67542c39?v=25aaa709d76080559c60000c39edac5d&source=copy\\_link](https://www.notion.so/25aaa709d76080b59cbfcdca67542c39?v=25aaa709d76080559c60000c39edac5d&source=copy_link)",
+          "score": 1,
+          "num_comments": 1,
+          "author": "Ishouldntbeangry",
+          "created_utc": "2025-08-25 12:37",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzpba0/recurring_tasks_nightmare_what_am_i_doing_wrong/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.8,
+          "urgency_level": 4,
+          "business_impact": 4,
+          "key_insights": "Recurring tasks in databases are not functioning as expected, specifically related to categories and visibility.; The user is highly frustrated by the inconsistent behavior of recurring templates.",
+          "user_persona": "Power User relying on recurring tasks for workflow management.",
+          "competitive_intelligence": "Points to potential issues with Notion's template functionality, which is a key selling point. Competitors with more reliable task management features could capitalize on these frustrations."
+        },
+        {
+          "title": "Duplication failure issue?",
+          "selftext": "Hey guys, I've been having trouble with duplicating some of my templates to other workspaces. It shows \"duplication failed\". Is anyone else having same issue. It's only happening with some templates while others are duplicating normally. The same thing happened few months ago as well.",
+          "score": 1,
+          "num_comments": 6,
+          "author": "organizeddashboard",
+          "created_utc": "2025-08-25 04:38",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzh7y0/duplication_failure_issue/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.6,
+          "urgency_level": 4,
+          "business_impact": 5,
+          "key_insights": "Template duplication failures are a recurring issue affecting multiple users.; This bug hinders the ability to share and scale workflows across workspaces, impacting collaboration and productivity.",
+          "user_persona": "Template Creator/Team Admin",
+          "competitive_intelligence": "Raises concerns about Notion's reliability and stability. Competitors with more robust infrastructure and fewer bugs could gain an advantage. This specific issue directly impacts template creators and sharing, a key feature for Notion. Addressing this bug is critical to retain users and avoid negative brand perception."
+        },
+        {
+          "title": "How do I uninstall this app",
+          "selftext": "I can uninstall it, windows gives me an error saying the file can not be found and appwiz says its already uninstalled but i can still launch it and its still running in the background on task manager. ",
+          "score": 1,
+          "num_comments": 5,
+          "author": "Ok_Relationship9292",
+          "created_utc": "2025-08-24 23:31",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzb09j/how_do_i_uninstall_this_app/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.7,
+          "urgency_level": 4,
+          "business_impact": 5,
+          "key_insights": "Difficult uninstall process can lead to user frustration and negative perception.; The user is reporting a critical issue where the application remains running after uninstall attempts.",
+          "user_persona": "General user attempting to uninstall the Notion desktop application.",
+          "competitive_intelligence": "Smooth installation and uninstallation processes are crucial for maintaining a professional image. Notion needs to address this issue to avoid negative word-of-mouth and potential reputational damage. This issue hurts the perception of Notion compared to competitors with seamless installation/uninstall."
+        },
+        {
+          "title": "Notion Offline Mode",
+          "selftext": "The new offline mode is a game changing transformation for the app. \n\nI started using offline mode yesterday. Now it's off for my new entries or the offline button grayed out for recently offlined files. \n\nAlso, I noticed I can no longer set new or older files to offline. Please fix it. \n\nThanks\n",
+          "score": 0,
+          "num_comments": 4,
+          "author": "None_4All",
+          "created_utc": "2025-08-24 20:11",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz63m4/notion_offline_mode/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.33,
+          "sentiment_score": -0.2,
+          "urgency_level": 4,
+          "business_impact": 4,
+          "key_insights": "Offline mode is highly valued and considered a 'game changer'.; The reported bugs are severely impacting the utility of offline mode.",
+          "user_persona": "Power user who relies on consistent access.",
+          "competitive_intelligence": "Shows the importance of reliable offline functionality. Competitors with robust offline features could capitalize on Notion's shortcomings."
+        }
+      ]
+    },
+    "community_meta": {
+      "name": "Community/Meta",
+      "count": 3,
+      "percentage": 3.7037037037037033,
+      "avg_score": 27.333333333333332,
+      "avg_comments": 21.333333333333332,
+      "posts": [
+        {
+          "title": "Make with Notion 2025 | WISHLIST | Notion 3.0?",
+          "selftext": "Hello everyone! Make with Notion 2025 is just around the corner, and I can\u2019t wait for it. What features are on your wishlist for this event?   \n  \nHere\u2019s my perspective: Notion is gearing up for something monumental, possibly the biggest update in its history\u2014Notion 3.0. There have been numerous hints over the past few months. Notion 2.0 was released back in 2018. Why do I believe there will be significant new features? Consider this: Notion introduced Offline mode and Advanced Notion AI just last month. If you were hosting a major conference, you wouldn\u2019t release major features beforehand to save the \u201cWow\u201d effect for the event. The only reason they might have done so is that they have so many extensive features (Notion 3.0) that there wasn\u2019t room for these others. What are your thoughts?",
+          "score": 40,
+          "num_comments": 39,
+          "author": "ondrej_g",
+          "created_utc": "2025-08-23 14:43",
+          "permalink": "https://reddit.com/r/Notion/comments/1my3agc/make_with_notion_2025_wishlist_notion_30/",
+          "flair_text": "\ud83c\udf9f\ufe0f Events",
+          "upvote_ratio": 0.92,
+          "sentiment_score": 0.7,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "High anticipation for a major Notion update (Notion 3.0) indicates a strong, engaged user base and high expectations for future improvements.; The user's reasoning around feature releases suggests a keen awareness of Notion's product development strategy and a desire for significant advancements.",
+          "user_persona": "Power user, community enthusiast, product-focused",
+          "competitive_intelligence": "The hype around Notion 3.0 creates both an opportunity and a risk. Notion needs to deliver on expectations to maintain user loyalty and prevent users from exploring alternative platforms if they're disappointed. Competitors should monitor the update closely to identify potential weaknesses or areas where they can differentiate."
+        },
+        {
+          "title": "Are people actually earning from selling Notion templates, or just making them and hoping for sales?",
+          "selftext": "I\u2019ve noticed a lot of people selling Notion templates lately. Honestly, creating them doesn\u2019t seem too difficult\u2014it\u2019s more time-consuming than hard, especially with YouTube tutorials, AI, and tools like Zapier/Make. Personally, I prefer building dashboards for myself since everyone\u2019s workflow is unique, though inspiration from others helps.\n\nWhat I\u2019m curious about is:\n\nFor those selling, are you actually earning, or are these templates mainly things you made for yourself and listed just in case someone buys?\n\nIf you are earning, how much are you making right now / in total, and how much experience did it take to get there?\n\n\nAlso, I feel like an underrated angle is building Notion setups for businesses as freelance projects. That seems like it could have strong demand, but I don\u2019t see it discussed much. Is that because there\u2019s less demand, or simply fewer people offering it?\n\nWould love to hear some insights.",
+          "score": 24,
+          "num_comments": 24,
+          "author": "OmitavO",
+          "created_utc": "2025-08-24 18:54",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz42d4/are_people_actually_earning_from_selling_notion/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.84,
+          "sentiment_score": 0.2,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Uncertainty exists about the profitability of selling Notion templates.; There's a perceived gap in the market for offering Notion setup services for businesses.",
+          "user_persona": "Aspiring Entrepreneur / Freelancer exploring the Notion ecosystem.",
+          "competitive_intelligence": "Reveals the evolving Notion ecosystem, highlighting the potential for a professional services market around Notion implementation and customization. Notion could foster this market by providing resources and partnerships."
+        },
+        {
+          "title": "\ud83c\udf1f User Flair Overview",
+          "selftext": "# This post provides a breakdown of all of the User Flairs you might stumble upon in your daily encounters here.\n\nShould there be any changes to the Notion programs & certifications, these User Flairs will be updated to reflect those changes when time permits, and this post will be edited to include those updates.\n\nPlease check the [**Notion Certifications**](https://www.notion.so/lp/certifications) page for details on how to acquire some of the badges below.\n\n**If you have already acquired any of these distinctions and would like to request the User Flair for your account, please** [**fill out this form here**](https://wildenfree.notion.site/dc37f024388b4e0da4f7270915d54eaa?pvs=105)**.**\n\n[Notion Team Member](https://preview.redd.it/ymx4zzaz2rrd1.png?width=201&format=png&auto=webp&s=a3a5f915e2dc6730ba9aedc13e5bb5a124d019f0)\n\n*Indicates someone that is a paid staff member at the Notion Company.*\n\n[r\\/Notion Moderator](https://preview.redd.it/uy1hhyw13rrd1.png?width=128&format=png&auto=webp&s=2d74938dd163b66ba4daff51796acc4aed112bc4)\n\n*Self-explanatory, indicates an active moderator here within the subreddit.*\n\n[Certified Consultant \\(Max lvl\\) ](https://preview.redd.it/z6z0nfr73rrd1.png?width=128&format=png&auto=webp&s=db41c5d0eeeefe1ebbcaec14271db43d17703c4c)\n\n*Indicates someone with the highest level of certification Notion has to offer, who are are listed in the Notion directory for consultants. Certified individuals who provide comprehensive Notion solutions, including consulting, onboarding, complex workflow implementation, and long-term support for enterprises. They help organizations or individuals set up and customize their Notion workspaces.*\n\n[Ambassador](https://preview.redd.it/3k2uixnf3rrd1.png?width=128&format=png&auto=webp&s=1e0dafb8f4297e5e06d5587c67a60d2486872c3e)\n\n*Indicates someone who participates in the Notion Ambassador program. These individuals likely provide services, consult, build templates & have the privilege of being hosts for local, in-person Notion community meetups to connect with community members on behalf of Notion. Ambassadors are often content creators, educators, or Notion enthusiasts who help others use the platform more effectively through workshops, social media content, and online communities.*\n\n[Champion](https://preview.redd.it/rvigu9ki3rrd1.png?width=128&format=png&auto=webp&s=b212f5387ca03c508270e247efe53cd7f175aa47)\n\n*Indicates someone who participates in the Notion Champion program. These individuals are Employees or team members within companies who advocate for Notion internally. They help their colleagues learn and adopt Notion by acting as go-to resources within their organization. Champions often work to implement Notion across teams, customizing it for their workplace needs.*\n\n[Campus Leader](https://preview.redd.it/pqn7xjda6rrd1.png?width=128&format=png&auto=webp&s=cc96b2d81399bcac2920af593fe327c03dbe6675)\n\n*Indicates someone who participates in the Notion Campus Leader program. These individuals are college and university students who promote Notion on their campuses. These leaders host events, workshops, and educational sessions for their peers, spreading awareness and encouraging the adoption of Notion for academic and personal productivity.*\n\n[Advance Badge \\(lvl 3\\)](https://preview.redd.it/nq7esgwc6rrd1.png?width=121&format=png&auto=webp&s=c70cc244131c4a69122c154bf6d11b7ce330d0b1)\n\n*An official certification from Notion. The Advanced Badge certifies a higher level of expertise in Notion. This badge is awarded to those who are proficient in using Notion\u2019s more complex features, such as relational databases, advanced formulas, and automating workflows. This level signifies a deep understanding of how to customize Notion for more sophisticated and multi-faceted use cases.* \u2734\ufe0f\n\n[Settings & Sharing Badge \\(lvl 2\\)](https://preview.redd.it/grlecblg6rrd1.png?width=128&format=png&auto=webp&s=b412e900c5f8f69ec3b6e71956e46e4ac02c5c70)\n\n*An official certification from Notion. This badge is focused on managing workspace settings and permissions. It certifies users who understand how to properly configure sharing settings, manage team access, and maintain data security within Notion. It also covers workspace administration tasks such as inviting members, setting permissions, and managing integrations.* \u2734\ufe0f\n\n[Essentials Badge \\(lvl 1\\)](https://preview.redd.it/5pr73jos6rrd1.png?width=128&format=png&auto=webp&s=5d33f72c2178a5b8104160dd899c01808302a8b6)\n\n*An official certification from Notion. This badge is awarded for demonstrating a strong understanding of Notion's fundamental features. It covers core concepts such as creating and organizing pages, using blocks, and navigating the interface. It's designed to certify users who can proficiently manage their workspace and use Notion for personal or team productivity at a basic to intermediate level.* \u2734\ufe0f\n\n[Recommended Template Creator \\(lvl 2\\)](https://preview.redd.it/0a04pebp6ltd1.png?width=121&format=png&auto=webp&s=ac650d4da46c2d748d4b22903d6f64bba0b2f7d3)\n\n*Individuals highlighted as Recommended Template Creators in the official Notion Template Gallery. Will show in place of the lvl 1 Template Creator User Flair if the distinction is given.* \u2734\ufe0f\n\n[Template Creator \\(lvl 1\\)](https://preview.redd.it/nfhae1av6rrd1.png?width=121&format=png&auto=webp&s=4e01f52cdccc21034fefecb090cbedd33be7e08f)\n\n*Individuals who create and sell custom templates for different use cases within Notion, ranging from personal productivity to business management. Notion features an official template gallery where creators can list their templates, making it easier for users to find ready-to-use solutions* \u2734\ufe0f\n\n\u2734\ufe0f  For the certification badges with this mark, Users will only have the Flair associated with their highest earned credential. I explain [**more about this Modification to User Flair Displays here**](https://www.reddit.com/r/Notion/comments/1fgrtzm/modification_to_user_flairs/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).",
+          "score": 18,
+          "num_comments": 1,
+          "author": "MrWildenfree",
+          "created_utc": "2024-09-29 13:51",
+          "permalink": "https://reddit.com/r/Notion/comments/1fs4tmg/user_flair_overview/",
+          "flair_text": "\ud83d\udd14 Announcements",
+          "upvote_ratio": 1.0,
+          "sentiment_score": 0.8,
+          "urgency_level": 2,
+          "business_impact": 2,
+          "key_insights": "Notion is investing in a certification program.; User flair is used to identify different types of users (official team members).; Community building and recognition contribute to user engagement.",
+          "user_persona": "Community member, interested in official recognition and demonstrating expertise.",
+          "competitive_intelligence": "Notion fosters a strong community with internal certifications and distinctions. This loyalty can be a barrier for competitors trying to attract Notion users."
+        }
+      ]
+    },
+    "criticism": {
+      "name": "Criticism/Complaints",
+      "count": 3,
+      "percentage": 3.7037037037037033,
+      "avg_score": 11.666666666666666,
+      "avg_comments": 11.333333333333334,
+      "posts": [
+        {
+          "title": "5 Years with Notion: An Honest Take - but perhaps I am using my Notion PARA setup wrong.",
+          "selftext": "# Been using Notion for 5 years now and I'm stuck in the same frustrating cycle. Maybe others can relate?\n\n**The endless loop:**\n\n1. Spend hours/days tweaking Notion to fit my workflow perfectly\n2. Use it enthusiastically for a few weeks/months\n3. Gradually stop engaging with the complex setup\n4. End up just using it as a glorified knowledge database\n5. Get fed up and start over with a new setup\n6. Repeat infinitely\n\n**My biggest gripes:**\n\nNotion is simultaneously too powerful and too finicky. The customization options are overwhelming, but more importantly, things constantly break or don't show up because I missed some obscure filter setting or database property. I'll be looking for a note I KNOW exists, only to discover it's hidden because of some view configuration I forgot about.\n\nIt *could* be perfect, but it's not. The gap between potential and reality is maddening.\n\n**What I actually want (and what's inevitable):**\n\nA truly intelligent, zero-setup productivity system. Something that:\n\n* Automatically summarizes my meetings and schedules follow-ups\n* Reminds me of tasks based on context from my emails/messages\n* Tracks projects without me having to build elaborate database schemas\n* Just... works without constant maintenance\n\nRight now I'm experimenting with ChatGPT Projects as a super basic version of this vision. I dump everything into it and get contextually aware responses based on my evolving knowledge base. No setup, no maintenance, just intelligence.\n\n**The bottom line:** I'm done with apps that require me to become a database administrator just to track my life. The technology exists for something better - we just need someone to build it.\n\nAnyone else feeling this Notion fatigue? What are you using instead?",
+          "score": 19,
+          "num_comments": 23,
+          "author": "therealhumanchaos",
+          "created_utc": "2025-08-25 11:48",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzoaq6/5_years_with_notion_an_honest_take_but_perhaps_i/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.89,
+          "sentiment_score": -0.5,
+          "urgency_level": 4,
+          "business_impact": 5,
+          "key_insights": "Overwhelming customizability leads to complexity and abandonment.; Lack of intuitive structure results in hidden or lost information.; The user desires a more intelligent, less manual productivity system.",
+          "user_persona": "Long-term Notion user, experienced but frustrated with its complexity.",
+          "competitive_intelligence": "Competitors offering simpler, more intuitive interfaces could capitalize on Notion's complexity. The 'endless loop' described is a risk of churn."
+        },
+        {
+          "title": "There's too many new changes",
+          "selftext": "I open Notion to jot one tiny note and I am greeted by a new sidebar, a new toolbar, and a big prompt to try AI again. The slash menu is different, buttons have moved, my templates look nothing like last month, and now it wants to convert my page into a database for me. \n\nI click to dismiss something and three more pop up tours appear. I just want a blank page that stays the same for longer than a cup of tea. I go in to write, I come out feeling like I have done user testing for free...",
+          "score": 15,
+          "num_comments": 11,
+          "author": "Slow_Candidate_9931",
+          "created_utc": "2025-08-24 12:04",
+          "permalink": "https://reddit.com/r/Notion/comments/1mytsnj/theres_too_many_new_changes/",
+          "flair_text": "\ud83d\ude24 Venting",
+          "upvote_ratio": 0.67,
+          "sentiment_score": -0.8,
+          "urgency_level": 4,
+          "business_impact": 5,
+          "key_insights": "Frequent UI/UX changes are causing user frustration and creating a perception of instability.; Overwhelming users with prompts and tutorials can be counterproductive, especially for simple tasks.",
+          "user_persona": "General user",
+          "competitive_intelligence": "This presents a significant risk. Competitors offering a more stable and intuitive user experience can attract users seeking reliability and ease of use."
+        },
+        {
+          "title": "When can we expect the \"NEW AI IMPROVED VERSION GPT-5\" in PRO workspaces?",
+          "selftext": "Two weeks ago, support told me I'd receive the new improved AI version (GPT-5) by August 14th. \n\n>\n\nFor those who don't know what I'm referring to, [this is the feature.](https://x.com/NotionHQ/status/1953506907924443645)\n\nhttps://preview.redd.it/nqwu53tsg0lf1.png?width=1420&format=png&auto=webp&s=5920ae52afaef872d34349acb758c218e8b57f25\n\n**My Question:**\n\n\u2022  Does anyone know when Pro workspace users can actually expect to receive the new AI improvements feature?   \n  \n\u2022  Is there some pro user (EDU) with this feature already rolled in their workspace?\n\n  \nWould appreciate any insights from other **Pro (EDU )** users or **anyone with reliable info about Notion's AI roadmap.**",
+          "score": 1,
+          "num_comments": 0,
+          "author": "TheS4m",
+          "created_utc": "2025-08-24 18:32",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz3hvf/when_can_we_expect_the_new_ai_improved_version/",
+          "flair_text": "\ud83d\udce2  Discussion Topic",
+          "upvote_ratio": 0.6,
+          "sentiment_score": -0.5,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Lack of transparency regarding the rollout of new AI features is causing frustration among paying users.; Users are relying on Notion support for information, indicating a need for better communication and documentation regarding feature availability and roadmaps.",
+          "user_persona": "Pro (EDU) user, power user, reliant on AI features for workflow.",
+          "competitive_intelligence": "Failure to deliver on promised AI features could drive users to explore alternatives like Coda or ClickUp, which are also investing heavily in AI integration."
+        }
+      ]
+    },
+    "pricing": {
+      "name": "Pricing/Plan Discussion",
+      "count": 2,
+      "percentage": 2.4691358024691357,
+      "avg_score": 2.5,
+      "avg_comments": 7.0,
+      "posts": [
+        {
+          "title": "Why is Notion cheaper through Apple App Store?",
+          "selftext": "I\u2019ve searched everywhere online but can\u2019t find an answer.\n\nI have a Plus subscription through the App Store for under $50 per year. The same plan costs about twice as much if I buy it directly from Notion.\n\nWhat\u2019s the catch? I don\u2019t see any difference or reason why Apple users would get such a discount.",
+          "score": 5,
+          "num_comments": 10,
+          "author": "No-Promotion-4137",
+          "created_utc": "2025-08-25 13:22",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzqdfd/why_is_notion_cheaper_through_apple_app_store/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 0.86,
+          "sentiment_score": -0.2,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Pricing inconsistencies across different platforms (App Store vs. direct purchase) create confusion and potential frustration for users.; Users are actively comparing pricing options and seeking the best deals.; Lack of transparency regarding pricing differences can erode trust.",
+          "user_persona": "Price-conscious user, potentially new to Notion or considering a subscription upgrade.",
+          "competitive_intelligence": "This reveals a potential vulnerability: inconsistent pricing can be exploited by competitors offering simpler, more transparent pricing models. Highlights a need for clear communication around pricing structures and platform-specific deals."
+        },
+        {
+          "title": "How to sell on Notion marketplace if Stripe isn\u2019t available in my country?",
+          "selftext": "Hey everyone!  \nI\u2019ve been using Notion for a while, but I never tried selling anything on their marketplace. The only problem is that Stripe isn\u2019t supported in my country. Does anyone know if there\u2019s a workaround or another way to get paid?\n\nAppreciate any tips!",
+          "score": 0,
+          "num_comments": 4,
+          "author": "highflyer910",
+          "created_utc": "2025-08-24 22:14",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz96ms/how_to_sell_on_notion_marketplace_if_stripe_isnt/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 0.33,
+          "sentiment_score": -0.3,
+          "urgency_level": 4,
+          "business_impact": 5,
+          "key_insights": "Stripe limitations create a barrier to entry for some users selling on the Notion marketplace.; The lack of alternative payment options restricts the growth of the Notion ecosystem.",
+          "user_persona": "Creator/Seller: Someone looking to monetize Notion templates or services through the Notion marketplace.",
+          "competitive_intelligence": "This exposes a weakness in Notion's marketplace monetization strategy. By relying solely on Stripe, Notion limits its reach to creators in countries where Stripe isn't available, potentially pushing them to competitors with more flexible payment options."
+        }
+      ]
+    },
+    "mobile_feedback": {
+      "name": "Mobile App Feedback",
+      "count": 2,
+      "percentage": 2.4691358024691357,
+      "avg_score": 1.0,
+      "avg_comments": 0.5,
+      "posts": [
+        {
+          "title": "Import a PDF in the Android app",
+          "selftext": "In the webapp version of Notion, I can do Import PDF to upload a PDF that gets converted into text so that Notion AI can deal with the text.\n\nHow do I achieve the same result with the Android app?",
+          "score": 2,
+          "num_comments": 0,
+          "author": "trapldapl",
+          "created_utc": "2025-08-24 18:36",
+          "permalink": "https://reddit.com/r/Notion/comments/1mz3loa/import_a_pdf_in_the_android_app/",
+          "flair_text": "\u2753Questions   ",
+          "upvote_ratio": 1.0,
+          "sentiment_score": -0.4,
+          "urgency_level": 3,
+          "business_impact": 4,
+          "key_insights": "Feature parity between the web app and mobile app is lacking, specifically regarding PDF import and AI functionality.; Users expect consistent functionality across all platforms and devices.",
+          "user_persona": "Mobile user who wants to leverage Notion AI and PDF import on the go.",
+          "competitive_intelligence": "Competitors with feature-rich and consistent mobile apps have a significant advantage. Notion needs to prioritize closing the feature gap between its web and mobile versions to improve user satisfaction and prevent users from switching to alternative solutions that offer better mobile support. The absence of PDF import directly impacts usability versus apps that provide that."
+        },
+        {
+          "title": "Notion calendar on iOS?",
+          "selftext": "I just recently started using Notion again, and I like the idea of syncing with my calendars, but the app is completely unusable. It freezes constantly, doesn\u2019t load, and just overall is horrible. Is there anything I can do??",
+          "score": 0,
+          "num_comments": 1,
+          "author": "Salty-Ear6484",
+          "created_utc": "2025-08-24 10:02",
+          "permalink": "https://reddit.com/r/Notion/comments/1myrnn0/notion_calendar_on_ios/",
+          "flair_text": "\ud83e\udde9 API / Integrations",
+          "upvote_ratio": 0.5,
+          "sentiment_score": -0.9,
+          "urgency_level": 5,
+          "business_impact": 5,
+          "key_insights": "The iOS app is described as 'completely unusable' due to freezing and loading issues, indicating a severe problem with the mobile experience.; This negative experience could lead to user churn and damage Notion's reputation, especially among mobile-first users.",
+          "user_persona": "Mobile-first user, possibly a new Notion user",
+          "competitive_intelligence": "This highlights a critical vulnerability for Notion, as a poor mobile experience can drive users to competitors with more stable and responsive mobile apps. Competitors should focus on providing a superior mobile experience to attract dissatisfied Notion users."
+        }
+      ]
+    },
+    "praise": {
+      "name": "Praise/Positive Feedback",
+      "count": 1,
+      "percentage": 1.2345679012345678,
+      "avg_score": 75.0,
+      "avg_comments": 7.0,
+      "posts": [
+        {
+          "title": "How did I miss this?! The new CSV mapping feature is AMAZING!",
+          "selftext": "",
+          "score": 75,
+          "num_comments": 7,
+          "author": "modernluther",
+          "created_utc": "2025-08-25 17:44",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzxbd1/how_did_i_miss_this_the_new_csv_mapping_feature/",
+          "flair_text": "\ud83e\udd79 Appreciation",
+          "upvote_ratio": 0.99,
+          "sentiment_score": 0.9,
+          "urgency_level": 1,
+          "business_impact": 3,
+          "key_insights": "The CSV mapping feature is well-received.; Continuous feature improvements are key to user satisfaction.; Discoverability of new features is important.",
+          "user_persona": "Power user, importing data and utilizing advanced features.",
+          "competitive_intelligence": "Highlights the importance of ongoing feature development and communicating those developments effectively. User praises feature which is a part of Data Import and management- crucial to be user friendly to improve UX and reduce the barrier of entry of other competitors."
+        }
+      ]
+    },
+    "comparison": {
+      "name": "Comparison/Alternatives",
+      "count": 1,
+      "percentage": 1.2345679012345678,
+      "avg_score": 0.0,
+      "avg_comments": 0.0,
+      "posts": [
+        {
+          "title": "If you\u2019re using Notion to track your learning, hear me out",
+          "selftext": "I\u2019ve always loved mapping out what I want to learn next, not just courses, but a full plan: milestones, notes, projects, reflections. Posting these \u201clearning curriculums\u201d on TikTok and seeing others gave me both inspiration and gentle accountability from the community.\n\nIt made me realize: there\u2019s no dedicated space for people like us, for **minds who want to organize, create, and share their learning journeys**.\n\nI\u2019m experimenting with a small tool called Curi. The idea is simple: you can plan your learning, get subtle nudges to stay on track, produce work along the way, and share your journey to inspire others.\n\nIt\u2019s beta right now, but I\u2019d love to see who would actually use something like this. If this resonates, here\u2019s a waitlist \\[[https://curii.vercel.app/](https://curii.vercel.app/)\\].\n\nLet me know what you think!",
+          "score": 0,
+          "num_comments": 0,
+          "author": "Substantial-Rice0",
+          "created_utc": "2025-08-25 13:56",
+          "permalink": "https://reddit.com/r/Notion/comments/1mzr6a5/if_youre_using_notion_to_track_your_learning_hear/",
+          "flair_text": "Community",
+          "upvote_ratio": 0.33,
+          "sentiment_score": 0.2,
+          "urgency_level": 2,
+          "business_impact": 3,
+          "key_insights": "Users are looking for dedicated platforms for learning and knowledge sharing.; There's a gap in the market for tools that combine learning, organization, and community features.; Notion is being used for learning journeys but not ideally suited for all aspects.",
+          "user_persona": "Learning enthusiast, knowledge worker, community builder.",
+          "competitive_intelligence": "This highlights an emerging competitor, 'Curi', targeting a specific niche within Notion's user base \u2013 learning management. Notion could consider expanding its features to better support learning journeys and community aspects."
+        }
+      ]
+    }
+  }
+};
+        
+        let currentData = JSON.parse(JSON.stringify(data)); // Deep copy
+        
+        function renderCategories(categoriesData) {
+            const container = document.getElementById('categories-container');
+            container.innerHTML = '';
+            
+            Object.entries(categoriesData).forEach(([categoryKey, category]) => {
+                const section = document.createElement('div');
+                section.className = 'category-section';
+                
+                const header = document.createElement('div');
+                header.className = 'category-header';
+                header.onclick = () => toggleCategory(categoryKey);
+                
+                header.innerHTML = `
+                    <div>
+                        <div class="category-title">${category.name}</div>
+                        <div class="category-stats">
+                            <span>${category.count} posts (${category.percentage.toFixed(1)}%)</span>
+                            <span>Avg Score: ${category.avg_score.toFixed(1)}</span>
+                            <span>Avg Comments: ${category.avg_comments.toFixed(1)}</span>
+                        </div>
+                    </div>
+                    <div class="toggle-icon" id="toggle-${categoryKey}">▼</div>
+                `;
+                
+                const content = document.createElement('div');
+                content.className = 'category-content';
+                content.id = `content-${categoryKey}`;
+                
+                if (category.posts.length === 0) {
+                    content.innerHTML = '<div class="no-posts">No posts match the current filters</div>';
+                } else {
+                    category.posts.forEach(post => {
+                        const postElement = createPostElement(post);
+                        content.appendChild(postElement);
+                    });
+                }
+                
+                section.appendChild(header);
+                section.appendChild(content);
+                container.appendChild(section);
+            });
+            
+            // Update category filter options
+            updateCategoryFilter(categoriesData);
+        }
+        
+        function createPostElement(post) {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            
+            const hasLongContent = post.selftext.length > 300;
+            const shortContent = hasLongContent ? post.selftext.substring(0, 300) + '...' : post.selftext;
+            const postId = post.title.replace(/[^a-zA-Z0-9]/g, '');
+            
+            // Create post header
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'post-header';
+            headerDiv.innerHTML = `<div class="post-title">${escapeHtml(post.title)}</div>`;
+            
+            // Create post meta
+            const metaDiv = document.createElement('div');
+            metaDiv.className = 'post-meta';
+            metaDiv.innerHTML = `
+                <span class="score">↑ ${post.score}</span>
+                <span class="comments">💬 ${post.num_comments}</span>
+                <span>👤 u/${escapeHtml(post.author)}</span>
+                <span>📅 ${post.created_utc}</span>
+                ${post.flair_text ? `<span class="flair">${escapeHtml(post.flair_text)}</span>` : ''}
+                ${post.sentiment_score !== 0 ? `<span class="sentiment ${post.sentiment_score > 0 ? 'positive' : post.sentiment_score < 0 ? 'negative' : 'neutral'}">${post.sentiment_score > 0 ? '😊' : post.sentiment_score < 0 ? '😞' : '😐'} ${post.sentiment_score.toFixed(2)}</span>` : ''}
+                ${post.urgency_level > 2 ? `<span class="urgency">🚨 Urgency: ${post.urgency_level}/5</span>` : ''}
+                ${post.business_impact > 2 ? `<span class="business-impact">💼 Impact: ${post.business_impact}/5</span>` : ''}
+            `;
+            
+            postDiv.appendChild(headerDiv);
+            postDiv.appendChild(metaDiv);
+            
+            // Create post content if exists
+            if (post.selftext) {
+                const contentDiv = document.createElement('div');
+                contentDiv.className = `post-content ${hasLongContent ? 'collapsed' : ''}`;
+                contentDiv.id = `content-${postId}`;
+                contentDiv.innerHTML = escapeHtml(hasLongContent ? shortContent : post.selftext);
+                postDiv.appendChild(contentDiv);
+                
+                // Add expand button if content is long
+                if (hasLongContent) {
+                    const expandBtn = document.createElement('div');
+                    expandBtn.className = 'expand-btn';
+                    expandBtn.textContent = 'Show more...';
+                    expandBtn.onclick = () => toggleContent(postId, post.selftext);
+                    postDiv.appendChild(expandBtn);
+                }
+            }
+            
+            // Add LLM insights if available
+            if (post.key_insights || post.user_persona || post.competitive_intelligence) {
+                const insightsDiv = document.createElement('div');
+                insightsDiv.className = 'llm-insights';
+                
+                let insightsHTML = '<h4>🧠 AI Analysis</h4>';
+                
+                if (post.user_persona) {
+                    insightsHTML += `<p><strong>User Persona:</strong> ${escapeHtml(post.user_persona)}</p>`;
+                }
+                
+                if (post.key_insights) {
+                    insightsHTML += `<p><strong>Key Insights:</strong> ${escapeHtml(post.key_insights)}</p>`;
+                }
+                
+                if (post.competitive_intelligence) {
+                    insightsHTML += `<p><strong>Competitive Intelligence:</strong> ${escapeHtml(post.competitive_intelligence)}</p>`;
+                }
+                
+                insightsDiv.innerHTML = insightsHTML;
+                postDiv.appendChild(insightsDiv);
+            }
+            
+            // Create post actions
+            const actionsDiv = document.createElement('div');
+            actionsDiv.className = 'post-actions';
+            if (post.permalink) {
+                actionsDiv.innerHTML = `<a href="${post.permalink}" target="_blank" class="action-btn">View on Reddit</a>`;
+            }
+            postDiv.appendChild(actionsDiv);
+            
+            return postDiv;
+        }
+        
+        function toggleCategory(categoryKey) {
+            const content = document.getElementById(`content-${categoryKey}`);
+            const toggle = document.getElementById(`toggle-${categoryKey}`);
+            
+            if (content.classList.contains('active')) {
+                content.classList.remove('active');
+                toggle.classList.remove('rotated');
+            } else {
+                content.classList.add('active');
+                toggle.classList.add('rotated');
+            }
+        }
+        
+        function toggleContent(postId, fullText) {
+            const element = document.getElementById(`content-${postId}`);
+            const expandBtn = element.nextElementSibling;
+            
+            if (element.classList.contains('collapsed')) {
+                element.classList.remove('collapsed');
+                element.innerHTML = escapeHtml(fullText);
+                expandBtn.textContent = 'Show less...';
+            } else {
+                element.classList.add('collapsed');
+                element.innerHTML = escapeHtml(fullText.substring(0, 300) + '...');
+                expandBtn.textContent = 'Show more...';
+            }
+        }
+        
+        function updateCategoryFilter(categoriesData) {
+            const select = document.getElementById('category-filter');
+            const currentValue = select.value;
+            
+            // Clear existing options except "All Categories"
+            select.innerHTML = '<option value="">All Categories</option>';
+            
+            Object.entries(categoriesData).forEach(([key, category]) => {
+                const option = document.createElement('option');
+                option.value = key;
+                option.textContent = `${category.name} (${category.count})`;
+                select.appendChild(option);
+            });
+            
+            select.value = currentValue;
+        }
+        
+        function applyFilters() {
+            const categoryFilter = document.getElementById('category-filter').value;
+            const sortBy = document.getElementById('sort-posts').value;
+            const searchTerm = document.getElementById('search-posts').value.toLowerCase();
+            const minScore = parseInt(document.getElementById('min-score').value) || 0;
+            
+            // Start with original data
+            const filteredData = {};
+            
+            Object.entries(data.categories).forEach(([categoryKey, category]) => {
+                let posts = [...category.posts];
+                
+                // Apply search filter
+                if (searchTerm) {
+                    posts = posts.filter(post => 
+                        post.title.toLowerCase().includes(searchTerm) ||
+                        post.selftext.toLowerCase().includes(searchTerm)
+                    );
+                }
+                
+                // Apply minimum score filter
+                posts = posts.filter(post => post.score >= minScore);
+                
+                // Apply category filter
+                if (!categoryFilter || categoryKey === categoryFilter) {
+                    // Sort posts
+                    posts.sort((a, b) => {
+                        switch (sortBy) {
+                            case 'score':
+                                return b.score - a.score;
+                            case 'comments':
+                                return b.num_comments - a.num_comments;
+                            case 'date':
+                                return new Date(b.created_utc) - new Date(a.created_utc);
+                            case 'title':
+                                return a.title.localeCompare(b.title);
+                            default:
+                                return b.score - a.score;
+                        }
+                    });
+                    
+                    filteredData[categoryKey] = {
+                        ...category,
+                        posts: posts,
+                        count: posts.length,
+                        percentage: posts.length / data.summary.total_posts * 100
+                    };
+                }
+            });
+            
+            currentData = { ...data, categories: filteredData };
+            renderCategories(currentData.categories);
+        }
+        
+        function escapeHtml(text) {
+            const map = {
+                '&': '&amp;',
+                '<': '&lt;',
+                '>': '&gt;',
+                '"': '&quot;',
+                "'": '&#039;'
+            };
+            return text.replace(/[&<>"']/g, m => map[m]);
+        }
+        
+        // Event listeners
+        document.getElementById('category-filter').addEventListener('change', applyFilters);
+        document.getElementById('sort-posts').addEventListener('change', applyFilters);
+        document.getElementById('search-posts').addEventListener('input', applyFilters);
+        document.getElementById('min-score').addEventListener('input', applyFilters);
+        
+        // Initialize
+        renderCategories(data.categories);
+        
+        // Expand all categories by default
+        Object.keys(data.categories).forEach(categoryKey => {
+            toggleCategory(categoryKey);
+        });
+    </script>
+</body>
+</html>

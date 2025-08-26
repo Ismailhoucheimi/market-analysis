@@ -1,0 +1,189 @@
+id,title,selftext,score,upvote_ratio,num_comments,created_utc,author,url,permalink,flair_text,is_self,collected_at
+1mz2z1n,Notion really needs a “User Mode” (separate from Edit Mode),"Hey Notion community,
+
+I wanted to share a feature idea that I think could make Notion vastly more usable for everyday workflows. The problem is: **there is no way to separate “creator mode” from “user mode.”**
+
+Right now, everything in Notion is always editable, which is great for building, but becomes distracting when you just want to use your tables, databases, or dashboards. Every interaction invites you to tweak properties, formulas, and layouts. For people trying to focus, this constant temptation can make task management stressful or inefficient.
+
+The solution is simple but powerful: **Notion should have a “User Mode” or “Interaction Mode.”**
+
+Here’s what it could look like:
+
+* Enter **Edit/Creator Mode** to configure databases, properties, formulas, views, and automations.
+* Exit Creator Mode to simplify the interface: only elements you want interactive remain so (checkboxes, buttons, links, etc.). All other editing controls stay hidden unless you switch back.
+* Users decide which parts of their setup stay interactive and which are locked.
+
+This would effectively turn complex Notion setups into clean, usable apps for daily work, while keeping all the customization power intact. It’s like giving creators and users two separate experiences in the same workspace.
+
+No other tool currently combines:
+
+* Deep customization and flexibility
+* Clean, distraction-free interaction
+* The ability to selectively lock or hide editing controls
+
+If implemented, this could make Notion **the ultimate productivity tool** for personal and team use. I hope the Notion team considers this—having a “User Mode” would be a game-changer.
+
+  
+What do you think?",159,0.97,33,2025-08-24 18:12:33+00:00,Nshx-,https://www.reddit.com/r/Notion/comments/1mz2z1n/notion_really_needs_a_user_mode_separate_from/,https://reddit.com/r/Notion/comments/1mz2z1n/notion_really_needs_a_user_mode_separate_from/,📢  Discussion Topic,True,2025-08-25 20:16:08.620912+00:00
+1mzywma,Stock Tracker,"I’ve been trying to make a stock tracker in Notion so I can get live stock prices. I thought that the best way to do it, was to make a google sheet with  tickers and using the google finance function to get the current prices and then update my databas in notion via Make. But I just can’t seem to figure out the workflow. 
+
+Does anyone have an idea for how I can set it up?
+
+Thanks in advance!
+",1,1.0,0,2025-08-25 18:42:53+00:00,Ok_Pin_6765,https://i.redd.it/y5kpjytrn7lf1.jpeg,https://reddit.com/r/Notion/comments/1mzywma/stock_tracker/,🧩 API / Integrations,False,2025-08-25 20:16:08.620916+00:00
+1mzytrs,Is it possible to add another AI to a Notion workspace?,"Is it possible to integrate another AI into a Notion workspace?
+
+I've tried a few things, but they haven't worked, mostly because I was trying to use commands like Notion AI's ""\\command,"" etc.
+",1,1.0,2,2025-08-25 18:39:56+00:00,pemapi,https://www.reddit.com/r/Notion/comments/1mzytrs/is_it_possible_to_add_another_ai_to_a_notion/,https://reddit.com/r/Notion/comments/1mzytrs/is_it_possible_to_add_another_ai_to_a_notion/,🧩 API / Integrations,True,2025-08-25 20:16:08.620919+00:00
+1mzyoo7,Need advice: Using Notion to support a product + SEO strategy,"Hi , I could use some advice.
+I’m looking for tips specifically from people who work with marketing/SEO, have a product to sell, and use Notion in that process.
+
+I’m everything but a Notion expert and that’s exactly the point. I’m currently working on something that needs this integration to store and organize info, but I couldn’t find any ready-made template or formula for it.
+Do you have a setup, template, or system that you follow for marketing + SEO inside Notion? Would be super grateful for any insights.",1,1.0,0,2025-08-25 18:34:26+00:00,Slow-Device-1894,https://www.reddit.com/r/Notion/comments/1mzyoo7/need_advice_using_notion_to_support_a_product_seo/,https://reddit.com/r/Notion/comments/1mzyoo7/need_advice_using_notion_to_support_a_product_seo/,🧩 API / Integrations,True,2025-08-25 20:16:08.620922+00:00
+1kfbodt,🗳️ Product Feedback for Notion 🛎️,"Leave a comment on this post if you have any of the following types of feedback that you would like to reach the Notion Team:
+
+* **💡 Feature Request**
+* **🗳️ Product Feedback**
+
+
+Please begin your message with the indicating category above for greater clarity.  
+e.g.: `💡 Feature Request — I would like this feature`.
+Please aim to list a singular feature request or bit of feedback, so that upvotes can clearly represent which features users wish to upvote.
+
+The goal is to consolidate meaningful feedback making it easier for the Notion team to hear the voices of the r/Notion subreddit community. This post will refresh once every two weeks (on a Monday).
+
+**Please upvote comments that you agree with &/or have experienced! Reply with added context if you can.** The more voices heard, the greater chance that the Notion team can understand the need to address it!
+
+>❗If you need timely customer support regarding any BUGS, urgent or unexpected happenings in your workspace do not post here, email: **team@makenotion.com** — this will get you the fastest results.❗
+
+Please do not make venting posts about the product when you haven't even reached out to customer support about the situation yet. (*Feel free to talk about it after the fact though, but do your own due diligence to actually resolve your own situation before publicly venting.*)",18,1.0,125,2025-05-05 13:30:44+00:00,AutoModerator,https://www.reddit.com/r/Notion/comments/1kfbodt/product_feedback_for_notion/,https://reddit.com/r/Notion/comments/1kfbodt/product_feedback_for_notion/,🗳️ Product Feedback,True,2025-08-25 23:56:00.250790+00:00
+1fs4tmg,🌟 User Flair Overview,"# This post provides a breakdown of all of the User Flairs you might stumble upon in your daily encounters here.
+
+Should there be any changes to the Notion programs & certifications, these User Flairs will be updated to reflect those changes when time permits, and this post will be edited to include those updates.
+
+Please check the [**Notion Certifications**](https://www.notion.so/lp/certifications) page for details on how to acquire some of the badges below.
+
+**If you have already acquired any of these distinctions and would like to request the User Flair for your account, please** [**fill out this form here**](https://wildenfree.notion.site/dc37f024388b4e0da4f7270915d54eaa?pvs=105)**.**
+
+[Notion Team Member](https://preview.redd.it/ymx4zzaz2rrd1.png?width=201&format=png&auto=webp&s=a3a5f915e2dc6730ba9aedc13e5bb5a124d019f0)
+
+*Indicates someone that is a paid staff member at the Notion Company.*
+
+[r\/Notion Moderator](https://preview.redd.it/uy1hhyw13rrd1.png?width=128&format=png&auto=webp&s=2d74938dd163b66ba4daff51796acc4aed112bc4)
+
+*Self-explanatory, indicates an active moderator here within the subreddit.*
+
+[Certified Consultant \(Max lvl\) ](https://preview.redd.it/z6z0nfr73rrd1.png?width=128&format=png&auto=webp&s=db41c5d0eeeefe1ebbcaec14271db43d17703c4c)
+
+*Indicates someone with the highest level of certification Notion has to offer, who are are listed in the Notion directory for consultants. Certified individuals who provide comprehensive Notion solutions, including consulting, onboarding, complex workflow implementation, and long-term support for enterprises. They help organizations or individuals set up and customize their Notion workspaces.*
+
+[Ambassador](https://preview.redd.it/3k2uixnf3rrd1.png?width=128&format=png&auto=webp&s=1e0dafb8f4297e5e06d5587c67a60d2486872c3e)
+
+*Indicates someone who participates in the Notion Ambassador program. These individuals likely provide services, consult, build templates & have the privilege of being hosts for local, in-person Notion community meetups to connect with community members on behalf of Notion. Ambassadors are often content creators, educators, or Notion enthusiasts who help others use the platform more effectively through workshops, social media content, and online communities.*
+
+[Champion](https://preview.redd.it/rvigu9ki3rrd1.png?width=128&format=png&auto=webp&s=b212f5387ca03c508270e247efe53cd7f175aa47)
+
+*Indicates someone who participates in the Notion Champion program. These individuals are Employees or team members within companies who advocate for Notion internally. They help their colleagues learn and adopt Notion by acting as go-to resources within their organization. Champions often work to implement Notion across teams, customizing it for their workplace needs.*
+
+[Campus Leader](https://preview.redd.it/pqn7xjda6rrd1.png?width=128&format=png&auto=webp&s=cc96b2d81399bcac2920af593fe327c03dbe6675)
+
+*Indicates someone who participates in the Notion Campus Leader program. These individuals are college and university students who promote Notion on their campuses. These leaders host events, workshops, and educational sessions for their peers, spreading awareness and encouraging the adoption of Notion for academic and personal productivity.*
+
+[Advance Badge \(lvl 3\)](https://preview.redd.it/nq7esgwc6rrd1.png?width=121&format=png&auto=webp&s=c70cc244131c4a69122c154bf6d11b7ce330d0b1)
+
+*An official certification from Notion. The Advanced Badge certifies a higher level of expertise in Notion. This badge is awarded to those who are proficient in using Notion’s more complex features, such as relational databases, advanced formulas, and automating workflows. This level signifies a deep understanding of how to customize Notion for more sophisticated and multi-faceted use cases.* ✴️
+
+[Settings & Sharing Badge \(lvl 2\)](https://preview.redd.it/grlecblg6rrd1.png?width=128&format=png&auto=webp&s=b412e900c5f8f69ec3b6e71956e46e4ac02c5c70)
+
+*An official certification from Notion. This badge is focused on managing workspace settings and permissions. It certifies users who understand how to properly configure sharing settings, manage team access, and maintain data security within Notion. It also covers workspace administration tasks such as inviting members, setting permissions, and managing integrations.* ✴️
+
+[Essentials Badge \(lvl 1\)](https://preview.redd.it/5pr73jos6rrd1.png?width=128&format=png&auto=webp&s=5d33f72c2178a5b8104160dd899c01808302a8b6)
+
+*An official certification from Notion. This badge is awarded for demonstrating a strong understanding of Notion's fundamental features. It covers core concepts such as creating and organizing pages, using blocks, and navigating the interface. It's designed to certify users who can proficiently manage their workspace and use Notion for personal or team productivity at a basic to intermediate level.* ✴️
+
+[Recommended Template Creator \(lvl 2\)](https://preview.redd.it/0a04pebp6ltd1.png?width=121&format=png&auto=webp&s=ac650d4da46c2d748d4b22903d6f64bba0b2f7d3)
+
+*Individuals highlighted as Recommended Template Creators in the official Notion Template Gallery. Will show in place of the lvl 1 Template Creator User Flair if the distinction is given.* ✴️
+
+[Template Creator \(lvl 1\)](https://preview.redd.it/nfhae1av6rrd1.png?width=121&format=png&auto=webp&s=4e01f52cdccc21034fefecb090cbedd33be7e08f)
+
+*Individuals who create and sell custom templates for different use cases within Notion, ranging from personal productivity to business management. Notion features an official template gallery where creators can list their templates, making it easier for users to find ready-to-use solutions* ✴️
+
+✴️  For the certification badges with this mark, Users will only have the Flair associated with their highest earned credential. I explain [**more about this Modification to User Flair Displays here**](https://www.reddit.com/r/Notion/comments/1fgrtzm/modification_to_user_flairs/?utm_source=share&utm_medium=web3x&utm_name=web3xcss&utm_term=1&utm_content=share_button).",18,1.0,1,2024-09-29 13:51:31+00:00,MrWildenfree,https://www.reddit.com/r/Notion/comments/1fs4tmg/user_flair_overview/,https://reddit.com/r/Notion/comments/1fs4tmg/user_flair_overview/,🔔 Announcements,True,2025-08-25 23:56:00.250802+00:00
+1mzxbd1,How did I miss this?! The new CSV mapping feature is AMAZING!,,104,0.99,9,2025-08-25 17:44:10+00:00,modernluther,https://i.redd.it/ribjs2h6d7lf1.png,https://reddit.com/r/Notion/comments/1mzxbd1/how_did_i_miss_this_the_new_csv_mapping_feature/,🥹 Appreciation,False,2025-08-25 23:56:00.250806+00:00
+1mzs1me,"A Deep Dive into the ""Spaghetti Problem"" of Complex Notion Workspaces","Hello r/Notion,
+
+Like many of you, I use Notion as a ""second brain."" But as my system grew with dozens of interconnected databases, I realized I had accidentally created a ""spaghetti mess."" I could feel the connections through relations and rollups, but I couldn't *see* the architecture. It was a black box.
+
+This isn't just about aesthetics; it has real consequences:
+
+* **Onboarding is difficult:** How do you explain a complex system to a new team member?
+* **Hidden Dependencies:** A small change in one database can unknowingly break a workflow somewhere else.
+* **Information Silos:** Databases become ""orphaned"" and forgotten, leading to outdated knowledge.
+
+**My Approach to a Solution: Systems Thinking**
+
+I decided to tackle this not as a software problem, but as a *systems problem*. The goal wasn't just to plot databases on a screen, but to create a visualization that was genuinely useful and intelligent.
+
+My philosophy was based on two principles:
+
+1. **Intelligent Layout:** The graph shouldn't be a random cloud of nodes. I developed a custom layout engine that uses algorithms inspired by graph theory (like simulated annealing) to actively untangle the connections, minimize line crossings, and reveal the underlying structure.
+2. **Connection Analysis:** Not all relations are equal. The system also needed to analyze the *strength* of connections to identify which databases are true ""hubs"" in the workspace and which are merely satellites.
+
+Here is a look at the dashboard I've been building based on these principles.
+
+As you can see, the goal is to provide a clean overview of the system's architecture. But a static map isn't enough. The tool is interactive and built for deep analysis. For example, you can:
+
+* **Search and Filter:** Instantly find specific databases by name or property, allowing you to focus only on the parts of the system you need to see.
+* **Isolate ""Orphaned"" Databases:** A key feature is the ability to quickly identify and isolate databases that are not being interconnected, helping you find valuable knowledge that has lost its connection to your system.
+* **Export Your Architecture:** Export the visual map of your workspace to different formats (like PNG or SVG) to include in documentation, presentations, or team reviews.
+
+I'm sharing this deep dive because I'd love to get feedback from other power users on this *approach* to solving the problem. Do these principles resonate with the issues you face?",14,0.77,7,2025-08-25 14:30:24+00:00,One-Engine-1287,https://i.redd.it/oloqj2vkb6lf1.png,https://reddit.com/r/Notion/comments/1mzs1me/a_deep_dive_into_the_spaghetti_problem_of_complex/,🧩 API / Integrations,False,2025-08-25 23:56:00.250809+00:00
+1n04zbg,Free Student Planner Template 🌸,"Made this free student planner template for fun! Super simple layout and perfect for people just getting started with notion. It's pretty similar to the first planner I built when I started uni! :) Enjoyyy 💗
+
+",3,1.0,0,2025-08-25 22:37:13+00:00,Fragrant_Estimate707,https://i.redd.it/o3g2kdvbt8lf1.png,https://reddit.com/r/Notion/comments/1n04zbg/free_student_planner_template/,🎁 Free Templates,False,2025-08-25 23:56:00.250811+00:00
+1mzmpnp,Automate project status updates based on related tasks statuses with Notion Automations,"I've made a [video tutorial](https://www.youtube.com/watch?v=b4zPcBVjLhQ) on setting up a Notion automation that automatically updates the status of a project based on the status of its related tasks.
+
+It's not the most straightforward process, as you have to define a variable as part of the automation in order to be able to precisely target the right project within the edit property action.
+
+This automation setup and logic can be applied to many different use cases and database setups, so getting the hang of it once is really going to be worth it.
+
+I've been asked how to set this up multiple times, so I decided to make a video about it and to share it here since it might be helpful for others too.",27,0.92,1,2025-08-25 10:22:40+00:00,consistentbenny,https://i.redd.it/rno5qez765lf1.png,https://reddit.com/r/Notion/comments/1mzmpnp/automate_project_status_updates_based_on_related/,Databases,False,2025-08-25 23:56:00.250814+00:00
+1mzoaq6,5 Years with Notion: An Honest Take - but perhaps I am using my Notion PARA setup wrong.,"# Been using Notion for 5 years now and I'm stuck in the same frustrating cycle. Maybe others can relate?
+
+**The endless loop:**
+
+1. Spend hours/days tweaking Notion to fit my workflow perfectly
+2. Use it enthusiastically for a few weeks/months
+3. Gradually stop engaging with the complex setup
+4. End up just using it as a glorified knowledge database
+5. Get fed up and start over with a new setup
+6. Repeat infinitely
+
+**My biggest gripes:**
+
+Notion is simultaneously too powerful and too finicky. The customization options are overwhelming, but more importantly, things constantly break or don't show up because I missed some obscure filter setting or database property. I'll be looking for a note I KNOW exists, only to discover it's hidden because of some view configuration I forgot about.
+
+It *could* be perfect, but it's not. The gap between potential and reality is maddening.
+
+**What I actually want (and what's inevitable):**
+
+A truly intelligent, zero-setup productivity system. Something that:
+
+* Automatically summarizes my meetings and schedules follow-ups
+* Reminds me of tasks based on context from my emails/messages
+* Tracks projects without me having to build elaborate database schemas
+* Just... works without constant maintenance
+
+Right now I'm experimenting with ChatGPT Projects as a super basic version of this vision. I dump everything into it and get contextually aware responses based on my evolving knowledge base. No setup, no maintenance, just intelligence.
+
+**The bottom line:** I'm done with apps that require me to become a database administrator just to track my life. The technology exists for something better - we just need someone to build it.
+
+Anyone else feeling this Notion fatigue? What are you using instead?",20,0.88,24,2025-08-25 11:48:55+00:00,therealhumanchaos,https://www.reddit.com/r/Notion/comments/1mzoaq6/5_years_with_notion_an_honest_take_but_perhaps_i/,https://reddit.com/r/Notion/comments/1mzoaq6/5_years_with_notion_an_honest_take_but_perhaps_i/,📢  Discussion Topic,True,2025-08-25 23:56:00.250816+00:00
+1mzs7xh,Minimal Habit Tracker Template,Check out the template here: [https://locominder.com/templates/notion-habit-tracker-template](https://locominder.com/templates/notion-habit-tracker-template),6,0.69,2,2025-08-25 14:37:14+00:00,locomindernotion,https://i.redd.it/2c4p9chqf6lf1.png,https://reddit.com/r/Notion/comments/1mzs7xh/minimal_habit_tracker_template/,💰 Paid Templates,False,2025-08-25 23:56:00.250818+00:00
+1n02v65,"Deleted my account months ago, still being charged","At first I was being charged $25 a month, never got refunded. Now there are zero open accounts and I’m still getting charged $12 a month. Not a lot, thankfully, I’m seeing much bigger charges now that I’ve perused this subreddit, but still annoying. So far my attempts to reach customer service have been ignored or just the AI. ",2,1.0,3,2025-08-25 21:13:04+00:00,Own-Name203,https://www.reddit.com/r/Notion/comments/1n02v65/deleted_my_account_months_ago_still_being_charged/,https://reddit.com/r/Notion/comments/1n02v65/deleted_my_account_months_ago_still_being_charged/,😤 Venting,True,2025-08-25 23:56:00.250820+00:00
+1mzqdfd,Why is Notion cheaper through Apple App Store?,"I’ve searched everywhere online but can’t find an answer.
+
+I have a Plus subscription through the App Store for under $50 per year. The same plan costs about twice as much if I buy it directly from Notion.
+
+What’s the catch? I don’t see any difference or reason why Apple users would get such a discount.",7,1.0,12,2025-08-25 13:22:49+00:00,No-Promotion-4137,https://www.reddit.com/r/Notion/comments/1mzqdfd/why_is_notion_cheaper_through_apple_app_store/,https://reddit.com/r/Notion/comments/1mzqdfd/why_is_notion_cheaper_through_apple_app_store/,❓Questions   ,True,2025-08-25 23:56:00.250822+00:00

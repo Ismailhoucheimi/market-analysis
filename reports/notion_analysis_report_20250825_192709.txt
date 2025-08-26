@@ -1,0 +1,50 @@
+NOTION REDDIT ANALYSIS REPORT
+==================================================
+
+SUMMARY
+--------------------
+Total Posts Analyzed: 502
+Date Range: 2024-09-29 13:51:31+00:00 to 2025-08-25 21:13:04+00:00
+Average Score: 9.6
+Average Comments: 4.9
+
+CATEGORY DISTRIBUTION
+------------------------------
+Help/Support: 125 posts (24.9%)
+Template Sharing: 94 posts (18.7%)
+Feature Requests: 74 posts (14.7%)
+Bug Reports: 45 posts (9.0%)
+Workflow Showcase: 36 posts (7.2%)
+Integration Requests: 34 posts (6.8%)
+Comparison/Alternatives: 28 posts (5.6%)
+Praise/Positive Feedback: 25 posts (5.0%)
+Criticism/Complaints: 13 posts (2.6%)
+Pricing/Plan Discussion: 9 posts (1.8%)
+Community/Meta: 8 posts (1.6%)
+Mobile App Feedback: 6 posts (1.2%)
+Performance Issues: 3 posts (0.6%)
+Migration Stories: 2 posts (0.4%)
+
+COMPETITIVE INSIGHTS
+------------------------------
+Pain Points: 61 posts (12.2%)
+Top Pain Points:
+  • uh oh, offline mode is here for real... (Score: 165)
+  • Did Notion just play the Apple card?... (Score: 141)
+  • I love that this sub is just ranting Notion, but you guys are incapable of enjoy... (Score: 75)
+  • 5 Years with Notion: An Honest Take - but perhaps I am using my Notion PARA setu... (Score: 21)
+  • There's too many new changes... (Score: 13)
+
+Feature Requests: 74 posts (14.7%)
+Top Feature Requests:
+  • Notion really needs a “User Mode” (separate from Edit Mode)... (Score: 165)
+  • Make with Notion 2025 | WISHLIST | Notion 3.0?... (Score: 39)
+  • I've been wondering why Notion still doesn't natively support things like mind m... (Score: 39)
+  • If you could fix just one pain point in Notion, what would it be?... (Score: 21)
+  • How life will feel after Notion releases a flowchart database view... (Score: 18)
+
+USER SATISFACTION
+--------------------
+Praise Posts: 25
+Criticism Posts: 13
+Satisfaction Ratio: 1.92 (positive)

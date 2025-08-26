@@ -1,0 +1,376 @@
+id,title,selftext,score,upvote_ratio,num_comments,created_utc,author,url,permalink,flair_text,is_self,collected_at
+1mzxbd1,How did I miss this?! The new CSV mapping feature is AMAZING!,,102,0.99,9,2025-08-25 17:44:10+00:00,modernluther,https://i.redd.it/ribjs2h6d7lf1.png,https://reddit.com/r/Notion/comments/1mzxbd1/how_did_i_miss_this_the_new_csv_mapping_feature/,🥹 Appreciation,False,2025-08-25 23:56:35.915720+00:00
+1mzmpnp,Automate project status updates based on related tasks statuses with Notion Automations,"I've made a [video tutorial](https://www.youtube.com/watch?v=b4zPcBVjLhQ) on setting up a Notion automation that automatically updates the status of a project based on the status of its related tasks.
+
+It's not the most straightforward process, as you have to define a variable as part of the automation in order to be able to precisely target the right project within the edit property action.
+
+This automation setup and logic can be applied to many different use cases and database setups, so getting the hang of it once is really going to be worth it.
+
+I've been asked how to set this up multiple times, so I decided to make a video about it and to share it here since it might be helpful for others too.",27,0.97,1,2025-08-25 10:22:40+00:00,consistentbenny,https://i.redd.it/rno5qez765lf1.png,https://reddit.com/r/Notion/comments/1mzmpnp/automate_project_status_updates_based_on_related/,Databases,False,2025-08-25 23:56:35.915726+00:00
+1mzoaq6,5 Years with Notion: An Honest Take - but perhaps I am using my Notion PARA setup wrong.,"# Been using Notion for 5 years now and I'm stuck in the same frustrating cycle. Maybe others can relate?
+
+**The endless loop:**
+
+1. Spend hours/days tweaking Notion to fit my workflow perfectly
+2. Use it enthusiastically for a few weeks/months
+3. Gradually stop engaging with the complex setup
+4. End up just using it as a glorified knowledge database
+5. Get fed up and start over with a new setup
+6. Repeat infinitely
+
+**My biggest gripes:**
+
+Notion is simultaneously too powerful and too finicky. The customization options are overwhelming, but more importantly, things constantly break or don't show up because I missed some obscure filter setting or database property. I'll be looking for a note I KNOW exists, only to discover it's hidden because of some view configuration I forgot about.
+
+It *could* be perfect, but it's not. The gap between potential and reality is maddening.
+
+**What I actually want (and what's inevitable):**
+
+A truly intelligent, zero-setup productivity system. Something that:
+
+* Automatically summarizes my meetings and schedules follow-ups
+* Reminds me of tasks based on context from my emails/messages
+* Tracks projects without me having to build elaborate database schemas
+* Just... works without constant maintenance
+
+Right now I'm experimenting with ChatGPT Projects as a super basic version of this vision. I dump everything into it and get contextually aware responses based on my evolving knowledge base. No setup, no maintenance, just intelligence.
+
+**The bottom line:** I'm done with apps that require me to become a database administrator just to track my life. The technology exists for something better - we just need someone to build it.
+
+Anyone else feeling this Notion fatigue? What are you using instead?",19,0.88,24,2025-08-25 11:48:55+00:00,therealhumanchaos,https://www.reddit.com/r/Notion/comments/1mzoaq6/5_years_with_notion_an_honest_take_but_perhaps_i/,https://reddit.com/r/Notion/comments/1mzoaq6/5_years_with_notion_an_honest_take_but_perhaps_i/,📢  Discussion Topic,True,2025-08-25 23:56:35.915729+00:00
+1mzs1me,"A Deep Dive into the ""Spaghetti Problem"" of Complex Notion Workspaces","Hello r/Notion,
+
+Like many of you, I use Notion as a ""second brain."" But as my system grew with dozens of interconnected databases, I realized I had accidentally created a ""spaghetti mess."" I could feel the connections through relations and rollups, but I couldn't *see* the architecture. It was a black box.
+
+This isn't just about aesthetics; it has real consequences:
+
+* **Onboarding is difficult:** How do you explain a complex system to a new team member?
+* **Hidden Dependencies:** A small change in one database can unknowingly break a workflow somewhere else.
+* **Information Silos:** Databases become ""orphaned"" and forgotten, leading to outdated knowledge.
+
+**My Approach to a Solution: Systems Thinking**
+
+I decided to tackle this not as a software problem, but as a *systems problem*. The goal wasn't just to plot databases on a screen, but to create a visualization that was genuinely useful and intelligent.
+
+My philosophy was based on two principles:
+
+1. **Intelligent Layout:** The graph shouldn't be a random cloud of nodes. I developed a custom layout engine that uses algorithms inspired by graph theory (like simulated annealing) to actively untangle the connections, minimize line crossings, and reveal the underlying structure.
+2. **Connection Analysis:** Not all relations are equal. The system also needed to analyze the *strength* of connections to identify which databases are true ""hubs"" in the workspace and which are merely satellites.
+
+Here is a look at the dashboard I've been building based on these principles.
+
+As you can see, the goal is to provide a clean overview of the system's architecture. But a static map isn't enough. The tool is interactive and built for deep analysis. For example, you can:
+
+* **Search and Filter:** Instantly find specific databases by name or property, allowing you to focus only on the parts of the system you need to see.
+* **Isolate ""Orphaned"" Databases:** A key feature is the ability to quickly identify and isolate databases that are not being interconnected, helping you find valuable knowledge that has lost its connection to your system.
+* **Export Your Architecture:** Export the visual map of your workspace to different formats (like PNG or SVG) to include in documentation, presentations, or team reviews.
+
+I'm sharing this deep dive because I'd love to get feedback from other power users on this *approach* to solving the problem. Do these principles resonate with the issues you face?",15,0.8,7,2025-08-25 14:30:24+00:00,One-Engine-1287,https://i.redd.it/oloqj2vkb6lf1.png,https://reddit.com/r/Notion/comments/1mzs1me/a_deep_dive_into_the_spaghetti_problem_of_complex/,🧩 API / Integrations,False,2025-08-25 23:56:35.915730+00:00
+1mzs7xh,Minimal Habit Tracker Template,Check out the template here: [https://locominder.com/templates/notion-habit-tracker-template](https://locominder.com/templates/notion-habit-tracker-template),7,0.73,2,2025-08-25 14:37:14+00:00,locomindernotion,https://i.redd.it/2c4p9chqf6lf1.png,https://reddit.com/r/Notion/comments/1mzs7xh/minimal_habit_tracker_template/,💰 Paid Templates,False,2025-08-25 23:56:35.915732+00:00
+1mzqdfd,Why is Notion cheaper through Apple App Store?,"I’ve searched everywhere online but can’t find an answer.
+
+I have a Plus subscription through the App Store for under $50 per year. The same plan costs about twice as much if I buy it directly from Notion.
+
+What’s the catch? I don’t see any difference or reason why Apple users would get such a discount.",7,1.0,12,2025-08-25 13:22:49+00:00,No-Promotion-4137,https://www.reddit.com/r/Notion/comments/1mzqdfd/why_is_notion_cheaper_through_apple_app_store/,https://reddit.com/r/Notion/comments/1mzqdfd/why_is_notion_cheaper_through_apple_app_store/,❓Questions   ,True,2025-08-25 23:56:35.915735+00:00
+1n04zbg,Free Student Planner Template 🌸,"Made this free student planner template for fun! Super simple layout and perfect for people just getting started with notion. It's pretty similar to the first planner I built when I started uni! :) Enjoyyy 💗
+
+",3,1.0,0,2025-08-25 22:37:13+00:00,Fragrant_Estimate707,https://i.redd.it/o3g2kdvbt8lf1.png,https://reddit.com/r/Notion/comments/1n04zbg/free_student_planner_template/,🎁 Free Templates,False,2025-08-25 23:56:35.915737+00:00
+1n02v65,"Deleted my account months ago, still being charged","At first I was being charged $25 a month, never got refunded. Now there are zero open accounts and I’m still getting charged $12 a month. Not a lot, thankfully, I’m seeing much bigger charges now that I’ve perused this subreddit, but still annoying. So far my attempts to reach customer service have been ignored or just the AI. ",2,1.0,3,2025-08-25 21:13:04+00:00,Own-Name203,https://www.reddit.com/r/Notion/comments/1n02v65/deleted_my_account_months_ago_still_being_charged/,https://reddit.com/r/Notion/comments/1n02v65/deleted_my_account_months_ago_still_being_charged/,😤 Venting,True,2025-08-25 23:56:35.915738+00:00
+1mzywma,Stock Tracker,"I’ve been trying to make a stock tracker in Notion so I can get live stock prices. I thought that the best way to do it, was to make a google sheet with  tickers and using the google finance function to get the current prices and then update my databas in notion via Make. But I just can’t seem to figure out the workflow. 
+
+Does anyone have an idea for how I can set it up?
+
+Thanks in advance!
+",2,1.0,0,2025-08-25 18:42:53+00:00,Ok_Pin_6765,https://i.redd.it/y5kpjytrn7lf1.jpeg,https://reddit.com/r/Notion/comments/1mzywma/stock_tracker/,🧩 API / Integrations,False,2025-08-25 23:56:35.915740+00:00
+1mzs39x,Startup project management,"Need some advice on using Notion as our project management tool for my start. We are only a small team but already running into setup challenges. Not sure if this is poor setup or limitations of Notion, so advice would be really appreciated.
+
+We have multiple Teamspaces to manage Marketing, Product, Finance and other areas. But as a small team, almost all pages are visible to all. 
+
+I'm looking to manage tasks and then weekly sprints against those tasks for team members. 
+
+We run a weekly meeting that we track in a database with ai summarised actions but this then needs to be translated across to the tasks-project list. 
+
+For the next weekly meeting we need team members to be asked to turn up already having updated progress against tasks and deadlines.
+
+Any recommendations on how best to do this? 
+Or recommended people to help make this process sing?",2,1.0,3,2025-08-25 14:32:09+00:00,si1vrback,https://www.reddit.com/r/Notion/comments/1mzs39x/startup_project_management/,https://reddit.com/r/Notion/comments/1mzs39x/startup_project_management/,❓Questions   ,True,2025-08-25 23:56:35.915742+00:00
+1mzlqi3,How Do You Handle Backup and Restore in Notion? Seeking Your Experience & Feedback for a New Tool Idea,"I’m exploring the idea of building a SaaS tool that helps automate backup and restore for Notion workspaces. Since Notion’s native backup and restore options can sometimes feel limited or incomplete, I’d love to hear directly from you about your experiences.
+
+Here are a few questions to get the discussion started:
+
+How do you currently back up your Notion data? (manual exports, duplications, other tools, etc.)
+
+Have you ever faced issues with restoring data from backups or recovering lost pages?
+
+What would a perfect backup and restore solution look like for you? Any must-have features or deal breakers?
+
+How important is automated daily backup and granular restore (like restoring individual pages or databases) to you?
+
+Please share any stories, frustrations, or suggestions you have. If you’d be interested in trying out an early version of such a tool, let me know!
+
+Thanks for your help — your input will be super valuable in shaping something that really helps the Notion community.",2,1.0,7,2025-08-25 09:23:12+00:00,VeeAey,https://www.reddit.com/r/Notion/comments/1mzlqi3/how_do_you_handle_backup_and_restore_in_notion/,https://reddit.com/r/Notion/comments/1mzlqi3/how_do_you_handle_backup_and_restore_in_notion/,📢  Discussion Topic,True,2025-08-25 23:56:35.915743+00:00
+1n05kg0,"Looking for apps with UI like Notion, Arc and Linear","Like the title says. I've been obsessed with curating the apps I use to have clean, sleek and minimalist UI as I found it grealty increases my likelihood of using the app (and therefore my productivity). Wondering if anyone else has suggestions for apps with similar UI/UX? Could be for anything.
+
+  
+Thanks in advance",1,1.0,0,2025-08-25 23:01:59+00:00,promptenjenneer,https://www.reddit.com/r/Notion/comments/1n05kg0/looking_for_apps_with_ui_like_notion_arc_and/,https://reddit.com/r/Notion/comments/1n05kg0/looking_for_apps_with_ui_like_notion_arc_and/,🌐 Related Resources,True,2025-08-25 23:56:35.915744+00:00
+1n03ghn,Can I use Notion AI to summarize notes from Google Drive/Onedrive?,"I'm trying to set up a Notion workspace ahead of the new school year, and I'm reaaally confused. On Notion's webpage introducing it's features to students, it said that you could use Notion AI to summarize your class notes or get help with exam prep based on them, etc. Does this only work if I create and keep my notes inside Notion? I mostly use Google Docs or OneNote for lecture notes, papers, etc and would like to continue doing so, but connecting outside docs to Notion seems super complicated.
+
+Tried stuff like links and embeds from Google Drive, but it seems to me that the only thing that supports this use case is the Google Drive ""connection"" which is only available for Business/Enterprise plan users? Is this the case, and if so... why...? This seems like a feature that would be extremely useful for students who's uni runs on Google Workspace and/or Microsoft 365 for example, not just companies lol.
+
+If I really can't integrate my other sources, how's the experience of keeping lecture notes and stuff like that on Notion itself? Is it sufficient or does it lack any important functions when compared to Google Docs for example? Or is there a better alternative to Notion AI for my use case instead?",1,1.0,0,2025-08-25 21:35:44+00:00,siimkt,https://www.reddit.com/r/Notion/comments/1n03ghn/can_i_use_notion_ai_to_summarize_notes_from/,https://reddit.com/r/Notion/comments/1n03ghn/can_i_use_notion_ai_to_summarize_notes_from/,❓Questions   ,True,2025-08-25 23:56:35.915745+00:00
+1n01wuq,Conditional formatting on iPhone,"Hi, I created a view with a conditional formatting to match the background color with priority e.g. high priority to have red background. 
+It works fine in my laptop, but when I look into my iPhone, sometimes the app doesn’t show the background color at all. It’s just white. 
+However, from time to time, my iPhone app shows correct background color of red. 
+
+I don’t know when it does versus when it doesn’t. Do you know what’s making the difference? Thanks",1,1.0,0,2025-08-25 20:36:52+00:00,Straight-Nerve-6464,https://www.reddit.com/r/Notion/comments/1n01wuq/conditional_formatting_on_iphone/,https://reddit.com/r/Notion/comments/1n01wuq/conditional_formatting_on_iphone/,❓Questions   ,True,2025-08-25 23:56:35.915747+00:00
+1mzyoo7,Need advice: Using Notion to support a product + SEO strategy,"Hi , I could use some advice.
+I’m looking for tips specifically from people who work with marketing/SEO, have a product to sell, and use Notion in that process.
+
+I’m everything but a Notion expert and that’s exactly the point. I’m currently working on something that needs this integration to store and organize info, but I couldn’t find any ready-made template or formula for it.
+Do you have a setup, template, or system that you follow for marketing + SEO inside Notion? Would be super grateful for any insights.",1,1.0,0,2025-08-25 18:34:26+00:00,Slow-Device-1894,https://www.reddit.com/r/Notion/comments/1mzyoo7/need_advice_using_notion_to_support_a_product_seo/,https://reddit.com/r/Notion/comments/1mzyoo7/need_advice_using_notion_to_support_a_product_seo/,🧩 API / Integrations,True,2025-08-25 23:56:35.915748+00:00
+1mzwslc,Notion for Counseling Students,"I am searching for a good, yet simplified template to act as a schedule and PKMS to keep articles, tips, etc. that I come across as I pursue my degree. Does anyone have good suggestions for a low-cost template?",1,1.0,0,2025-08-25 17:24:52+00:00,thediaryofanika,https://www.reddit.com/r/Notion/comments/1mzwslc/notion_for_counseling_students/,https://reddit.com/r/Notion/comments/1mzwslc/notion_for_counseling_students/,🎁 Free Templates,True,2025-08-25 23:56:35.915749+00:00
+1mzu7fy,Is there a formula for this variable?,"\[SOLVED!\]   
+In my notion libray I have a relation that conects my books to their respective sagas. I would like to know if there is a way to create a formula variable \[in automation\] so that when I change the saga's status to ""now"" all the books related to this saga that have their start dates empty will have their status changed?
+
+This automation is in the saga's db.  
+I have the trigger in the automation as when series status is set to ""now"".  
+I am having this specif trouble because tou can't use formulas on the filters, so maybe the variables can help
+
+https://preview.redd.it/395rozo2t6lf1.png?width=811&format=png&auto=webp&s=3750f5c90b2c850cc1efc40233b02935a4ac1cd1",1,1.0,10,2025-08-25 15:50:30+00:00,oliviaBrownkkh,https://www.reddit.com/r/Notion/comments/1mzu7fy/is_there_a_formula_for_this_variable/,https://reddit.com/r/Notion/comments/1mzu7fy/is_there_a_formula_for_this_variable/,❓Questions   ,True,2025-08-25 23:56:35.915750+00:00
+1mzttcm,I created a pretty trip planner template for collaborative planning!,"I have planned all of my vacations with my sister on Notion, so I decided to make my template available. I love using vintage photos that are available on the Creative Commons open-source database to decorate my pages.
+
+When I plan a trip with someone else, I like us to be able to vote on things like hotels and budgets. I also like to visually see our daily schedule so we can move activities around from day to day if we don't get to something. Using a Notion database for a schedule is a great way to do this!
+
+This template includes a page for planning budgets and a spending tracker, a logistics page to track confirmation numbers and flight/train info, and a daily schedule. I based this off of my own trip to Spain, which was one of the best trips I've ever taken, so feel free to copy everything we did!
+
+Check it out here: https://www.notion.so/marketplace/templates/c",1,1.0,0,2025-08-25 15:36:07+00:00,Type_A_B,https://www.reddit.com/gallery/1mzttcm,https://reddit.com/r/Notion/comments/1mzttcm/i_created_a_pretty_trip_planner_template_for/,💰 Paid Templates,False,2025-08-25 23:56:35.915752+00:00
+1mztp1m,"possible to remove ""add comment"" blocks on feed?","https://preview.redd.it/2p3u6b8uo6lf1.png?width=337&format=png&auto=webp&s=c45b8770d19fdbe72d77419d6fcb3874f256d629
+
+i have this little feed on the side of my home page that pulls from a photography database. it serves no purpose other than to make me happy to look at recent photos i've taken, and these ""add comment"" blocks are killing me. i've scoured all the database options and found nothing even mentioning comments, is it possible to remove the comment options or do i just have to live with it if i want to use the feed option? ",1,1.0,3,2025-08-25 15:31:41+00:00,Simple-Can-3325,https://www.reddit.com/r/Notion/comments/1mztp1m/possible_to_remove_add_comment_blocks_on_feed/,https://reddit.com/r/Notion/comments/1mztp1m/possible_to_remove_add_comment_blocks_on_feed/,❓Questions   ,True,2025-08-25 23:56:35.915753+00:00
+1mzqarp,What if Notion could generate flowcharts and diagrams automatically?,"Been thinking about improving Notion’s flow feature… and I decided to turn it into a little project  
+Here’s a sneak peek of what I’m working on, Check it out;
+
+[https://x.com/Kolapo\_Olubanjo/status/1959964195404853303](https://x.com/Kolapo_Olubanjo/status/1959964195404853303)",1,0.6,0,2025-08-25 13:19:48+00:00,No-Area-8411,https://v.redd.it/0yq2oljk16lf1,https://reddit.com/r/Notion/comments/1mzqarp/what_if_notion_could_generate_flowcharts_and/,🧠 Notion AI,False,2025-08-25 23:56:35.915755+00:00
+1mzpba0,Recurring tasks nightmare - what am I doing wrong?,"I have created a database where I have create recurring templates. These are set to repeat every one month on the 25th of the month. They are categorised as admin, but do not show up in my admin category.
+
+I have my board view grouped by Category and it goes:  
+Admin  
+Market research  
+Email
+
+and so on.
+
+I have added these recurring tasks into the Admin category, but they are not showing there. They are however showing, when I view the tasks by status.
+
+WHY :'(
+
+Update: I have now updated the time to show ""At 2pm"" to see if this works, but then what happens, it shows at 2pm for one minute? What's the point in that? In this instance, the task will only show at midnight until 3am, for what? Arrghhghgh.
+
+Update: Even at 2pm, nothing showed :|
+
+https://preview.redd.it/c12tu415y5lf1.png?width=472&format=png&auto=webp&s=acb6b8063ee66eb475e9f8a623b2201f9e3106c3
+
+linked example: [https://www.notion.so/25aaa709d76080b59cbfcdca67542c39?v=25aaa709d76080559c60000c39edac5d&source=copy\_link](https://www.notion.so/25aaa709d76080b59cbfcdca67542c39?v=25aaa709d76080559c60000c39edac5d&source=copy_link)",1,1.0,1,2025-08-25 12:37:22+00:00,Ishouldntbeangry,https://www.reddit.com/r/Notion/comments/1mzpba0/recurring_tasks_nightmare_what_am_i_doing_wrong/,https://reddit.com/r/Notion/comments/1mzpba0/recurring_tasks_nightmare_what_am_i_doing_wrong/,❓Questions   ,True,2025-08-25 23:56:35.915757+00:00
+1mzoffn,I Created a Lesson Planner For All Seasons!! - Seasonal Lesson Planner,"🍂📚 Staying organized as a teacher can get overwhelming, especially with shifting schedules, grading, and planning lessons every season. That’s why I created the **Seasonal Lesson Planner** in Notion — a **digital teacher planner** designed to help with **lesson planning, academic calendars, scheduling, and classroom organization** year-round.
+
+This template breaks down lessons by **season + subject**, making it easier to stay on top of teaching goals, deadlines, and assignments. It’s perfect for **teachers, homeschool parents, and tutors** who want a clean, aesthetic, and stress-free way to organize their academic year. 🌿
+
+If you’re looking for a **flexible teacher planner, homeschool calendar, or academic lesson tracker**, this might be just what you need. ✨
+
+Link: [https://organizedlifebymalan.etsy.com/listing/1798215054/seasonal-planner-lesson-planner-template](https://organizedlifebymalan.etsy.com/listing/1798215054/seasonal-planner-lesson-planner-template)",1,1.0,0,2025-08-25 11:55:31+00:00,Alarming-One-1689,https://www.reddit.com/gallery/1mzoffn,https://reddit.com/r/Notion/comments/1mzoffn/i_created_a_lesson_planner_for_all_seasons/,💰 Paid Templates,False,2025-08-25 23:56:35.915758+00:00
+1mznj08,How to use offline mode?,"Eeek it's blocked at my school but it still works, but it got me wondering why I even need to load the page at all before opening it. Does offline mode work on existing pages, and make them already loaded? 3 dot menu doesn't show anything.",1,1.0,0,2025-08-25 11:08:28+00:00,Crazy-Anteater8810,https://www.reddit.com/r/Notion/comments/1mznj08/how_to_use_offline_mode/,https://reddit.com/r/Notion/comments/1mznj08/how_to_use_offline_mode/,❓Questions   ,True,2025-08-25 23:56:35.915759+00:00
+1mznbtl,Notion database power users: what are your most critical and annoying problems?,"I have been a heavy user of Notion's tables and databases for various tasks (eg. ticket management for teams, CRM, personal todo lists, storing various tables of non-critical/sensitive data). To my fellow power users of Notion's table and database feature: what are your most critical problems that you face on a near-daily basis that seriously frustrate your day-to-day work? 
+
+",1,1.0,5,2025-08-25 10:58:08+00:00,ExoticAccountant,https://www.reddit.com/r/Notion/comments/1mznbtl/notion_database_power_users_what_are_your_most/,https://reddit.com/r/Notion/comments/1mznbtl/notion_database_power_users_what_are_your_most/,📢  Discussion Topic,True,2025-08-25 23:56:35.915760+00:00
+1mzk42i,Feedback on a tracker system for part-time entrepreneurs,"Hello everyone!  
+  
+My template is to help part-time entrepreneurs turn chaotic side hustles into organized, guilt-free operation that actually makes progress—even with limited time.
+
+
+
+Part-time entrepreneurs often face challenges, including:
+
+* Scattered notes everywhere
+* Forgetting important tasks
+* Feeling guilty about slow progress
+* Not knowing what to work on next
+* Starting and stopping repeatedly
+
+
+
+I created a Notion template to help them overcome those issues.  
+  
+The goal is to help them achieve:
+
+* Centralized place for everything important
+* Clear priority system (what's urgent vs. what makes money)
+* Built-in mental hacks that actually work
+
+
+
+Could you please review and give me feedback on what works well and what needs to be improved? If you are a potential customer, would you consider purchasing it? Your feedback is greatly appreciated! Thanks a lot!!  
+  
+Notion: [https://www.notion.so/Hustle-to-Flow-System-251b8d8c88ee807d8929ed3bde61616f?source=copy\_link](https://www.notion.so/Hustle-to-Flow-System-251b8d8c88ee807d8929ed3bde61616f?source=copy_link)",1,1.0,0,2025-08-25 07:35:57+00:00,delicious-garden3306,https://www.reddit.com/r/Notion/comments/1mzk42i/feedback_on_a_tracker_system_for_parttime/,https://reddit.com/r/Notion/comments/1mzk42i/feedback_on_a_tracker_system_for_parttime/,❓Questions   ,True,2025-08-25 23:56:35.915762+00:00
+1mzh7y0,Duplication failure issue?,"Hey guys, I've been having trouble with duplicating some of my templates to other workspaces. It shows ""duplication failed"". Is anyone else having same issue. It's only happening with some templates while others are duplicating normally. The same thing happened few months ago as well.",1,1.0,6,2025-08-25 04:38:34+00:00,organizeddashboard,https://www.reddit.com/r/Notion/comments/1mzh7y0/duplication_failure_issue/,https://reddit.com/r/Notion/comments/1mzh7y0/duplication_failure_issue/,❓Questions   ,True,2025-08-25 23:56:35.915763+00:00
+1mzf0pm,Beginner needs help,"I've just finished creating a Strategic Planning toolkit on Notion, which was a bit of a journey.
+I'm not trying to understand the selling part of it. I've put my template on gumroad, but im really confused with this whole process now. When I search gumroad I cant find my product, so I don't unswrstand how I can be approved by the marketplace if I need to make a sale.
+I've tried to sell on botion itself as creator but that may take a while.
+I would really appreciate any help guidance how to go about the selling part of things.",1,0.99,2,2025-08-25 02:41:02+00:00,ImpressionProud7511,https://www.reddit.com/r/Notion/comments/1mzf0pm/beginner_needs_help/,https://reddit.com/r/Notion/comments/1mzf0pm/beginner_needs_help/,💰 Paid Templates,True,2025-08-25 23:56:35.915764+00:00
+1mzf06v,How to track every customer interaction?,"I've been using the comments field to track each time a customer interacts with us for various needs and whenever we reach out to them for follow-up, etc. I'm not referring to full-blown meeting notes, but say whenever customer calls in to seek help on an issue. I log it down. 
+
+Examples of what appears in the comment section of some cutomers:
+
+""called in to ask for invoice to be reprinted""
+
+""called customer to follow-up but no response""
+
+But using the comments field does not allow me to tabulate various statistics like how many follow-up calls we tried to make in a week or how often we talked to the customer or how many times we reached out proactively to follow-up with customers. Is there a better way to do this?",1,1.0,4,2025-08-25 02:40:19+00:00,mambo78,https://www.reddit.com/r/Notion/comments/1mzf06v/how_to_track_every_customer_interaction/,https://reddit.com/r/Notion/comments/1mzf06v/how_to_track_every_customer_interaction/,❓Questions   ,True,2025-08-25 23:56:35.915765+00:00
+1mzc7hh,Hiding pages in Notion,"Hey guys! I'm wondering if it's possible to hide a page in Notion. Essentially, I have some pages that I don't necessarily want to delete but that I don't access often and are distracting when I'm using Notion for tracking my classes or taking notes. Is there a sort of ""hidden"" pages feature where the pages won't show up in the sidebar but will show up if I search for them? Or will I have to just bite the bullet and delete the irrelevant stuff now? ",1,1.0,3,2025-08-25 00:25:52+00:00,mushroom-patella,https://www.reddit.com/r/Notion/comments/1mzc7hh/hiding_pages_in_notion/,https://reddit.com/r/Notion/comments/1mzc7hh/hiding_pages_in_notion/,❓Questions   ,True,2025-08-25 23:56:35.915767+00:00
+1n025jm,Notion AI,Can I add Notion AI to a free account? ,0,0.5,2,2025-08-25 20:46:01+00:00,Paranoid-Android84,https://www.reddit.com/r/Notion/comments/1n025jm/notion_ai/,https://reddit.com/r/Notion/comments/1n025jm/notion_ai/,❓Questions   ,True,2025-08-25 23:56:35.915768+00:00
+1mzytrs,Is it possible to add another AI to a Notion workspace?,"Is it possible to integrate another AI into a Notion workspace?
+
+I've tried a few things, but they haven't worked, mostly because I was trying to use commands like Notion AI's ""\\command,"" etc.
+",0,0.5,2,2025-08-25 18:39:56+00:00,pemapi,https://www.reddit.com/r/Notion/comments/1mzytrs/is_it_possible_to_add_another_ai_to_a_notion/,https://reddit.com/r/Notion/comments/1mzytrs/is_it_possible_to_add_another_ai_to_a_notion/,🧩 API / Integrations,True,2025-08-25 23:56:35.915769+00:00
+1mzsjcj,Notion AI + Google Drive,"Been using Notion for around a year now and really like it.  Finally decided to pay for it and really lean into the Notion AI and other features to see what I can get out of it.  I tried connecting it to Google Drive, which I use extensively, and was disappointed that it's not working (screenshot below).  It's just a personal google account that I pay for extra storage on.  Do I *really* have to have a Google workspace to be able to connect Notion AI?  That would be a huge disappointment, honestly.
+
+  
+Edit: the same also seems to be true for the gmail connector too?
+
+https://preview.redd.it/2qydyecnh6lf1.png?width=824&format=png&auto=webp&s=20e874b8c298dad0873e0e94928f33a464e46ae5",0,0.5,2,2025-08-25 14:49:19+00:00,Tetragrahamat0n,https://www.reddit.com/r/Notion/comments/1mzsjcj/notion_ai_google_drive/,https://reddit.com/r/Notion/comments/1mzsjcj/notion_ai_google_drive/,❓Questions   ,True,2025-08-25 23:56:35.915770+00:00
+1mzj98e,Experimenting with a Notion dashboard I’ll actually stick to,"Hey everyone,  
+Over the past few weeks, I’ve been building and refining my own **Notion dashboard** — something simple, aesthetic, and powerful enough to actually use every day (instead of becoming a database graveyard 😅).
+
+After some feedback and polish, I’m finally ready to **share the template** with you all! 🎉
+
+It’s got everything I need in one place:
+
+* Academic courses + notes
+* Reminders & events (because I always forget stuff lol)
+* Journal + quick notes
+* A little “to revise” area for study vibes
+
+Would love to hear what you think 🖤
+
+https://preview.redd.it/nl7wo08234lf1.png?width=1920&format=png&auto=webp&s=d2c0fe859de6fe3a10554841b644bfa14b0ee568
+
+",0,0.5,1,2025-08-25 06:41:59+00:00,Old-Consequence-2568,https://www.reddit.com/r/Notion/comments/1mzj98e/experimenting_with_a_notion_dashboard_ill/,https://reddit.com/r/Notion/comments/1mzj98e/experimenting_with_a_notion_dashboard_ill/,💰 Paid Templates,True,2025-08-25 23:56:35.915771+00:00
+1mzxgo5,"Finally, a life planner that actually makes planning… enjoyable 🔥","Ever feel like most planners just end up as fancy notebooks on your desk? I’ve been there.
+
+I designed a life planner that’s simple, flexible, and actually helps you get things done. No fluff, no confusing layouts—just a tool that helps you focus on what matters.
+
+I’ve been using it for a while now, and honestly, my days feel clearer, and I get more done without the stress.
+
+Curious to see it in action? DM me and I’ll send you the link. Would love to hear if it changes the way you plan your days.",0,0.33,0,2025-08-25 17:49:26+00:00,Blazer0009,https://www.reddit.com/r/Notion/comments/1mzxgo5/finally_a_life_planner_that_actually_makes/,https://reddit.com/r/Notion/comments/1mzxgo5/finally_a_life_planner_that_actually_makes/,💰 Paid Templates,True,2025-08-25 23:56:35.915773+00:00
+1mzr6a5,"If you’re using Notion to track your learning, hear me out","I’ve always loved mapping out what I want to learn next, not just courses, but a full plan: milestones, notes, projects, reflections. Posting these “learning curriculums” on TikTok and seeing others gave me both inspiration and gentle accountability from the community.
+
+It made me realize: there’s no dedicated space for people like us, for **minds who want to organize, create, and share their learning journeys**.
+
+I’m experimenting with a small tool called Curi. The idea is simple: you can plan your learning, get subtle nudges to stay on track, produce work along the way, and share your journey to inspire others.
+
+It’s beta right now, but I’d love to see who would actually use something like this. If this resonates, here’s a waitlist \[[https://curii.vercel.app/](https://curii.vercel.app/)\].
+
+Let me know what you think!",0,0.33,0,2025-08-25 13:56:05+00:00,Substantial-Rice0,https://www.reddit.com/r/Notion/comments/1mzr6a5/if_youre_using_notion_to_track_your_learning_hear/,https://reddit.com/r/Notion/comments/1mzr6a5/if_youre_using_notion_to_track_your_learning_hear/,Community,True,2025-08-25 23:56:35.915774+00:00
+1mzvn00,What 1 Feature would you like me to add in a Finance Tracker,"I'm currently building a **Finance OS (mobile optimized & super easy to use)** with these features:
+
+* Quick Adds (account, income, expense, budget, asset, liability, subscription, transfer)
+* Accounts, Income & Expense tracking
+* Transactions & Subscriptions
+* Budget & Goals management
+* Income Sources & Expense Categories
+* Asset & Liability tracker
+* Wealth Reports & Graphs
+* Investment OS
+* Currency Rates integration
+* Goals & Savings tracking
+
+👉 With all this already included, what’s the **#1 feature you think I should add next**?",0,0.29,1,2025-08-25 16:42:59+00:00,organizeddashboard,https://i.redd.it/640b4orq17lf1.png,https://reddit.com/r/Notion/comments/1mzvn00/what_1_feature_would_you_like_me_to_add_in_a/,❓Questions   ,False,2025-08-25 23:56:35.915775+00:00
+1mzj5rg,Anyone else doing a mid-year reflection? Here’s how I’m tracking mine (Notion template),"Hey r/Notion!
+
+I’ve been building a template called **Playback 2025**, originally designed for personal year-end reflections. But now that we’re halfway through the year, I think it could also be great for a **mid-year review** or even as a way to keep an ongoing log throughout the year.
+
+Here’s the link if you’d like to take a look: [back 2025: A Personal Year-End Log](https://www.notion.com/templates/playback-2025-a-personal-year-end-log)
+
+I’d love to hear your thoughts—what do you usually include in your own reflections? Anything you think would make this template more useful?",0,0.25,1,2025-08-25 06:35:35+00:00,Medical_Maximum7363,https://www.reddit.com/r/Notion/comments/1mzj5rg/anyone_else_doing_a_midyear_reflection_heres_how/,https://reddit.com/r/Notion/comments/1mzj5rg/anyone_else_doing_a_midyear_reflection_heres_how/,💰 Paid Templates,True,2025-08-25 23:56:35.915776+00:00
+1mzlgm2,Struggling to stay organized? This Life Planner changed how I manage my days,"I used to waste so much time jumping between random apps and sticky notes… until I built a simple Life Planner that actually works.
+
+It helps me:
+✅ Break big goals into daily steps
+✅ Stay consistent with habits
+✅ Balance school, work, and personal time
+✅ Keep everything in one place (no more scattered notes)
+
+I’ve been sharing it with friends, and they keep telling me it’s a game-changer.
+If anyone here wants to check it out, just shoot me a quick DM and I’ll send you the link 💌",0,0.17,10,2025-08-25 09:05:10+00:00,Blazer0009,https://www.reddit.com/r/Notion/comments/1mzlgm2/struggling_to_stay_organized_this_life_planner/,https://reddit.com/r/Notion/comments/1mzlgm2/struggling_to_stay_organized_this_life_planner/,💰 Paid Templates,True,2025-08-25 23:56:35.915777+00:00
+1mzhhjf,"I Got Tired of Complicated Notion Setups, So I Made My Own Simple Planner","So, I just finished building my **first Notion planner**, and honestly, I made it **as simple as possible**. You don’t need to know much about Notion at all - you can just open it and start using it. No complicated setup, no long guides, nothing.
+
+I made this planner because I know how frustrating it can be to deal with overly complicated templates. This one’s for anyone who just wants **to plan their life without stress**.
+
+I hope u guys like this😊.
+
+***If anyone’s interested, I’ll drop the link in the comments.***
+
+https://preview.redd.it/qbtbjjmfj3lf1.png?width=1920&format=png&auto=webp&s=d2667d82e99260a83488f98db3f9cbc9807dbfa5",0,0.33,1,2025-08-25 04:53:44+00:00,Old-Consequence-2568,https://www.reddit.com/r/Notion/comments/1mzhhjf/i_got_tired_of_complicated_notion_setups_so_i/,https://reddit.com/r/Notion/comments/1mzhhjf/i_got_tired_of_complicated_notion_setups_so_i/,📆 Notion Calendar,True,2025-08-25 23:56:35.915779+00:00
+1mzfh8q,Is this a common use for Notion?,Is Notion used as a source of creating learning products that leverage the strength of this tool in creating dashboards. I've created a Strategic Planning Toolkit that has attached learning documents that a user then can input into their goal template etc of choice. So my contribution is less around the skills of Notion itself but providing knowledge on building strategic frameworks that people can then use notion to apply. I'm wondering is is type of use or selling on Notion common?,0,0.2,2,2025-08-25 03:04:16+00:00,ImpressionProud7511,https://www.reddit.com/r/Notion/comments/1mzfh8q/is_this_a_common_use_for_notion/,https://reddit.com/r/Notion/comments/1mzfh8q/is_this_a_common_use_for_notion/,❓Questions   ,True,2025-08-25 23:56:35.915780+00:00
+1mznjm4,"Biggest Giveaway: Get Notion CRM System Free ,Never Lose a Lead Again!","I used to forget follow-ups, lose track of client info, and scramble to remember who I spoke to last. Everything was scattered across notes, spreadsheets.
+
+So I built a simple CRM System in Notion to keep everything in one place and easy to use. organized, trackable,
+
+Here's what it helps you do:
+
+One-Click Lead Capture - Add new leads or clients instantly with a clean, pre-set form.
+
+All Client Info in One Place - Contact details, deal notes, and status updates, neatly in one dashboard.
+
+Pipeline View - Track your entire sales flow from New, In Progress, Closed.
+
+Tags & Filters - Sort by project, priority, or deal stage so nothing slips through the cracks.
+
+Whether you're a freelancer, business owner, or just starting out - this system will help you stay on top of every client and lead.
+
+Comment ""CRM"" below and I'll send it you",0,0.4,28,2025-08-25 11:09:24+00:00,adn_notion,https://i.redd.it/g75oze1ve5lf1.png,https://reddit.com/r/Notion/comments/1mznjm4/biggest_giveaway_get_notion_crm_system_free_never/,🎁 Free Templates,False,2025-08-25 23:56:35.915781+00:00
+1mzn64k,I stopped spending 30 minutes every morning copying emails into Notion.,"Did the math: \~15–20 emails/day × 1–2 min each = \~5–10 hrs/month lost.
+
+I built a 10-sec Email→Notion flow: forward → AI pulls tasks/dates/priorities → task appears.
+
+Listens on Gmail. Works with Outlook/iCloud/Yahoo via forwarding to a Gmail alias.
+
+Here’s a 48-sec demo: [https://www.youtube.com/watch?v=is7OCxfTgUc](https://www.youtube.com/watch?v=is7OCxfTgUc)
+
+If anyone wants the template + setup video, I can share details in the comments.",0,0.13,4,2025-08-25 10:49:10+00:00,SeaZookeepergame9121,https://i.redd.it/gsd2xn84b5lf1.png,https://reddit.com/r/Notion/comments/1mzn64k/i_stopped_spending_30_minutes_every_morning/,🧩 API / Integrations,False,2025-08-25 23:56:35.915782+00:00
+1mzpprz,I will try to sell you my digital habit tracker!,"Hello guys,
+
+First of all please don't be rush on me. I am new at this kind of things, and I don't know how to promote my hard worked product well since I don't have a good social media account as well. You don't have to buy to support me, your constructive feedback or any recommendation will be as valuable, and will be appreciated.
+
+So, I am here to give it a shot and promote you the habit tracker I created in about a week, without copying anyone's work or AI's work (except for the formula and script). Here are the features I placed in my habit tracker:
+________
+For Google Sheets --> So you need only a Google account. Compatible with all devices and operation systems. NOT FOR NOTION!
+
+Smart setup --> just enter your month, year, age, and gender. The calendar auto-adjusts to the right number of days, highlights today and show the day names as a real calendar.
+Sleep & hydration goals are auto-calculated using WHO recommendations according to your age and gender. I believe it is a unique feature.
+
+Define up to 30 habits --> each with custom goals & 11 categories to choose from.
+
+Category tracking --> you can track the progress of the categories in addition to the habits with progress bars and donut pie. I didn't see other trackers do it like that so far. 
+
+Instant progress tracking --> daily check-ins with color-coded bars for habits as well as for days. Auto percentages & progress bars update as you go. They also adapt to your goal and number of habits.
+
+Gamified medals system --> earn bronze, silver, gold medals for each habit and also for each day. Daily medals check your consistency consistency based on how many habits you completed in a day.
+
+Sleep & Hydration Tracker --> auto-goals based on your age & gender. Color-coded daily entries + monthly line graph for trends.
+
+One-click PDF export --> have monthly reports automatically with the right month/year in the filename.
+
+Easy reset button --> cears all checkboxes with a safety check, so you don't accidentally clear your progress.
+
+Everything in one tab --> people promote as more than is better, but I think it is the reverse for simplification. No need to click around multiple sheets in my tracker.
+
+Reusable forever --> just change the month/year, reset, and you’re ready to go again. 
+________
+
+Alright this what I have for you. I believe it has some unique features that other habit trackers don't have like easy cleaning, printing to PDF, auto wellness goals and category tracking instead of only habits. I might be wrong but this is what I saw so far. Gamification is also not very common, and I think it makes it more fun to develop habit or routines 😀
+
+I sell it with 50% discount on Etsy now as a kick off. (Anywhere else as a recommendation?) Don't be scared when you see my store with no comment or stars. I opened my account 12 years ago, tried selling some other stuff 2 times but couldnt do well. So, I am trying again with my own product now. Here is the link to check it out. The only sell I have is from my wife, yet! :)
+
+https://creativefolios.etsy.com/listing/4357789171
+
+Comment if you have questions or DM me. Thanks in advance for buying my tracker or giving me a feedback! Appreciate it both.",0,0.13,0,2025-08-25 12:55:36+00:00,AdSmall1153,https://www.reddit.com/r/Notion/comments/1mzpprz/i_will_try_to_sell_you_my_digital_habit_tracker/,https://reddit.com/r/Notion/comments/1mzpprz/i_will_try_to_sell_you_my_digital_habit_tracker/,💰 Paid Templates,True,2025-08-25 23:56:35.915783+00:00

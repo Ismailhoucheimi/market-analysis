@@ -1,0 +1,71 @@
+{
+  "total_posts_analyzed": 840,
+  "sentiment_distribution": {
+    "positive": 498,
+    "neutral": 78,
+    "negative": 264
+  },
+  "average_sentiment": 0.18976190476190477,
+  "high_urgency_posts": 181,
+  "high_business_impact": 266,
+  "category_distribution": {
+    "help_support": 234,
+    "template_sharing": 158,
+    "feature_request": 122,
+    "bug_report": 72,
+    "workflow_showcase": 51,
+    "integration_request": 48,
+    "comparison": 43,
+    "praise": 33,
+    "criticism": 30,
+    "pricing": 17,
+    "community_meta": 14,
+    "mobile_feedback": 8,
+    "performance": 6,
+    "migration": 4
+  },
+  "top_user_personas": {
+    "Power User/Advanced User": 3,
+    "User engaged in self-improvement through data tracking": 3,
+    "Content creator and template creator": 2,
+    "Beginner user": 2,
+    "User seeking to customize and personalize their Notion pages, encountering visual glitches.": 2,
+    "Content creator looking for organizational tools.": 2,
+    "Template Creator/Community Contributor": 2,
+    "Template creator / community contributor": 2,
+    "Intermediate user attempting to implement project management principles within Notion.": 1,
+    "Neurodivergent user (ADHD/Autistic) new to Notion, with a strong focus on mobile usage and a need for practical, streamlined systems.": 1
+  },
+  "urgency_by_category": {
+    "performance": 4.5,
+    "criticism": 4.166666666666667,
+    "bug_report": 3.9583333333333335,
+    "migration": 3.75,
+    "mobile_feedback": 3.75,
+    "pricing": 3.176470588235294,
+    "feature_request": 2.8524590163934427,
+    "help_support": 2.764957264957265,
+    "integration_request": 2.75,
+    "comparison": 2.3255813953488373,
+    "community_meta": 1.6428571428571428,
+    "template_sharing": 1.360759493670886,
+    "workflow_showcase": 1.3529411764705883,
+    "praise": 1.121212121212121
+  },
+  "business_impact_by_category": {
+    "criticism": 4.4,
+    "performance": 4.333333333333333,
+    "pricing": 3.764705882352941,
+    "migration": 3.75,
+    "bug_report": 3.7222222222222223,
+    "integration_request": 3.625,
+    "feature_request": 3.5901639344262297,
+    "mobile_feedback": 3.5,
+    "comparison": 3.255813953488372,
+    "help_support": 2.6837606837606836,
+    "praise": 2.606060606060606,
+    "workflow_showcase": 2.5098039215686274,
+    "template_sharing": 2.3860759493670884,
+    "community_meta": 1.8571428571428572
+  }
+}

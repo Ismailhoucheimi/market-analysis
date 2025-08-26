@@ -1,0 +1,48 @@
+NOTION REDDIT ANALYSIS REPORT
+==================================================
+
+SUMMARY
+--------------------
+Total Posts Analyzed: 81
+Date Range: 2024-09-29 13:51:31+00:00 to 2025-08-25 20:46:01+00:00
+Average Score: 9.2
+Average Comments: 6.3
+
+CATEGORY DISTRIBUTION
+------------------------------
+Help/Support: 21 posts (25.9%)
+Template Sharing: 20 posts (24.7%)
+Integration Requests: 10 posts (12.3%)
+Feature Requests: 7 posts (8.6%)
+Workflow Showcase: 6 posts (7.4%)
+Bug Reports: 5 posts (6.2%)
+Community/Meta: 3 posts (3.7%)
+Criticism/Complaints: 3 posts (3.7%)
+Pricing/Plan Discussion: 2 posts (2.5%)
+Mobile App Feedback: 2 posts (2.5%)
+Praise/Positive Feedback: 1 posts (1.2%)
+Comparison/Alternatives: 1 posts (1.2%)
+
+COMPETITIVE INSIGHTS
+------------------------------
+Pain Points: 8 posts (9.9%)
+Top Pain Points:
+  • 5 Years with Notion: An Honest Take - but perhaps I am using my Notion PARA setu... (Score: 19)
+  • There's too many new changes... (Score: 15)
+  • Conditional formatting on iPhone... (Score: 1)
+  • Recurring tasks nightmare - what am I doing wrong?... (Score: 1)
+  • Duplication failure issue?... (Score: 1)
+
+Feature Requests: 7 posts (8.6%)
+Top Feature Requests:
+  • Notion really needs a “User Mode” (separate from Edit Mode)... (Score: 163)
+  • 🗳️ Product Feedback for Notion 🛎️... (Score: 17)
+  • Updating an Initiative Tracker database to take advantage of buttons, conditiona... (Score: 3)
+  • How Do You Handle Backup and Restore in Notion? Seeking Your Experience & Feedba... (Score: 2)
+  • Is it possible to create a centralized database of tags (colored ones, not @ment... (Score: 2)
+
+USER SATISFACTION
+--------------------
+Praise Posts: 1
+Criticism Posts: 3
+Satisfaction Ratio: 0.33 (negative)
