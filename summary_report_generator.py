@@ -28,12 +28,12 @@ class ComprehensiveSummaryGenerator:
             zenflo_analysis_section = f"""
 ## ZENFLO COMPETITIVE ANALYSIS & STRATEGIC OPPORTUNITIES
 
-Based on the ZenFlo product analysis and Notion user insights, provide:
-- How ZenFlo's positioning addresses gaps identified in Notion user feedback
-- Specific opportunities where ZenFlo can capitalize on Notion's pain points
-- Feature differentiation strategies based on user complaints about Notion
-- Market positioning recommendations for ZenFlo vs Notion
-- Target user segments that would be most likely to switch from Notion to ZenFlo
+Based on the ZenFlo product analysis and {competitor_name} user insights, provide:
+- How ZenFlo's positioning addresses gaps identified in {competitor_name} user feedback
+- Specific opportunities where ZenFlo can capitalize on {competitor_name}'s pain points
+- Feature differentiation strategies based on user complaints about {competitor_name}
+- Market positioning recommendations for ZenFlo vs {competitor_name}
+- Target user segments that would be most likely to switch from {competitor_name} to ZenFlo
 
 ZENFLO CONTEXT:
 {zenflo_context}
@@ -74,7 +74,7 @@ Identify and prioritize:
 - Technical complexity vs user demand analysis
 
 ## COMPETITIVE INTELLIGENCE INSIGHTS
-- Key competitive threats and how users compare Notion to alternatives
+- Key competitive threats and how users compare {competitor_name} to alternatives
 - Market positioning gaps and opportunities
 - User migration patterns and retention risks
 - Differentiation opportunities
